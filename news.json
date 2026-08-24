@@ -1,0 +1,133 @@
+{
+  "date": "2026-08-23",
+  "updatedAt": "2026-08-24T09:00:00+08:00",
+  "totalItems": 12,
+  "categories": [
+    { "id": "interaction", "name": "交互设计", "icon": "✦", "color": "#0a84ff" },
+    { "id": "styles", "name": "设计风格", "icon": "◈", "color": "#bf5af2" },
+    { "id": "tools", "name": "AI 工具", "icon": "◆", "color": "#30d158" },
+    { "id": "tips", "name": "AI 技巧", "icon": "✸", "color": "#ff9f0a" }
+  ],
+  "items": [
+    {
+      "id": "20260823-001",
+      "category": "interaction",
+      "title": "2026 AI 设计六大趋势：从生成式到对话式共创",
+      "summary": "AI 从被动执行工具进化为能读懂设计底层逻辑的创作伙伴。六大趋势包括：多轮深度对话共创、全感知一体化设计、千人千面定制、人机实时协同、AI 主动否定不合理方案、从完成设计到培育设计生态系统。设计师角色从执行者转向设计生态系统的培育者。",
+      "source": "腾讯云开发者社区",
+      "url": "https://developer.cloud.tencent.com.cn/article/2725503",
+      "tags": ["趋势", "对话式AI", "全感知设计", "实时协作"],
+      "publishedAt": "2026-08-13"
+    },
+    {
+      "id": "20260823-002",
+      "category": "interaction",
+      "title": "Claude 与 Cursor 普及全新 AI UI 设计语言",
+      "summary": "设计师 Jim Nielsen 发文指出 AI 原生应用正在建立可识别的视觉语言：sparkle 表情 ✨ 配合彩虹渐变成为 AI 功能通用标识；token 流式文本输出、shimmer 文字效果正迁移到通用软件。AI 应用偏好 Electron + 暖色调编辑风格 + 衬线字体，但存在控件位置非预期的 whack-a-mole 交互问题。",
+      "source": "AIBW Newsroom",
+      "url": "https://aibreakingwire.com/news/claude-and-cursor-popularize-new-ai-ui-design-patterns",
+      "tags": ["AI UI", "视觉语言", "Claude", "Cursor"],
+      "publishedAt": "2026-08-01"
+    },
+    {
+      "id": "20260823-003",
+      "category": "interaction",
+      "title": "Agent UX：2026 年为 AI Agent 设计 UI 的核心模式",
+      "summary": "Gartner 预测 2026 年底 40% 企业应用将集成任务型 AI Agent。三大验证可用的设计模式：plan-and-execute（计划-执行）、confidence signaling（置信度信号）、progressive delegation（渐进式委派）。传统表单式 UI 无法承载自主系统的透明度、状态沟通、覆盖控制与错误恢复需求。",
+      "source": "Fuse Lab Creative",
+      "url": "https://fuselabcreative.com/ui-design-for-ai-agents/",
+      "tags": ["Agent UX", "企业应用", "透明度设计"],
+      "publishedAt": "2026-05-08"
+    },
+    {
+      "id": "20260823-004",
+      "category": "interaction",
+      "title": "「AI，竞争力」主题论坛：AI 时代设计师的核心壁垒",
+      "summary": "论坛聚焦生成式 AI 普及下的设计行业同质化内卷。产业投资重心已从底层大模型转向垂直场景落地，单纯掌握 AI 工具已不构成差异化优势。设计师真正的壁垒在于对细分商业场景的深度理解，可把已有项目经验沉淀为可交互传播的数字化资产。",
+      "source": "凤凰网数字经济",
+      "url": "https://digital.ifeng.com/",
+      "tags": ["行业洞察", "设计师竞争力", "AI 转型"],
+      "publishedAt": "2026-08-23"
+    },
+    {
+      "id": "20260823-005",
+      "category": "tools",
+      "title": "Figma 上线 AI 自然语言编辑能力（Alpha）",
+      "summary": "Figma 正式发布 AI 编辑能力：可选中任意图层或画布，通过自然语言指令编辑（如\"调整为响应式\"\"换深蓝色主题\"）。AI 处理重命名图层、批量调整、图像生成、生成可交互原型。基于第三方开源技术，不使用用户私有数据训练。",
+      "source": "AI D A M N",
+      "url": "https://ai-damn.com/figma-introduces-ai-powered-design-tools-for-streamlined-editing-1758150077315",
+      "tags": ["Figma", "自然语言编辑", "Make Tool"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260823-006",
+      "category": "tools",
+      "title": "Figma MCP 连接 Weave：外部 Agent 可直接调用设计工具",
+      "summary": "2026 年 8 月 11 日起，Figma 允许通过 MCP 从 ChatGPT、Claude、Cursor 等外部 Agent 直接调用 Weave 工作流（图像生成、Mockup 等），无需离开对话。Agent 自动识别、运行工具并返回结果，保留品牌指南与上下文。",
+      "source": "Mazette",
+      "url": "https://www.mazette.co/en/blog/figma-mcp-connects-to-weave-your-custom-ai-tools-land-in-chatgpt-and-claude",
+      "tags": ["Figma", "MCP", "Weave", "Agent"],
+      "publishedAt": "2026-08-18"
+    },
+    {
+      "id": "20260823-007",
+      "category": "tools",
+      "title": "Claude Code /design 技能：artboard 工作流内嵌编程",
+      "summary": "2026 年 8 月 17 日 Anthropic 将 Claude Design 的 artboard 工作流直接集成进 Claude Code 作为研究预览。输入 /design 即可生成多个可编辑 UI 方案，在画布上挑选微调后让 Claude 实现为真实代码。Pro/Max/Team/Enterprise 计划可用。",
+      "source": "AI Tools Review",
+      "url": "https://aitoolsreview.co.uk/insights/claude-code-design-skill",
+      "tags": ["Claude Code", "/design", "UI 生成", "Anthropic"],
+      "publishedAt": "2026-08-23"
+    },
+    {
+      "id": "20260823-008",
+      "category": "tools",
+      "title": "Google Stitch 更新：语音驱动 UI 设计",
+      "summary": "Google 更新 Stitch AI 设计工具，支持通过语音描述实时生成可编辑 UI 元素。\"给这个 App 一种温馨咖啡馆感觉\"即可触发界面变换。代表 Vibe Design 运动：用情绪化语言替代技术规格（hex 码、margin 值）。",
+      "source": "AI D A M N",
+      "url": "https://ai-damn.com/google-s-stitch-update-lets-you-design-uis-with-just-your-voice-1773894027339",
+      "tags": ["Google Stitch", "语音设计", "Vibe Design"],
+      "publishedAt": "2026-08-19"
+    },
+    {
+      "id": "20260823-009",
+      "category": "tools",
+      "title": "阿里开源 Qwen-Image-Layered：PS 级分层 AI 图像编辑",
+      "summary": "阿里开源 Qwen-Image-Layered 图像模型，原生支持图层认知。可在保持其他区域不变前提下，对指定图层元素位移、缩放、重绘，无需手动抠图。解决传统 AI 生图\"改一处牵全身\"的随机性问题，满足商业广告、UI 设计等专业场景精准编辑需求。完全开源可商用。",
+      "source": "快科技",
+      "url": "https://www.zcool.com.cn/ai/daily-news",
+      "tags": ["阿里", "Qwen", "开源", "图像编辑"],
+      "publishedAt": "2026-08-23"
+    },
+    {
+      "id": "20260823-010",
+      "category": "styles",
+      "title": "Z 世代重新定义\"高级感\"：价格让位于耐用、在地、清晰",
+      "summary": "年轻消费者判断 premium 不再只看价格与传统奢侈符号，而是跨品类比较产品是否耐用、有无文化根基、能否形成真实社交体验，视觉表达是否克制而清晰。Stanley、Loewe、Subko、Rhode、The Ordinary 等案例说明\"高级\"没有通用模板。",
+      "source": "Creative Bloq",
+      "url": "https://www.creativebloq.com/design/branding/to-target-gen-z-premium-brands-must-learn-the-new-codes-of-luxury",
+      "tags": ["Z 世代", "premium", "品牌设计"],
+      "publishedAt": "2026-08-14"
+    },
+    {
+      "id": "20260823-011",
+      "category": "styles",
+      "title": "UE6 LumenRef 原型：发光材质即光源，逼近路径追踪质感",
+      "summary": "Unreal Engine 6 主分支实验性 LumenRef 参考模式，仅用发光材质照亮场景，画面接近路径追踪质感。Threadripper Pro 7975WX + RTX 5090，8K 64 采样约 30 秒一帧。仍为原型，定位影视级离线渲染。设计提案需同步标注硬件、采样、每帧耗时。",
+      "source": "Creative Bloq",
+      "url": "https://www.creativebloq.com/3d/video-game-design/stunning-demo-shows-unreal-engine-6-should-be-a-game-changer-for-rendering-cinematics",
+      "tags": ["UE6", "LumenRef", "渲染", "影视级"],
+      "publishedAt": "2026-08-14"
+    },
+    {
+      "id": "20260823-012",
+      "category": "tips",
+      "title": "AI 多感官全链路设计：单一需求同步输出视觉+听觉+交互+场景",
+      "summary": "实战技巧：为海洋保护组织设计 LOGO 时，AI 可同步产出视觉层（LOGO+VI 色卡+海报）、听觉层（海浪品牌音效）、场景层（展馆气味+互动装置逻辑）、传播层（短视频+物料+社媒规范）。从单一视觉符号制作转向全感官沉浸式全案设计。",
+      "source": "腾讯云开发者社区",
+      "url": "https://developer.cloud.tencent.com.cn/article/2725503",
+      "tags": ["多感官", "全案设计", "实操案例"],
+      "publishedAt": "2026-08-13"
+    }
+  ]
+}

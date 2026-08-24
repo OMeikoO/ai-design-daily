@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="AI 行业 + 交互设计每日资讯 · iOS 27 Liquid Glass 设计">
+<title>AI Design Daily · 每日资讯</title>
+<style>
+/* ============================================================
+   iOS 27 Liquid Glass Design Tokens
+   ============================================================ */
+:root {
+  /* Light mode */
+  --bg-base: #f2f2f7;
+  --bg-gradient-1: rgba(255, 255, 255, 0.85);
+  --bg-gradient-2: rgba(240, 244, 255, 0.7);
+  --bg-gradient-3: rgba(255, 240, 245, 0.5);
+
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.7);
+  --glass-border-subtle: rgba(0, 0, 0, 0.06);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --glass-shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+  --glass-blur: 30px;
+
+  --text-primary: #1c1c1e;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #a1a1a6;
+
+  --accent: #0a84ff;
+  --accent-soft: rgba(10, 132, 255, 0.12);
+  --accent-glow: rgba(10, 132, 255, 0.25);
+
+  --danger: #ff3b30;
+  --success: #30d158;
+  --warning: #ff9f0a;
+
+  --cat-interaction: #0a84ff;
+  --cat-styles: #bf5af2;
+  --cat-tools: #30d158;
+  --cat-tips: #ff9f0a;
+
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", "Microsoft YaHei", system-ui, sans-serif;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  --header-h: 64px;
+  --search-h: 56px;
+  --filter-h: 56px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-base: #000000;
+    --bg-gradient-1: rgba(28, 28, 30, 0.85);
+    --bg-gradient-2: rgba(20, 20, 35, 0.7);
+    --bg-gradient-3: rgba(35, 20, 30, 0.5);
+
+    --glass-bg: rgba(28, 28, 30, 0.6);
+    --glass-bg-strong: rgba(44, 44, 46, 0.78);
+    --glass-bg-elevated: rgba(58, 58, 60, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-border-subtle: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+    --glass-shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-tertiary: #6e6e73;
+
+    --accent: #0a84ff;
+    --accent-soft: rgba(10, 132, 255, 0.18);
+    --accent-glow: rgba(10, 132, 255, 0.4);
+
+    --cat-interaction: #5ac8fa;
+    --cat-styles: #d9b4ff;
+    --cat-tools: #4ade80;
+    --cat-tips: #ffd60a;
+  }
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, var(--bg-gradient-1) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 10%, var(--bg-gradient-2) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 50% at 50% 100%, var(--bg-gradient-3) 0%, transparent 60%),
+    var(--bg-base);
+  background-attachment: fixed;
+}
+
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, textarea { font-family: inherit; }
+
+/* ============================================================
+   Header (sticky glass)
+   ============================================================ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: var(--safe-top) 0 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border-bottom: 1px solid var(--glass-border-subtle);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0a84ff 0%, #bf5af2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 4px 12px var(--accent-glow);
+  flex-shrink: 0;
+}
+
+.brand-text { display: flex; flex-direction: column; min-width: 0; }
+.brand-title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.brand-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-actions { display: flex; align-items: center; gap: 8px; }
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s;
+  position: relative;
+  flex-shrink: 0;
+}
+.icon-btn:hover { background: var(--glass-bg-elevated); }
+.icon-btn:active { transform: scale(0.94); }
+.icon-btn svg { width: 20px; height: 20px; }
+
+.badge-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  border: 2px solid var(--glass-bg-strong);
+  display: none;
+}
+.badge-dot.show { display: block; box-shadow: 0 0 0 0 var(--danger); animation: pulse 2s infinite; }
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(255, 59, 48, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+}
+
+/* ============================================================
+   Search bar
+   ============================================================ */
+.search-wrap {
+  position: sticky;
+  top: calc(var(--safe-top) + var(--header-h));
+  z-index: 49;
+  padding: 12px 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border-bottom: 1px solid var(--glass-border-subtle);
+}
+.search-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 16px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+.search-box svg { width: 18px; height: 18px; color: var(--text-secondary); flex-shrink: 0; }
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 15px;
+  outline: none;
+}
+.search-input::placeholder { color: var(--text-tertiary); }
+.search-clear {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  color: var(--bg-base);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.search-clear.show { display: flex; }
+
+/* ============================================================
+   Filter chips
+   ============================================================ */
+.filter-wrap {
+  position: sticky;
+  top: calc(var(--safe-top) + var(--header-h) + 68px);
+  z-index: 48;
+  padding: 8px 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border-bottom: 1px solid var(--glass-border-subtle);
+}
+.filter-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.filter-inner::-webkit-scrollbar { display: none; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+}
+.chip:hover { background: var(--glass-bg-elevated); }
+.chip.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+.chip-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.chip-count {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+/* ============================================================
+   Main content
+   ============================================================ */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 20px 100px;
+}
+
+.update-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  box-shadow: var(--glass-shadow);
+}
+.update-banner-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #5ac8fa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+.update-banner-icon svg { width: 16px; height: 16px; }
+.update-banner-text { flex: 1; min-width: 0; }
+.update-banner-title { font-size: 14px; font-weight: 600; }
+.update-banner-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.update-banner-action {
+  padding: 6px 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.update-banner-action:hover { background: var(--accent); color: #fff; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================================
+   News card
+   ============================================================ */
+.card {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--cat-color, var(--accent));
+  opacity: 0.85;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glass-shadow-strong);
+}
+.card.read { opacity: 0.62; }
+.card.read .card-title { color: var(--text-secondary); }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cat-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--cat-color-soft, var(--accent-soft));
+  color: var(--cat-color, var(--accent));
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+.cat-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.card-date {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-left: auto;
+}
+
+.card-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  line-height: 1.35;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.card-summary {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: -webkit-line-clamp 0.3s;
+}
+.card-summary.expanded {
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+.card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.tag {
+  padding: 3px 8px;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--glass-border-subtle);
+}
+.card-source {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-actions { display: flex; gap: 6px; }
+
+.action-btn {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.action-btn:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
+.action-btn:active { transform: scale(0.9); }
+.action-btn svg { width: 15px; height: 15px; }
+.action-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.action-btn.active.kb { background: var(--cat-tips, #ff9f0a); border-color: var(--cat-tips, #ff9f0a); }
+.action-btn.active.read { background: var(--success); border-color: var(--success); }
+
+/* ============================================================
+   Empty state
+   ============================================================ */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-tertiary);
+}
+.empty-icon {
+  width: 64px; height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: var(--glass-bg-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.empty-icon svg { width: 28px; height: 28px; color: var(--text-tertiary); }
+.empty-title { font-size: 16px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
+.empty-sub { font-size: 13px; }
+
+/* ============================================================
+   Loading skeleton
+   ============================================================ */
+.skeleton-card {
+  height: 200px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(90deg, var(--glass-bg) 0%, var(--glass-bg-strong) 50%, var(--glass-bg) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border: 1px solid var(--glass-border-subtle);
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ============================================================
+   KB Panel (drawer)
+   ============================================================ */
+.kb-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.kb-overlay.show { opacity: 1; pointer-events: auto; }
+
+.kb-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-base);
+  z-index: 100;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+.kb-panel.show { transform: translateX(0); }
+
+.kb-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--glass-border-subtle);
+}
+.kb-title { flex: 1; font-size: 17px; font-weight: 700; }
+.kb-count {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+}
+.kb-actions { display: flex; gap: 6px; }
+.kb-mini-btn {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+.kb-mini-btn svg { width: 16px; height: 16px; }
+
+.kb-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.kb-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-tertiary);
+}
+.kb-empty svg { width: 48px; height: 48px; margin-bottom: 12px; }
+
+.kb-item {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.kb-item-title { font-size: 14px; font-weight: 600; line-height: 1.4; }
+.kb-item-summary {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.kb-item-note {
+  font-size: 12px;
+  padding: 8px 10px;
+  background: var(--accent-soft);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.kb-item-footer {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+}
+.kb-item-edit {
+  flex: 1;
+  padding: 6px 10px;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text-primary);
+  outline: none;
+}
+.kb-item-edit:focus { border-color: var(--accent); }
+.kb-item-remove {
+  padding: 6px 10px;
+  background: rgba(255, 59, 48, 0.12);
+  color: var(--danger);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+}
+.kb-item-open {
+  padding: 6px 10px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ============================================================
+   Floating action button (mobile)
+   ============================================================ */
+.fab {
+  position: fixed;
+  bottom: calc(20px + var(--safe-bottom));
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, #5ac8fa 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px var(--accent-glow), 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 40;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.fab:hover { transform: scale(1.05); }
+.fab:active { transform: scale(0.92); }
+.fab svg { width: 24px; height: 24px; }
+.fab .badge-dot { top: 8px; right: 8px; border-color: var(--accent); }
+
+@media (min-width: 768px) {
+  .fab { display: none; }
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.footer {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.footer a { color: var(--accent); text-decoration: none; }
+
+/* ============================================================
+   Toast
+   ============================================================ */
+.toast {
+  position: fixed;
+  bottom: calc(90px + var(--safe-bottom));
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  padding: 10px 18px;
+  background: var(--glass-bg-elevated);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  box-shadow: var(--glass-shadow-strong);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+@media (min-width: 768px) {
+  .toast { bottom: 30px; }
+}
+
+/* ============================================================
+   Mobile adjustments
+   ============================================================ */
+@media (max-width: 767px) {
+  .header-inner { padding: 0 16px; height: 56px; gap: 10px; }
+  .brand-logo { width: 32px; height: 32px; font-size: 16px; }
+  .brand-title { font-size: 15px; }
+  .brand-sub { font-size: 11px; }
+  .icon-btn { width: 36px; height: 36px; }
+  .icon-btn svg { width: 18px; height: 18px; }
+
+  .search-wrap { top: calc(var(--safe-top) + 56px); }
+  .search-inner { padding: 0 16px; }
+  .filter-wrap { top: calc(var(--safe-top) + 56px + 68px); }
+  .filter-inner { padding: 0 16px; }
+
+  .main { padding: 16px 16px 100px; }
+  .card { padding: 16px; gap: 10px; }
+  .card-title { font-size: 15px; }
+  .card-summary { font-size: 13px; }
+
+  :root { --header-h: 56px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     Header
+     ============================================================ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo">AI</div>
+      <div class="brand-text">
+        <div class="brand-title">AI Design Daily</div>
+        <div class="brand-sub" id="brand-sub">加载中...</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="mark-all-read" title="全部标为已读" aria-label="全部标为已读">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+      <button class="icon-btn" id="open-kb" title="知识库" aria-label="知识库">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span class="badge-dot" id="kb-badge"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     Search
+     ============================================================ -->
+<div class="search-wrap">
+  <div class="search-inner">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="search" class="search-input" id="search-input" placeholder="搜索标题、摘要、标签..." autocomplete="off">
+      <button class="search-clear" id="search-clear" aria-label="清除搜索">×</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     Filters
+     ============================================================ -->
+<div class="filter-wrap">
+  <div class="filter-inner" id="filter-chips"></div>
+</div>
+
+<!-- ============================================================
+     Main
+     ============================================================ -->
+<main class="main">
+  <div id="update-banner"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<!-- ============================================================
+     Footer
+     ============================================================ -->
+<footer class="footer">
+  <div id="footer-info">每日 09:00 自动更新 · 数据来自公开网络搜索</div>
+  <div style="margin-top:6px;"><a href="https://github.com/OMeikoO/ai-design-daily" target="_blank" rel="noopener">OMeikoO/ai-design-daily</a></div>
+</footer>
+
+<!-- ============================================================
+     FAB (mobile)
+     ============================================================ -->
+<button class="fab" id="fab-kb" aria-label="打开知识库">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+  <span class="badge-dot" id="fab-kb-badge"></span>
+</button>
+
+<!-- ============================================================
+     KB Panel
+     ============================================================ -->
+<div class="kb-overlay" id="kb-overlay"></div>
+<aside class="kb-panel" id="kb-panel" aria-hidden="true">
+  <div class="kb-header">
+    <div class="kb-title">知识库</div>
+    <div class="kb-count" id="kb-count">0</div>
+    <div class="kb-actions">
+      <button class="kb-mini-btn" id="kb-export" title="导出" aria-label="导出">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button class="kb-mini-btn" id="kb-import" title="导入" aria-label="导入">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+      <button class="kb-mini-btn" id="kb-close" title="关闭" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="kb-list" id="kb-list"></div>
+</aside>
+
+<input type="file" id="kb-import-input" accept=".json" style="display:none">
+
+<!-- ============================================================
+     Toast
+     ============================================================ -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   State
+   ============================================================ */
+const STATE = {
+  data: null,
+  filter: 'all',
+  query: '',
+  readItems: new Set(JSON.parse(localStorage.getItem('ai-design-daily:read') || '[]')),
+  kbItems: new Map(JSON.parse(localStorage.getItem('ai-design-daily:kb') || '[]')),
+  lastViewedDate: localStorage.getItem('ai-design-daily:last-viewed') || '',
+};
+
+const CAT_COLORS = {
+  interaction: '#0a84ff',
+  styles: '#bf5af2',
+  tools: '#30d158',
+  tips: '#ff9f0a',
+};
+const CAT_NAMES = {
+  interaction: '交互设计',
+  styles: '设计风格',
+  tools: 'AI 工具',
+  tips: 'AI 技巧',
+};
+
+/* ============================================================
+   Utils
+   ============================================================ */
+function $(sel) { return document.querySelector(sel); }
+function $$(sel) { return document.querySelectorAll(sel); }
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmtDate(d) {
+  if (!d) return '';
+  const date = new Date(d);
+  if (isNaN(date)) return d;
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${m}-${day}`;
+}
+function relDate(d) {
+  if (!d) return '';
+  const date = new Date(d);
+  if (isNaN(date)) return d;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(date);
+  target.setHours(0, 0, 0, 0);
+  const diff = Math.round((today - target) / 86400000);
+  if (diff === 0) return '今天';
+  if (diff === 1) return '昨天';
+  if (diff > 0 && diff < 7) return `${diff}天前`;
+  return fmtDate(d);
+}
+function showToast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function saveState() {
+  localStorage.setItem('ai-design-daily:read', JSON.stringify([...STATE.readItems]));
+  localStorage.setItem('ai-design-daily:kb', JSON.stringify([...STATE.kbItems]));
+}
+
+/* ============================================================
+   Render
+   ============================================================ */
+function renderBrandSub() {
+  if (!STATE.data) return;
+  const d = STATE.data.date;
+  $('#brand-sub').textContent = `${fmtDate(d)} · ${STATE.data.totalItems} 条资讯`;
+}
+
+function renderUpdateBanner() {
+  const banner = $('#update-banner');
+  if (!STATE.data) return;
+  const isNew = STATE.data.date !== STATE.lastViewedDate;
+  banner.innerHTML = `
+    <div class="update-banner-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    </div>
+    <div class="update-banner-text">
+      <div class="update-banner-title">${isNew ? '今日新内容已就绪' : '当前为最新内容'}</div>
+      <div class="update-banner-sub">${STATE.data.updatedAt ? '更新于 ' + STATE.data.updatedAt.replace('T', ' ').slice(0, 16) : '每日 09:00 自动刷新'}</div>
+    </div>
+    ${isNew ? `<button class="update-banner-action" id="banner-mark-read">标记为已读</button>` : ''}
+  `;
+  const markBtn = $('#banner-mark-read');
+  if (markBtn) markBtn.onclick = markAllRead;
+
+  // Show red dot
+  if (isNew) {
+    $('#kb-badge').classList.add('show');
+    $('#fab-kb-badge').classList.add('show');
+  } else {
+    $('#kb-badge').classList.remove('show');
+    $('#fab-kb-badge').classList.remove('show');
+  }
+}
+
+function renderFilters() {
+  const wrap = $('#filter-chips');
+  if (!STATE.data) return;
+  const counts = { all: STATE.data.items.length };
+  for (const c of STATE.data.categories) {
+    counts[c.id] = STATE.data.items.filter(i => i.category === c.id).length;
+  }
+  const chips = [
+    `<button class="chip ${STATE.filter === 'all' ? 'active' : ''}" data-cat="all">全部<span class="chip-count">${counts.all}</span></button>`,
+    ...STATE.data.categories.map(c => `
+      <button class="chip ${STATE.filter === c.id ? 'active' : ''}" data-cat="${c.id}">
+        <span class="chip-dot" style="color:${c.color}"></span>
+        ${c.name}<span class="chip-count">${counts[c.id] || 0}</span>
+      </button>
+    `),
+  ];
+  wrap.innerHTML = chips.join('');
+  wrap.querySelectorAll('.chip').forEach(btn => {
+    btn.onclick = () => {
+      STATE.filter = btn.dataset.cat;
+      renderFilters();
+      renderGrid();
+    };
+  });
+}
+
+function renderGrid() {
+  const grid = $('#grid');
+  if (!STATE.data) return;
+
+  let items = STATE.data.items;
+  if (STATE.filter !== 'all') {
+    items = items.filter(i => i.category === STATE.filter);
+  }
+  if (STATE.query.trim()) {
+    const q = STATE.query.trim().toLowerCase();
+    items = items.filter(i =>
+      (i.title && i.title.toLowerCase().includes(q)) ||
+      (i.summary && i.summary.toLowerCase().includes(q)) ||
+      (i.tags && i.tags.some(t => t.toLowerCase().includes(q)))
+    );
+  }
+
+  if (items.length === 0) {
+    grid.innerHTML = `
+      <div class="empty" style="grid-column:1/-1">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="empty-title">没有匹配的资讯</div>
+        <div class="empty-sub">试试更换关键词或切换分类</div>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = items.map(item => {
+    const cat = STATE.data.categories.find(c => c.id === item.category);
+    const color = cat ? cat.color : '#0a84ff';
+    const isRead = STATE.readItems.has(item.id);
+    const inKb = STATE.kbItems.has(item.id);
+    return `
+      <article class="card ${isRead ? 'read' : ''}" data-id="${item.id}" style="--cat-color:${color};--cat-color-soft:${color}22">
+        <div class="card-header">
+          <span class="cat-tag" style="color:${color}">
+            <span class="cat-dot"></span>
+            ${cat ? cat.name : ''}
+          </span>
+          <span class="card-date">${relDate(item.publishedAt)}</span>
+        </div>
+        <h3 class="card-title">${escapeHtml(item.title)}</h3>
+        <p class="card-summary" data-id="${item.id}">${escapeHtml(item.summary)}</p>
+        ${item.tags && item.tags.length ? `<div class="card-tags">${item.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+        <div class="card-footer">
+          <span class="card-source">${escapeHtml(item.source || '')}</span>
+          <div class="card-actions">
+            <button class="action-btn ${inKb ? 'active kb' : ''}" data-action="kb" data-id="${item.id}" title="加入知识库" aria-label="加入知识库">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="action-btn ${isRead ? 'active read' : ''}" data-action="read" data-id="${item.id}" title="${isRead ? '取消已读' : '标记已读'}" aria-label="标记已读">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <a class="action-btn" href="${item.url}" target="_blank" rel="noopener" title="查看原文" aria-label="查看原文" style="text-decoration:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  // Wire actions
+  grid.querySelectorAll('[data-action]').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (action === 'read') toggleRead(id);
+      else if (action === 'kb') toggleKb(id);
+    };
+  });
+  grid.querySelectorAll('.card-summary').forEach(el => {
+    el.onclick = () => {
+      el.classList.toggle('expanded');
+    };
+  });
+}
+
+function renderKb() {
+  const list = $('#kb-list');
+  const count = STATE.kbItems.size;
+  $('#kb-count').textContent = count;
+
+  if (count === 0) {
+    list.innerHTML = `
+      <div class="kb-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-tertiary)"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <div style="font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:4px">知识库为空</div>
+        <div style="font-size:12px">在资讯卡片上点击书签图标，把有用的内容收藏到这里</div>
+      </div>
+    `;
+    return;
+  }
+
+  const items = [...STATE.kbItems.entries()].map(([id, note]) => {
+    const newsItem = STATE.data ? STATE.data.items.find(i => i.id === id) : null;
+    if (!newsItem) {
+      return `
+        <div class="kb-item">
+          <div class="kb-item-title">已删除的资讯</div>
+          <div class="kb-item-note">${escapeHtml(note || '')}</div>
+          <div class="kb-item-footer">
+            <button class="kb-item-remove" data-remove-id="${id}">移除</button>
+          </div>
+        </div>
+      `;
+    }
+    const cat = STATE.data.categories.find(c => c.id === newsItem.category);
+    const color = cat ? cat.color : '#0a84ff';
+    return `
+      <div class="kb-item">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="cat-tag" style="color:${color}">
+            <span class="cat-dot"></span>${cat ? cat.name : ''}
+          </span>
+        </div>
+        <div class="kb-item-title">${escapeHtml(newsItem.title)}</div>
+        <div class="kb-item-summary">${escapeHtml(newsItem.summary)}</div>
+        ${note ? `<div class="kb-item-note">${escapeHtml(note)}</div>` : ''}
+        <div class="kb-item-footer">
+          <input class="kb-item-edit" data-edit-id="${id}" placeholder="添加笔记..." value="${escapeHtml(note || '')}">
+          <a class="kb-item-open" href="${newsItem.url}" target="_blank" rel="noopener">原文</a>
+          <button class="kb-item-remove" data-remove-id="${id}">移除</button>
+        </div>
+      </div>
+    `;
+  });
+  list.innerHTML = items.join('');
+
+  list.querySelectorAll('[data-remove-id]').forEach(btn => {
+    btn.onclick = () => {
+      STATE.kbItems.delete(btn.dataset.removeId);
+      saveState();
+      renderKb();
+      renderGrid();
+      showToast('已从知识库移除');
+    };
+  });
+  list.querySelectorAll('[data-edit-id]').forEach(input => {
+    input.onchange = () => {
+      const id = input.dataset.editId;
+      STATE.kbItems.set(id, input.value.trim());
+      saveState();
+      renderKb();
+    };
+  });
+}
+
+/* ============================================================
+   Actions
+   ============================================================ */
+function toggleRead(id) {
+  if (STATE.readItems.has(id)) {
+    STATE.readItems.delete(id);
+  } else {
+    STATE.readItems.add(id);
+    showToast('已标记为已读');
+  }
+  saveState();
+  renderGrid();
+}
+
+function toggleKb(id) {
+  if (STATE.kbItems.has(id)) {
+    STATE.kbItems.delete(id);
+    showToast('已移出知识库');
+  } else {
+    STATE.kbItems.set(id, '');
+    showToast('已加入知识库');
+  }
+  saveState();
+  renderGrid();
+  renderKb();
+}
+
+function markAllRead() {
+  if (!STATE.data) return;
+  STATE.data.items.forEach(i => STATE.readItems.add(i.id));
+  STATE.lastViewedDate = STATE.data.date;
+  localStorage.setItem('ai-design-daily:last-viewed', STATE.lastViewedDate);
+  saveState();
+  renderUpdateBanner();
+  renderGrid();
+  showToast('已全部标记为已读');
+}
+
+/* ============================================================
+   Search
+   ============================================================ */
+const searchInput = $('#search-input');
+const searchClear = $('#search-clear');
+searchInput.addEventListener('input', (e) => {
+  STATE.query = e.target.value;
+  searchClear.classList.toggle('show', !!STATE.query);
+  renderGrid();
+});
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  STATE.query = '';
+  searchClear.classList.remove('show');
+  renderGrid();
+  searchInput.focus();
+});
+
+/* ============================================================
+   KB panel
+   ============================================================ */
+function openKb() {
+  $('#kb-overlay').classList.add('show');
+  $('#kb-panel').classList.add('show');
+  $('#kb-panel').setAttribute('aria-hidden', 'false');
+  renderKb();
+}
+function closeKb() {
+  $('#kb-overlay').classList.remove('show');
+  $('#kb-panel').classList.remove('show');
+  $('#kb-panel').setAttribute('aria-hidden', 'true');
+}
+$('#open-kb').onclick = openKb;
+$('#fab-kb').onclick = openKb;
+$('#kb-close').onclick = closeKb;
+$('#kb-overlay').onclick = closeKb;
+
+$('#mark-all-read').onclick = markAllRead;
+
+// Export
+$('#kb-export').onclick = () => {
+  if (STATE.kbItems.size === 0) {
+    showToast('知识库为空,无法导出');
+    return;
+  }
+  const exportData = {
+    exportedAt: new Date().toISOString(),
+    source: 'ai-design-daily',
+    items: [...STATE.kbItems.entries()].map(([id, note]) => {
+      const newsItem = STATE.data ? STATE.data.items.find(i => i.id === id) : null;
+      return newsItem ? { ...newsItem, note } : { id, note };
+    }),
+  };
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `ai-design-daily-kb-${fmtDate(new Date().toISOString())}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('已导出 ' + STATE.kbItems.size + ' 条');
+};
+
+// Import
+$('#kb-import').onclick = () => $('#kb-import-input').click();
+$('#kb-import-input').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      const items = data.items || data;
+      if (!Array.isArray(items)) throw new Error('格式错误');
+      let added = 0;
+      for (const item of items) {
+        if (item.id) {
+          STATE.kbItems.set(item.id, item.note || '');
+          added++;
+        }
+      }
+      saveState();
+      renderKb();
+      renderGrid();
+      showToast(`已导入 ${added} 条`);
+    } catch (err) {
+      showToast('导入失败: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+/* ============================================================
+   Load data
+   ============================================================ */
+async function loadData() {
+  const grid = $('#grid');
+  // Skeleton
+  grid.innerHTML = Array(4).fill('<div class="skeleton-card"></div>').join('');
+
+  // Try multiple paths (local / GitHub Pages root / subpath)
+  const candidates = [
+    './news.json',
+    'news.json',
+    '/news.json',
+    '/ai-design-daily/news.json',
+  ];
+  let data = null;
+  let lastErr = null;
+  for (const p of candidates) {
+    try {
+      const res = await fetch(p + '?t=' + Date.now());
+      if (!res.ok) continue;
+      data = await res.json();
+      break;
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  if (!data) {
+    grid.innerHTML = `
+      <div class="empty" style="grid-column:1/-1">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="empty-title">无法加载资讯数据</div>
+        <div class="empty-sub">${escapeHtml((lastErr && lastErr.message) || '请稍后刷新重试')}</div>
+      </div>
+    `;
+    return;
+  }
+  STATE.data = data;
+  renderBrandSub();
+  renderUpdateBanner();
+  renderFilters();
+  renderGrid();
+  renderKb();
+}
+
+loadData();
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  } else if (e.key === 'Escape') {
+    if ($('#kb-panel').classList.contains('show')) closeKb();
+  }
+});
+</script>
+</body>
+</html>
