@@ -526,8 +526,8 @@ a { color: inherit; }
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  padding: 14px 16px 12px;
-  box-shadow: var(--glass-shadow);
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s, border-color 0.2s;
   display: flex;
   flex-direction: column;
@@ -535,21 +535,13 @@ a { color: inherit; }
   cursor: pointer;
   overflow: hidden;
 }
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--cat-color, var(--accent));
-  opacity: 0.85;
-}
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--glass-shadow-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 .card.active {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft), var(--glass-shadow-strong);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 .card.read { opacity: 0.62; }
 .card.read .card-title { color: var(--text-secondary); }
@@ -563,18 +555,16 @@ a { color: inherit; }
 .cat-tag {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
+  gap: 4px;
+  padding: 4px 10px;
   background: var(--cat-color-soft, var(--accent-soft));
   color: var(--cat-color, var(--accent));
   border-radius: var(--radius-pill);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.2px;
-  text-transform: uppercase;
 }
 .cat-dot {
-  width: 5px; height: 5px;
+  width: 6px; height: 6px;
   border-radius: 50%;
   background: currentColor;
 }
@@ -588,7 +578,7 @@ a { color: inherit; }
   font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.2px;
-  line-height: 1.35;
+  line-height: 1.4;
   color: var(--text-primary);
   margin: 0;
   display: -webkit-box;
@@ -599,7 +589,7 @@ a { color: inherit; }
 
 .card-summary {
   font-size: 13px;
-  line-height: 1.55;
+  line-height: 1.6;
   color: var(--text-secondary);
   margin: 0;
   display: -webkit-box;
@@ -610,11 +600,11 @@ a { color: inherit; }
 
 .card-tags {
   display: flex;
-  gap: 5px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 .tag {
-  padding: 2px 7px;
+  padding: 3px 8px;
   background: var(--glass-bg-strong);
   border: 1px solid var(--glass-border-subtle);
   border-radius: var(--radius-sm);
@@ -626,7 +616,6 @@ a { color: inherit; }
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 2px;
   padding-top: 8px;
   border-top: 1px solid var(--glass-border-subtle);
 }
@@ -705,14 +694,14 @@ a { color: inherit; }
    ============================================================ */
 .detail-panel {
   position: sticky;
-  top: calc(var(--safe-top) + var(--header-h) + 68px + 16px);
-  height: calc(100vh - var(--safe-top) - var(--header-h) - 68px - 32px);
+  top: calc(var(--safe-top) + var(--header-h) + 60px + 16px);
+  height: calc(100vh - var(--safe-top) - var(--header-h) - 60px - 32px);
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--glass-shadow);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -726,16 +715,16 @@ a { color: inherit; }
   justify-content: center;
   color: var(--text-tertiary);
   text-align: center;
-  padding: 40px;
+  padding: 32px 16px;
 }
-.detail-empty svg { width: 56px; height: 56px; margin-bottom: 16px; opacity: 0.5; }
+.detail-empty svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5; }
 .detail-empty-title { font-size: 15px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
 .detail-empty-sub { font-size: 12px; }
 
 .detail-content {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -767,10 +756,9 @@ a { color: inherit; }
   padding: 16px;
   background: var(--glass-bg-strong);
   border-radius: var(--radius-md);
-  border-left: 3px solid var(--cat-color, var(--accent));
 }
 
-.detail-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.detail-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 .detail-tags .tag { font-size: 11px; padding: 3px 8px; }
 
 .detail-actions {
@@ -830,14 +818,14 @@ a { color: inherit; }
    ============================================================ */
 .kb-panel {
   position: sticky;
-  top: calc(var(--safe-top) + var(--header-h) + 68px + 16px);
-  height: calc(100vh - var(--safe-top) - var(--header-h) - 68px - 32px);
+  top: calc(var(--safe-top) + var(--header-h) + 60px + 16px);
+  height: calc(100vh - var(--safe-top) - var(--header-h) - 60px - 32px);
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--glass-shadow);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -846,11 +834,9 @@ a { color: inherit; }
 .kb-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
+  gap: 8px;
+  padding: 16px;
   background: var(--glass-bg-strong);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--glass-border-subtle);
 }
 .kb-title { flex: 1; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
@@ -863,9 +849,9 @@ a { color: inherit; }
   border-radius: var(--radius-pill);
   font-weight: 600;
 }
-.kb-actions { display: flex; gap: 6px; }
+.kb-actions { display: flex; gap: 8px; }
 .kb-mini-btn {
-  width: 30px; height: 30px;
+  width: 32px; height: 32px;
   border-radius: var(--radius-sm);
   background: var(--glass-bg);
   border: 1px solid var(--glass-border-subtle);
@@ -878,24 +864,16 @@ a { color: inherit; }
 .kb-mini-btn:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
 .kb-mini-btn svg { width: 14px; height: 14px; }
 
-.kb-mini-btn.primary {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-  box-shadow: 0 2px 8px var(--accent-glow);
-}
-.kb-mini-btn.primary:hover { background: #006edc; }
-
 /* DingTalk-style note compose area */
 .kb-compose {
-  padding: 10px 12px;
+  padding: 12px 16px;
   background: var(--glass-bg-strong);
   border-bottom: 1px solid var(--glass-border-subtle);
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.kb-compose-row { display: flex; align-items: center; gap: 6px; }
+.kb-compose-row { display: flex; align-items: center; gap: 8px; }
 .kb-compose-input {
   flex: 1;
   border: 1px solid var(--glass-border);
@@ -1005,73 +983,38 @@ a { color: inherit; }
 .kb-compose-cat-select { flex-shrink: 0; }
 .kb-compose-tags-input { flex: 1; min-width: 80px; }
 
-/* Article full text */
-.detail-article {
-  font-size: 14px;
-  line-height: 1.75;
-  color: var(--text-primary);
-  padding: 16px;
-  background: var(--glass-bg-strong);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--glass-border-subtle);
-  max-height: 60vh;
-  overflow-y: auto;
-}
-.detail-article p { margin: 0 0 12px; }
-.detail-article h1, .detail-article h2, .detail-article h3 {
-  font-size: 16px;
-  font-weight: 700;
-  margin: 16px 0 8px;
-  color: var(--text-primary);
-}
-.detail-article img { max-width: 100%; height: auto; border-radius: var(--radius-sm); margin: 8px 0; }
-.detail-article a { color: var(--accent); text-decoration: underline; word-break: break-all; }
-.detail-article blockquote {
-  margin: 12px 0;
-  padding: 8px 14px;
-  border-left: 3px solid var(--accent);
-  background: var(--accent-soft);
-  color: var(--text-primary);
-  font-style: italic;
-}
-.detail-article pre {
-  background: var(--bg-base);
-  padding: 10px;
-  border-radius: var(--radius-sm);
-  overflow-x: auto;
-  font-size: 12px;
-  margin: 8px 0;
-}
-.detail-article code { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
-.detail-article ul, .detail-article ol { margin: 8px 0; padding-left: 24px; }
-.detail-article li { margin: 4px 0; }
-.detail-article-loading {
-  text-align: center;
-  padding: 30px 16px;
-  color: var(--text-secondary);
-  font-size: 13px;
+/* Article iframe preview */
+.detail-iframe-section {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
-.detail-article-loading .spinner {
-  width: 28px; height: 28px;
-  border: 3px solid var(--accent-soft);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-.detail-article-error {
-  padding: 14px 16px;
-  background: rgba(255, 59, 48, 0.08);
-  border: 1px solid rgba(255, 59, 48, 0.3);
-  color: var(--danger);
+.detail-iframe-wrap {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
-  font-size: 13px;
-  line-height: 1.6;
+  overflow: hidden;
+  background: var(--bg-base);
+  min-height: 400px;
 }
-.detail-article-error a { color: var(--accent); text-decoration: underline; }
+.detail-iframe-wrap iframe {
+  width: 100%;
+  height: 500px;
+  border: none;
+  display: block;
+}
+.detail-iframe-hint {
+  padding: 10px 12px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  background: var(--glass-bg-strong);
+  border-top: 1px solid var(--glass-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .detail-article-toggle {
   display: inline-flex;
   align-items: center;
@@ -1086,6 +1029,7 @@ a { color: inherit; }
   transition: all 0.2s;
 }
 .detail-article-toggle:hover { background: var(--glass-bg-elevated); }
+.detail-article-toggle.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 .detail-article-toggle svg { width: 15px; height: 15px; }
 .detail-article-toggle.loading { pointer-events: none; opacity: 0.7; }
 .detail-article-toggle.loading svg { animation: spin 1s linear infinite; }
@@ -1093,10 +1037,10 @@ a { color: inherit; }
 .kb-list {
   flex: 1;
   overflow-y: auto;
-  padding: 12px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 .kb-empty {
   text-align: center;
@@ -1775,11 +1719,17 @@ function renderDetail() {
       来源: ${escapeHtml(item.source || '未知')}
       ${item.url ? ` · <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">查看原文 ↗</a>` : ''}
     </div>
-    ${item.url ? `<button class="detail-article-toggle" id="detail-load-article">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
-      <span class="detail-article-toggle-label">加载全文</span>
-    </button>` : ''}
-    <div id="detail-article-container"></div>
+    ${item.url ? `<div class="detail-iframe-section">
+      <button class="detail-article-toggle" id="detail-iframe-toggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        <span class="detail-article-toggle-label">预览原文</span>
+      </button>
+      <button class="detail-article-toggle" id="detail-copy-summary" title="复制摘要到剪贴板">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>复制摘要</span>
+      </button>
+    </div>
+    <div id="detail-iframe-container"></div>` : ''}
     <div class="detail-actions">
       <button class="detail-action primary ${inKb ? 'active' : ''}" id="detail-kb-toggle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
@@ -1795,9 +1745,11 @@ function renderDetail() {
       </a>` : ''}
     </div>
   `;
-  // Load article full text button
-  const loadBtn = $('#detail-load-article');
-  if (loadBtn) loadBtn.onclick = () => loadArticleFullText(item, loadBtn);
+  // iframe preview + copy summary buttons
+  const iframeBtn = $('#detail-iframe-toggle');
+  const copyBtn = $('#detail-copy-summary');
+  if (iframeBtn) iframeBtn.onclick = () => toggleIframePreview(item, iframeBtn);
+  if (copyBtn) copyBtn.onclick = () => copySummaryToClipboard(item);
   const kbBtn = $('#detail-kb-toggle');
   if (kbBtn) kbBtn.onclick = () => {
     toggleKb(item.id);
@@ -2058,7 +2010,7 @@ function renderKbPanel(root) {
     if (!url) { showToast('请先输入 URL'); return; }
     fetchBtn.classList.add('spinning');
     try {
-      const result = await fetchArticle(url, { metaOnly: true });
+      const result = await fetchArticleMeta(url);
       if (result.title) titleInput.value = result.title;
       if (result.summary && !bodyInput.value.trim()) bodyInput.value = result.summary;
       showToast('已抓取元数据 · 可继续编辑');
@@ -2108,202 +2060,145 @@ function renderKbPanel(root) {
 }
 
 /* ============================================================
-   Article full text fetcher (with CORS proxy fallback)
+   Article text extractor (for KB URL fetch)
    ============================================================ */
-const CORS_PROXIES = [
-  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-  url => `https://r.jina.ai/${url}`, // reader mode (returns clean markdown/text)
-];
-
-async function fetchArticle(url, opts) {
-  opts = opts || {};
-  const errors = [];
-
-  // Try direct fetch first
+async function fetchArticleMeta(url) {
   try {
-    const res = await fetch(url, { mode: 'cors', credentials: 'omit' });
+    // Try r.jina.ai for metadata
+    const res = await fetch('https://r.jina.ai/' + url);
+    if (res.ok) {
+      const text = await res.text();
+      const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+      const title = lines[0] || '';
+      const summary = lines.slice(0, 10).join('\n').slice(0, 300);
+      return { title, summary, source: extractDomain(url) };
+    }
+  } catch (_) {}
+
+  // Fallback: try allorigins
+  try {
+    const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
     if (res.ok) {
       const html = await res.text();
-      return parseArticleHtml(html, url);
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      let title = '';
+      const ogTitle = doc.querySelector('meta[property="og:title"]');
+      if (ogTitle) title = ogTitle.getAttribute('content');
+      if (!title) title = doc.querySelector('title')?.textContent || '';
+      const ogDesc = doc.querySelector('meta[property="og:description"]') || doc.querySelector('meta[name="description"]');
+      const summary = ogDesc ? (ogDesc.getAttribute('content') || '').slice(0, 300) : '';
+      return { title: title.trim(), summary, source: extractDomain(url) };
     }
-    errors.push(`direct: HTTP ${res.status}`);
-  } catch (e) {
-    errors.push('direct: ' + (e.message || 'CORS'));
-  }
+  } catch (_) {}
 
-  // Fallback to proxies
-  for (const makeProxy of CORS_PROXIES) {
-    try {
-      const proxyUrl = makeProxy(url);
-      const res = await fetch(proxyUrl);
-      if (!res.ok) { errors.push(`proxy: HTTP ${res.status}`); continue; }
-      const text = await res.text();
-      if (makeProxy === CORS_PROXIES[2]) {
-        // r.jina.ai returns reader text
-        return { title: extractTitleFromText(text), summary: text.slice(0, 200), html: '<pre style="white-space:pre-wrap">' + escapeHtml(text) + '</pre>', source: extractDomain(url) };
-      }
-      return parseArticleHtml(text, url);
-    } catch (e) {
-      errors.push('proxy: ' + (e.message || 'fail'));
-    }
-  }
-  throw new Error(errors.join(' | '));
+  throw new Error('无法抓取该 URL 的元数据');
 }
 
-function parseArticleHtml(html, url) {
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  // Title
-  let title = '';
-  const ogTitle = doc.querySelector('meta[property="og:title"]');
-  if (ogTitle) title = ogTitle.getAttribute('content');
-  if (!title) title = doc.querySelector('title')?.textContent || '';
-  if (!title) {
-    const h1 = doc.querySelector('h1');
-    if (h1) title = h1.textContent;
-  }
-  title = title.trim();
-
-  // Summary / description
-  let summary = '';
-  const ogDesc = doc.querySelector('meta[property="og:description"]') || doc.querySelector('meta[name="description"]');
-  if (ogDesc) summary = ogDesc.getAttribute('content') || '';
-  summary = summary.trim().slice(0, 300);
-
-  // Main content - try common article selectors
-  const selectors = [
-    'article',
-    'main [role="main"]',
-    'main',
-    '.article-content', '.article-body', '.article',
-    '.post-content', '.post-body', '.entry-content',
-    '.content-body', '.story-body',
-    '#article-body', '#article',
-    '[itemprop="articleBody"]',
-    '.markdown-body', '.rich-text',
-  ];
-  let articleEl = null;
-  for (const sel of selectors) {
-    const el = doc.querySelector(sel);
-    if (el && el.textContent.trim().length > 200) {
-      articleEl = el;
-      break;
-    }
-  }
-  if (!articleEl) articleEl = doc.body;
-
-  // Clean: remove scripts, styles, ads, nav, footer
-  articleEl.querySelectorAll('script, style, noscript, iframe, nav, footer, header, aside, .ad, .ads, .advertisement, .share, .social, .related, .comments, .sidebar, .newsletter, .subscribe, [aria-hidden="true"]').forEach(n => n.remove());
-
-  // Convert to safe HTML (sanitize)
-  let html2 = articleEl.innerHTML;
-  // Allow only safe tags
-  const allowedTags = 'p,br,h1,h2,h3,h4,h5,h6,ul,ol,li,blockquote,pre,code,em,strong,b,i,a,img,figure,figcaption,table,thead,tbody,tr,td,th,div,span';
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html2;
-  const cleaned = document.createElement('div');
-  const allowed = new Set(allowedTags.split(','));
-  function walk(src, dst) {
-    for (const node of [...src.childNodes]) {
-      if (node.nodeType === Node.TEXT_NODE) {
-        const t = node.textContent.replace(/\s+/g, ' ').trim();
-        if (t) dst.appendChild(document.createTextNode(t + ' '));
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        const tag = node.tagName.toLowerCase();
-        if (!allowed.has(tag)) {
-          // recurse into blocked element (pull out its text/children)
-          walk(node, dst);
-          continue;
-        }
-        const clone = document.createElement(tag);
-        // sanitize attributes
-        for (const attr of [...node.attributes]) {
-          const name = attr.name.toLowerCase();
-          if (name === 'href' || name === 'src') {
-            try {
-              const abs = new URL(attr.value, url).href;
-              clone.setAttribute(name, abs);
-            } catch (_) {}
-          } else if (name === 'alt' || name === 'title' || name === 'class' === false) {
-            // keep alt/title only
-            if (name === 'alt' || name === 'title') clone.setAttribute(name, attr.value);
-          }
-        }
-        // skip empty paragraphs
-        walk(node, clone);
-        if (clone.textContent.trim() || tag === 'img' || tag === 'br') {
-          dst.appendChild(clone);
-        }
-      }
-    }
-  }
-  walk(tmp, cleaned);
-  // trim excessive empty paragraphs
-  cleaned.querySelectorAll('p').forEach(p => {
-    if (!p.textContent.trim() && !p.querySelector('img')) p.remove();
-  });
-
-  return {
-    title,
-    summary,
-    html: cleaned.innerHTML,
-    source: extractDomain(url),
-  };
-}
-
-function extractTitleFromText(text) {
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-  return lines[0] || '';
-}
 function extractDomain(url) {
   try { return new URL(url).hostname.replace(/^www\./, ''); } catch (_) { return ''; }
 }
 
-let _articleCache = new Map();
-async function loadArticleFullText(item, btn) {
-  const container = $('#detail-article-container');
+/* ============================================================
+   Article iframe preview + copy to clipboard
+   ============================================================ */
+function toggleIframePreview(item, btn) {
+  const container = $('#detail-iframe-container');
   if (!container) return;
-  // Toggle off if already loaded
+  // Toggle off
   if (container.dataset.loaded === '1' && container.dataset.loadedFor === item.id) {
     container.innerHTML = '';
     container.dataset.loaded = '0';
     container.dataset.loadedFor = '';
-    btn.classList.remove('loading');
-    const label = $('.detail-article-toggle-label', btn.parentElement.parentElement) || $('.detail-article-toggle-label', btn);
-    if (label) label.textContent = '加载全文';
+    const label = $('.detail-article-toggle-label', btn);
+    if (label) label.textContent = '预览原文';
+    btn.classList.remove('active');
     return;
   }
-  if (btn) { btn.classList.add('loading'); const label = btn.querySelector('.detail-article-toggle-label'); if (label) label.textContent = '加载中...'; }
-  container.innerHTML = `<div class="detail-article-loading"><div class="spinner"></div><div>正在抓取原文...</div></div>`;
+  // Show iframe
+  container.innerHTML = `
+    <div class="detail-iframe-wrap">
+      <iframe
+        src="${escapeHtml(item.url)}"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        allowfullscreen></iframe>
+      <div class="detail-iframe-hint">
+        若页面空白，说明该站点禁止 iframe 嵌入。
+        <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener" style="color:var(--accent)">在新标签打开 ↗</a>
+      </div>
+    </div>
+  `;
+  container.dataset.loaded = '1';
+  container.dataset.loadedFor = item.id;
+  const label = $('.detail-article-toggle-label', btn);
+  if (label) label.textContent = '收起预览';
+  btn.classList.add('active');
+}
+
+async function copySummaryToClipboard(item) {
+  const text = `${item.title}\n\n${item.summary}\n\n来源: ${item.source || '未知'}${item.url ? '\n链接: ' + item.url : ''}`;
   try {
-    let result = _articleCache.get(item.url);
-    if (!result) {
-      result = await fetchArticle(item.url);
-      _articleCache.set(item.url, result);
-    }
-    if (result.html && result.html.trim()) {
-      container.innerHTML = `<div class="detail-article">${result.html}</div>`;
-      container.dataset.loaded = '1';
-      container.dataset.loadedFor = item.id;
-      if (btn) { btn.classList.remove('loading'); const label = btn.querySelector('.detail-article-toggle-label'); if (label) label.textContent = '收起全文'; }
-    } else if (result.summary) {
-      container.innerHTML = `<div class="detail-article"><p>${escapeHtml(result.summary)}</p></div>`;
-      container.dataset.loaded = '1';
-      container.dataset.loadedFor = item.id;
-      if (btn) { btn.classList.remove('loading'); const label = btn.querySelector('.detail-article-toggle-label'); if (label) label.textContent = '收起全文'; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      showToast('已复制摘要到剪贴板 · 可粘贴到知识库');
     } else {
-      throw new Error('未抓取到正文内容');
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('已复制摘要 · 可粘贴到知识库');
     }
   } catch (e) {
-    container.innerHTML = `
-      <div class="detail-article-error">
-        <div><strong>无法在站内加载全文</strong></div>
-        <div style="margin-top:6px">原因: ${escapeHtml(e.message || 'CORS 限制或网络问题')}</div>
-        <div style="margin-top:8px">该网站禁止跨域抓取。请点击下方"原文"在新标签打开阅读。</div>
-      </div>
-    `;
-    if (btn) { btn.classList.remove('loading'); const label = btn.querySelector('.detail-article-toggle-label'); if (label) label.textContent = '加载全文'; }
+    showToast('复制失败: ' + (e.message || ''));
   }
+}
+
+async function copyArticleToClipboard(item) {
+  // Try to fetch via proxy and copy
+  const text = await fetchAndExtractText(item.url);
+  if (text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast('已复制正文到剪贴板');
+    } catch (_) {
+      showToast('复制失败');
+    }
+  }
+}
+
+async function fetchAndExtractText(url) {
+  const errors = [];
+  // Try r.jina.ai first (reader mode)
+  try {
+    const res = await fetch('https://r.jina.ai/' + url);
+    if (res.ok) {
+      const text = await res.text();
+      if (text && text.trim().length > 50) return text;
+    }
+    errors.push('jina: HTTP ' + res.status);
+  } catch (e) { errors.push('jina: ' + (e.message || '')); }
+
+  // Try allorigins
+  try {
+    const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
+    if (res.ok) {
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      doc.querySelectorAll('script, style, nav, footer, aside, .ad, .comments').forEach(n => n.remove());
+      const article = doc.querySelector('article, .article-content, .entry-content, main') || doc.body;
+      const text = article.innerText;
+      if (text && text.trim().length > 100) return text;
+    }
+    errors.push('allorigins: HTTP ' + res.status);
+  } catch (e) { errors.push('allorigins: ' + (e.message || '')); }
+
+  return null;
 }
 
 function updateToolbarActive(btn) {
