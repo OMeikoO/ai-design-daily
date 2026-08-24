@@ -260,35 +260,40 @@ a { color: inherit; }
 }
 
 /* ============================================================
-   Search bar
+   Top bar: search + filters fused in one row
    ============================================================ */
-.search-wrap {
+.topbar {
   position: sticky;
   top: calc(var(--safe-top) + var(--header-h));
   z-index: 49;
-  padding: 12px 0;
+  padding: 10px 0;
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border-bottom: 1px solid var(--glass-border-subtle);
 }
-.search-inner {
+.topbar-inner {
   max-width: var(--content-max);
   margin: 0 auto;
   padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .search-box {
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 44px;
-  padding: 0 16px;
+  height: 40px;
+  padding: 0 14px;
   background: var(--glass-bg-strong);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   transition: border-color 0.2s, box-shadow 0.2s;
+  flex: 1;
+  min-width: 0;
 }
 .search-box:focus-within {
   border-color: var(--accent);
@@ -319,42 +324,29 @@ a { color: inherit; }
 .search-clear.show { display: flex; }
 
 /* ============================================================
-   Filter chips
+   Filter chips (inline in topbar)
    ============================================================ */
-.filter-wrap {
-  position: sticky;
-  top: calc(var(--safe-top) + var(--header-h) + 68px);
-  z-index: 48;
-  padding: 8px 0;
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  border-bottom: 1px solid var(--glass-border-subtle);
-}
 .filter-inner {
-  max-width: var(--content-max);
-  margin: 0 auto;
-  padding: 0 20px;
   display: flex;
-  gap: 8px;
+  gap: 6px;
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  flex-shrink: 0;
+  max-width: 60%;
 }
 .filter-inner::-webkit-scrollbar { display: none; }
 
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 5px;
+  padding: 7px 12px;
   background: var(--glass-bg-strong);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-pill);
   color: var(--text-primary);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
   transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -368,14 +360,21 @@ a { color: inherit; }
   box-shadow: 0 4px 12px var(--accent-glow);
 }
 .chip-dot {
-  width: 8px; height: 8px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   background: currentColor;
 }
 .chip-count {
-  font-size: 11px;
+  font-size: 10px;
   opacity: 0.7;
   margin-left: 2px;
+}
+
+/* Topbar mobile: chips wrap below search */
+@media (max-width: 767px) {
+  .topbar-inner { flex-wrap: wrap; gap: 8px; padding: 0 16px; }
+  .search-box { flex: 1 1 100%; }
+  .filter-inner { max-width: 100%; width: 100%; }
 }
 
 /* ============================================================
@@ -415,8 +414,30 @@ a { color: inherit; }
   .layout { padding: 24px 32px 40px; }
 }
 
-/* List column */
-.list-col { min-width: 0; }
+/* List column - independent scroll on PC so topbar stays fixed */
+.list-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 1024px) {
+  .list-col {
+    height: calc(100vh - var(--safe-top) - var(--header-h) - 60px - 24px);
+    position: sticky;
+    top: calc(var(--safe-top) + var(--header-h) + 60px + 12px);
+    overflow: hidden;
+  }
+  .list-col .grid-wrap {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--glass-border) transparent;
+  }
+  .list-col .grid-wrap::-webkit-scrollbar { width: 6px; }
+  .list-col .grid-wrap::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 3px; }
+}
 
 /* Detail column (PC only) */
 .detail-col {
@@ -865,72 +886,124 @@ a { color: inherit; }
 }
 .kb-mini-btn.primary:hover { background: #006edc; }
 
-/* New item form */
-.kb-new-form {
-  padding: 12px;
-  background: var(--accent-soft);
-  border: 1px solid var(--accent);
-  border-radius: var(--radius-md);
-  display: none;
+/* DingTalk-style note compose area */
+.kb-compose {
+  padding: 10px 12px;
+  background: var(--glass-bg-strong);
+  border-bottom: 1px solid var(--glass-border-subtle);
+  display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.kb-new-form.show { display: flex; }
-.kb-new-form input,
-.kb-new-form textarea,
-.kb-new-form select {
-  width: 100%;
+.kb-compose-row { display: flex; align-items: center; gap: 6px; }
+.kb-compose-input {
+  flex: 1;
   border: 1px solid var(--glass-border);
   background: var(--bg-base);
   color: var(--text-primary);
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
   font-size: 13px;
   outline: none;
   font-family: inherit;
+  transition: border-color 0.2s;
+  min-width: 0;
 }
-.kb-new-form input:focus,
-.kb-new-form textarea:focus,
-.kb-new-form select:focus { border-color: var(--accent); }
-.kb-new-form textarea { min-height: 70px; resize: vertical; line-height: 1.5; }
-.kb-new-form-row { display: flex; gap: 6px; }
-.kb-new-form-row > * { flex: 1; }
-.kb-new-submit {
-  padding: 8px 14px;
+.kb-compose-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.kb-compose-textarea {
+  width: 100%;
+  min-height: 56px;
+  max-height: 200px;
+  resize: vertical;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.6;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+.kb-compose-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.kb-compose-textarea::placeholder { color: var(--text-tertiary); }
+.kb-compose-add {
+  padding: 9px 16px;
   background: var(--accent);
   color: #fff;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
   transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
-.kb-new-submit:hover { background: #006edc; }
-.kb-new-cancel {
-  padding: 8px 14px;
-  background: var(--glass-bg-strong);
-  color: var(--text-secondary);
+.kb-compose-add:hover { background: #006edc; }
+.kb-compose-add:disabled { opacity: 0.5; pointer-events: none; }
+.kb-compose-url-toggle {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--glass-bg);
   border: 1px solid var(--glass-border-subtle);
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  flex-shrink: 0;
 }
-.kb-new-hint { font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
-.kb-new-fetch-btn {
-  padding: 8px 10px;
-  background: var(--glass-bg-strong);
+.kb-compose-url-toggle:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
+.kb-compose-url-toggle.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.kb-compose-url-toggle svg { width: 16px; height: 16px; }
+.kb-compose-url-row {
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+.kb-compose-url-row.show { display: flex; }
+.kb-compose-fetch {
+  padding: 8px 12px;
+  background: var(--glass-bg);
   color: var(--text-primary);
   border: 1px solid var(--glass-border-subtle);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  transition: all 0.2s;
 }
-.kb-new-fetch-btn:hover { background: var(--glass-bg-elevated); }
-.kb-new-fetch-btn.spinning svg { animation: spin 1s linear infinite; }
+.kb-compose-fetch:hover { background: var(--glass-bg-elevated); }
+.kb-compose-fetch.spinning svg { animation: spin 1s linear infinite; }
+.kb-compose-hint {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.kb-compose-meta-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.kb-compose-cat-select,
+.kb-compose-tags-input {
+  border: 1px solid var(--glass-border-subtle);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  outline: none;
+  font-family: inherit;
+}
+.kb-compose-cat-select:focus,
+.kb-compose-tags-input:focus { border-color: var(--accent); }
+.kb-compose-cat-select { flex-shrink: 0; }
+.kb-compose-tags-input { flex: 1; min-width: 80px; }
 
 /* Article full text */
 .detail-article {
@@ -1290,10 +1363,7 @@ a { color: inherit; }
   .sync-btn span { display: none; }
   .sync-btn svg { width: 18px; height: 18px; }
 
-  .search-wrap { top: calc(var(--safe-top) + 56px); }
-  .search-inner { padding: 0 16px; }
-  .filter-wrap { top: calc(var(--safe-top) + 56px + 68px); }
-  .filter-inner { padding: 0 16px; }
+  .topbar { top: calc(var(--safe-top) + 56px); }
 
   .layout { padding: 16px 16px 100px; gap: 12px; }
   .card { padding: 12px 14px; gap: 6px; }
@@ -1332,33 +1402,27 @@ a { color: inherit; }
 </header>
 
 <!-- ============================================================
-     Search
+     Top bar: search + filter chips fused in one row
      ============================================================ -->
-<div class="search-wrap">
-  <div class="search-inner">
+<div class="topbar">
+  <div class="topbar-inner">
     <div class="search-box">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <input type="search" class="search-input" id="search-input" placeholder="搜索标题、摘要、标签..." autocomplete="off">
       <button class="search-clear" id="search-clear" aria-label="清除搜索">×</button>
     </div>
+    <div class="filter-inner" id="filter-chips"></div>
   </div>
-</div>
-
-<!-- ============================================================
-     Filters
-     ============================================================ -->
-<div class="filter-wrap">
-  <div class="filter-inner" id="filter-chips"></div>
 </div>
 
 <!-- ============================================================
      Layout (3-column on desktop)
      ============================================================ -->
 <main class="layout">
-  <!-- Left: list -->
+  <!-- Left: list (independent scroll on PC) -->
   <section class="list-col">
     <div id="update-banner"></div>
-    <div class="grid" id="grid"></div>
+    <div class="grid-wrap"><div class="grid" id="grid"></div></div>
   </section>
 
   <!-- Center: detail (PC only) -->
@@ -1773,9 +1837,6 @@ function renderKbPanel(root) {
       </div>
       <span class="kb-count">${count}</span>
       <div class="kb-actions">
-        <button class="kb-mini-btn primary kb-new-toggle" title="新建条目" aria-label="新建条目">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
         <button class="kb-mini-btn kb-export" title="导出 JSON" aria-label="导出">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </button>
@@ -1784,34 +1845,39 @@ function renderKbPanel(root) {
         </button>
       </div>
     </div>
-    <div class="kb-new-form" id="kb-new-form-${root.id}">
-      <input class="kb-new-url" type="url" placeholder="原文 URL（可选，粘贴后点抓取自动填充）">
-      <div class="kb-new-form-row">
-        <button class="kb-new-fetch-btn" title="从 URL 抓取标题和摘要">
+    <div class="kb-compose">
+      <div class="kb-compose-row">
+        <input class="kb-compose-title" type="text" placeholder="写一句标题...（⌘/Ctrl+Enter 添加）" autocomplete="off">
+        <button class="kb-compose-add" title="添加到知识库">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          添加
+        </button>
+      </div>
+      <textarea class="kb-compose-body" placeholder="正文（可选）：粘贴一段摘录、自己的思考、命令片段... 富文本可在加入后用工具栏编辑" autocomplete="off"></textarea>
+      <div class="kb-compose-meta-row">
+        <select class="kb-compose-cat-select">
+          ${allCategories().map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+        </select>
+        <input class="kb-compose-tags-input" type="text" placeholder="标签，逗号分隔" autocomplete="off">
+        <button class="kb-compose-url-toggle" title="展开 URL 抓取入口" aria-label="URL 抓取">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </button>
+      </div>
+      <div class="kb-compose-url-row">
+        <input class="kb-compose-url" type="url" placeholder="原文 URL（可选）" autocomplete="off">
+        <button class="kb-compose-fetch" title="从 URL 自动抓取标题与摘要">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           抓取
         </button>
       </div>
-      <input class="kb-new-title" type="text" placeholder="标题（必填）">
-      <textarea class="kb-new-summary" placeholder="摘要 / 笔记正文（可选，富文本在加入后编辑）"></textarea>
-      <div class="kb-new-form-row">
-        <select class="kb-new-cat">
-          ${allCategories().map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
-        </select>
-        <input class="kb-new-tags" type="text" placeholder="标签，逗号分隔">
-      </div>
-      <div class="kb-new-hint">填写后点"添加"会在知识库创建一条独立条目，可继续编辑笔记。</div>
-      <div class="kb-new-form-row">
-        <button class="kb-new-submit">添加</button>
-        <button class="kb-new-cancel">取消</button>
-      </div>
+      <div class="kb-compose-hint">回车快速添加 · URL 入口可选 · 加入后可继续编辑富文本笔记</div>
     </div>
     <div class="kb-list">
       ${count === 0 ? `
         <div class="kb-empty">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           <div class="kb-empty-title">知识库为空</div>
-          <div class="kb-empty-sub">点右上角 + 主动新建条目<br/>或在资讯卡片上点书签收藏<br/>支持标题与富文本笔记编辑</div>
+          <div class="kb-empty-sub">上方输入标题，回车快速创建小记<br/>点 ⟳ 展开 URL 抓取入口<br/>也可在资讯卡片点书签收藏</div>
         </div>
       ` : ''}
     </div>
@@ -1968,69 +2034,77 @@ function renderKbPanel(root) {
   const importBtn = $('.kb-import', root);
   if (importBtn) importBtn.onclick = () => $('#kb-import-input').click();
 
-  // New item form (toggle + fetch + submit)
-  const newToggle = $('.kb-new-toggle', root);
-  const newForm = $('.kb-new-form', root);
-  if (newToggle && newForm) {
-    newToggle.onclick = () => {
-      const showing = newForm.classList.toggle('show');
-      if (showing) {
-        const titleInput = $('.kb-new-title', newForm);
-        if (titleInput) titleInput.focus();
-      }
-    };
-    const fetchBtn = $('.kb-new-fetch-btn', newForm);
-    const urlInput = $('.kb-new-url', newForm);
-    const titleInput = $('.kb-new-title', newForm);
-    const summaryInput = $('.kb-new-summary', newForm);
-    const catSelect = $('.kb-new-cat', newForm);
-    const tagsInput = $('.kb-new-tags', newForm);
+  // DingTalk-style compose area
+  const titleInput = $('.kb-compose-title', root);
+  const bodyInput = $('.kb-compose-body', root);
+  const catSelect = $('.kb-compose-cat-select', root);
+  const tagsInput = $('.kb-compose-tags-input', root);
+  const urlToggle = $('.kb-compose-url-toggle', root);
+  const urlRow = $('.kb-compose-url-row', root);
+  const urlInput = $('.kb-compose-url', root);
+  const fetchBtn = $('.kb-compose-fetch', root);
+  const addBtn = $('.kb-compose-add', root);
 
-    if (fetchBtn) fetchBtn.onclick = async () => {
-      const url = (urlInput.value || '').trim();
-      if (!url) { showToast('请先输入 URL'); return; }
-      fetchBtn.classList.add('spinning');
-      try {
-        const result = await fetchArticle(url, { metaOnly: true });
-        if (result.title) titleInput.value = result.title;
-        if (result.summary) summaryInput.value = result.summary;
-        if (result.source && !titleInput.dataset.filled) titleInput.dataset.filled = '1';
-        showToast('已抓取元数据');
-      } catch (e) {
-        showToast('抓取失败: ' + (e.message || 'CORS 限制') + ' · 可手动填写');
-      } finally {
-        fetchBtn.classList.remove('spinning');
-      }
-    };
-
-    const submitBtn = $('.kb-new-submit', newForm);
-    if (submitBtn) submitBtn.onclick = () => {
-      const title = titleInput.value.trim();
-      if (!title) { showToast('标题必填'); titleInput.focus(); return; }
-      const url = (urlInput.value || '').trim();
-      const summary = summaryInput.value.trim();
-      const cat = catSelect.value;
-      const tags = tagsInput.value.split(/[,，]/).map(t => t.trim()).filter(Boolean);
-      const id = 'manual-' + Date.now().toString(36);
-      const item = {
-        id, category: cat, title, summary: summary || '（暂无摘要）',
-        source: '手动添加', url, tags, publishedAt: fmtDate(new Date().toISOString()),
-      };
-      STATE.kbItems.set(id, { note: '', title: '', item });
-      saveState();
-      renderKb();
-      renderGrid();
-      // clear + hide
-      urlInput.value = ''; titleInput.value = ''; summaryInput.value = ''; tagsInput.value = '';
-      newForm.classList.remove('show');
-      showToast('已添加到知识库');
-    };
-
-    const cancelBtn = $('.kb-new-cancel', newForm);
-    if (cancelBtn) cancelBtn.onclick = () => {
-      newForm.classList.remove('show');
+  if (urlToggle && urlRow) {
+    urlToggle.onclick = () => {
+      const on = urlRow.classList.toggle('show');
+      urlToggle.classList.toggle('active', on);
+      if (on) urlInput.focus();
     };
   }
+
+  if (fetchBtn) fetchBtn.onclick = async () => {
+    const url = (urlInput.value || '').trim();
+    if (!url) { showToast('请先输入 URL'); return; }
+    fetchBtn.classList.add('spinning');
+    try {
+      const result = await fetchArticle(url, { metaOnly: true });
+      if (result.title) titleInput.value = result.title;
+      if (result.summary && !bodyInput.value.trim()) bodyInput.value = result.summary;
+      showToast('已抓取元数据 · 可继续编辑');
+    } catch (e) {
+      showToast('抓取失败 · 可手动填写: ' + (e.message || '').slice(0, 60));
+    } finally {
+      fetchBtn.classList.remove('spinning');
+    }
+  };
+
+  function composeAdd() {
+    const title = titleInput.value.trim();
+    if (!title) { showToast('标题不能为空'); titleInput.focus(); return; }
+    const body = bodyInput.value.trim();
+    const url = (urlInput.value || '').trim();
+    const cat = catSelect.value;
+    const tags = tagsInput.value.split(/[,，]/).map(t => t.trim()).filter(Boolean);
+    const id = 'note-' + Date.now().toString(36);
+    const item = {
+      id, category: cat, title,
+      summary: body || '（暂无正文，加入后可在卡片里继续编辑）',
+      source: url ? extractDomain(url) || '小记' : '小记',
+      url, tags, publishedAt: fmtDate(new Date().toISOString()),
+    };
+    STATE.kbItems.set(id, { note: body, title: '', item });
+    saveState();
+    // clear
+    titleInput.value = '';
+    bodyInput.value = '';
+    urlInput.value = '';
+    tagsInput.value = '';
+    urlRow.classList.remove('show');
+    urlToggle.classList.remove('active');
+    renderKb();
+    renderGrid();
+    showToast('已添加到知识库');
+    titleInput.focus();
+  }
+
+  if (addBtn) addBtn.onclick = composeAdd;
+  if (titleInput) titleInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); composeAdd(); }
+  });
+  if (bodyInput) bodyInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); composeAdd(); }
+  });
 }
 
 /* ============================================================
