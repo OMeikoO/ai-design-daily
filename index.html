@@ -864,53 +864,55 @@ a { color: inherit; }
 .kb-mini-btn:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
 .kb-mini-btn svg { width: 14px; height: 14px; }
 
-/* DingTalk-style note compose area */
+/* DingTalk-style note compose area — unified glass panel */
 .kb-compose {
-  padding: 12px 16px;
-  background: var(--glass-bg-strong);
-  border-bottom: 1px solid var(--glass-border-subtle);
+  margin: 8px;
+  padding: 8px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  transition: border-color 0.2s;
 }
-.kb-compose-row { display: flex; align-items: center; gap: 8px; }
-.kb-compose-input {
+.kb-compose:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* Title row: input + add button, no visible borders */
+.kb-compose-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.kb-compose-title {
   flex: 1;
-  border: 1px solid var(--glass-border);
-  background: var(--bg-base);
+  border: none;
+  background: transparent;
   color: var(--text-primary);
-  padding: 9px 12px;
+  padding: 8px 10px;
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   outline: none;
   font-family: inherit;
-  transition: border-color 0.2s;
+  line-height: 1.4;
   min-width: 0;
+  transition: background 0.15s;
 }
-.kb-compose-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-.kb-compose-textarea {
-  width: 100%;
-  min-height: 56px;
-  max-height: 200px;
-  resize: vertical;
-  border: 1px solid var(--glass-border);
-  background: var(--bg-base);
-  color: var(--text-primary);
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  line-height: 1.6;
-  outline: none;
-  font-family: inherit;
-  transition: border-color 0.2s;
-}
-.kb-compose-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-.kb-compose-textarea::placeholder { color: var(--text-tertiary); }
+.kb-compose-title:hover { background: var(--glass-bg-strong); }
+.kb-compose-title::placeholder { color: var(--text-tertiary); font-weight: 500; }
+
+/* Add button inside the panel, subtle pill */
 .kb-compose-add {
-  padding: 9px 16px;
+  padding: 7px 14px;
   background: var(--accent);
   color: #fff;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
@@ -918,70 +920,133 @@ a { color: inherit; }
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  flex-shrink: 0;
 }
-.kb-compose-add:hover { background: #006edc; }
-.kb-compose-add:disabled { opacity: 0.5; pointer-events: none; }
-.kb-compose-url-toggle {
-  width: 36px; height: 36px;
+.kb-compose-add:hover { background: #006edc; transform: scale(1.02); }
+.kb-compose-add:active { transform: scale(0.97); }
+.kb-compose-add:disabled { opacity: 0.4; pointer-events: none; }
+
+/* Body textarea — no border, subtle bg */
+.kb-compose-body {
+  width: 100%;
+  min-height: 40px;
+  max-height: 160px;
+  resize: vertical;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  padding: 4px 10px 8px;
   border-radius: var(--radius-md);
-  background: var(--glass-bg);
+  font-size: 13px;
+  line-height: 1.6;
+  outline: none;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.kb-compose-body:hover { background: var(--glass-bg-strong); }
+.kb-compose-body::placeholder { color: var(--text-tertiary); }
+
+/* Meta row: category, tags, URL toggle — all inline chips */
+.kb-compose-meta-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 4px 6px 2px;
+  border-top: 1px solid var(--glass-border-subtle);
+  margin-top: 2px;
+}
+.kb-compose-cat-select {
   border: 1px solid var(--glass-border-subtle);
+  background: var(--glass-bg-strong);
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  outline: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.kb-compose-cat-select:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
+.kb-compose-tags-input {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  outline: none;
+  font-family: inherit;
+  flex: 1;
+  min-width: 60px;
+  transition: background 0.15s;
+}
+.kb-compose-tags-input:hover { background: var(--glass-bg-strong); }
+.kb-compose-tags-input::placeholder { color: var(--text-tertiary); }
+
+/* URL toggle — minimal icon button */
+.kb-compose-url-toggle {
+  width: 26px; height: 26px;
+  border-radius: var(--radius-sm);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
-  transition: all 0.2s;
+  color: var(--text-tertiary);
+  transition: all 0.15s;
   flex-shrink: 0;
 }
-.kb-compose-url-toggle:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
-.kb-compose-url-toggle.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
-.kb-compose-url-toggle svg { width: 16px; height: 16px; }
+.kb-compose-url-toggle:hover { background: var(--glass-bg-strong); color: var(--text-primary); }
+.kb-compose-url-toggle.active { background: var(--accent-soft); color: var(--accent); }
+.kb-compose-url-toggle svg { width: 14px; height: 14px; }
+
+/* URL row — inline expansion */
 .kb-compose-url-row {
   display: none;
   align-items: center;
   gap: 6px;
+  padding: 4px 6px;
 }
 .kb-compose-url-row.show { display: flex; }
+.kb-compose-url {
+  flex: 1;
+  border: 1px solid var(--glass-border-subtle);
+  background: var(--glass-bg-strong);
+  color: var(--text-primary);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s;
+  min-width: 0;
+}
+.kb-compose-url:focus { border-color: var(--accent); }
 .kb-compose-fetch {
-  padding: 8px 12px;
-  background: var(--glass-bg);
+  padding: 5px 10px;
+  background: var(--glass-bg-strong);
   color: var(--text-primary);
   border: 1px solid var(--glass-border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 .kb-compose-fetch:hover { background: var(--glass-bg-elevated); }
 .kb-compose-fetch.spinning svg { animation: spin 1s linear infinite; }
+
+/* Hint — subtle footer text */
 .kb-compose-hint {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-tertiary);
-  line-height: 1.5;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  line-height: 1.4;
+  padding: 2px 10px 4px;
 }
-.kb-compose-meta-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.kb-compose-cat-select,
-.kb-compose-tags-input {
-  border: 1px solid var(--glass-border-subtle);
-  background: var(--glass-bg);
-  color: var(--text-primary);
-  padding: 5px 10px;
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-  outline: none;
-  font-family: inherit;
-}
-.kb-compose-cat-select:focus,
-.kb-compose-tags-input:focus { border-color: var(--accent); }
-.kb-compose-cat-select { flex-shrink: 0; }
-.kb-compose-tags-input { flex: 1; min-width: 80px; }
 
 /* Article iframe preview */
 .detail-iframe-section {
@@ -1799,13 +1864,13 @@ function renderKbPanel(root) {
     </div>
     <div class="kb-compose">
       <div class="kb-compose-row">
-        <input class="kb-compose-title" type="text" placeholder="写一句标题...（⌘/Ctrl+Enter 添加）" autocomplete="off">
+        <input class="kb-compose-title" type="text" placeholder="写一句标题..." autocomplete="off">
         <button class="kb-compose-add" title="添加到知识库">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           添加
         </button>
       </div>
-      <textarea class="kb-compose-body" placeholder="正文（可选）：粘贴一段摘录、自己的思考、命令片段... 富文本可在加入后用工具栏编辑" autocomplete="off"></textarea>
+      <textarea class="kb-compose-body" placeholder="正文（可选）：粘贴摘录、自己的思考、命令片段..." autocomplete="off"></textarea>
       <div class="kb-compose-meta-row">
         <select class="kb-compose-cat-select">
           ${allCategories().map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
@@ -1822,7 +1887,6 @@ function renderKbPanel(root) {
           抓取
         </button>
       </div>
-      <div class="kb-compose-hint">回车快速添加 · URL 入口可选 · 加入后可继续编辑富文本笔记</div>
     </div>
     <div class="kb-list">
       ${count === 0 ? `
