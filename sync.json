@@ -1,0 +1,128 @@
+{
+  "date": "2026-08-24",
+  "updatedAt": "2026-08-24T11:00:00+08:00",
+  "source": "爱范儿每日早报",
+  "sourceUrl": "https://www.ifanr.com/1676314",
+  "items": [
+    {
+      "id": "20260824-ifanr-001",
+      "category": "tech",
+      "title": "小米公布玄戒芯片新进展",
+      "summary": "小米于今日 14 点公布自研玄戒芯片最新进展，持续加码自研芯片战略，这是小米手机+AIoT 生态的核心底层能力之一。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["小米", "玄戒", "自研芯片"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-002",
+      "category": "tools",
+      "title": "DeepSeek API 周末改为全天低谷计费",
+      "summary": "DeepSeek 宣布周末 API 计费调整为全天低谷价格，降低开发者周末调用成本，利好个人开发者和中小团队周末跑批量任务。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["DeepSeek", "API", "计费"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-003",
+      "category": "tech",
+      "title": "宇树机器人百米预赛小组垫底，公司称赛事准备受限",
+      "summary": "宇树科技人形机器人参加百米预赛仅获小组垫底，公司回应称受赛事准备时间与场地条件限制。折射出当前人形机器人在动态运动控制上的工程瓶颈。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["宇树", "人形机器人", "运动控制"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-004",
+      "category": "tools",
+      "title": "OpenAI 限时下调 GPT-5.6 Sol API 价格",
+      "summary": "OpenAI 对 GPT-5.6 Sol 模型 API 进行限时降价，进一步降低高性能模型调用门槛，加剧大模型 API 价格竞争。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["OpenAI", "GPT-5.6", "API", "价格"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-005",
+      "category": "tools",
+      "title": "神秘「牛来」模型 Ox Alpha 在 OpenRouter 和 OpenCode 限时免费开放",
+      "summary": "名为 Ox Alpha 的神秘模型在 OpenRouter 与 OpenCode 平台限时免费开放，被称为「牛来」模型，引发社区对其来源与能力的热议。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["Ox Alpha", "OpenRouter", "免费模型"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-006",
+      "category": "tech",
+      "title": "英伟达 AI 服务器被曝明年涨价超 15%",
+      "summary": "据爆料，英伟达 AI 服务器明年将涨价超过 15%，反映出 AI 算力需求持续旺盛，也意味着训练大模型的硬件成本将进一步上升。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["英伟达", "AI 服务器", "涨价"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-007",
+      "category": "tech",
+      "title": "阿里拟配售 800 亿港元新股，净募资全部投入 AI",
+      "summary": "阿里巴巴拟配售 800 亿港元新股，净募资将全部投入 AI 相关业务，显示头部互联网公司持续将 AI 作为核心战略方向。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["阿里", "融资", "AI 投资"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-008",
+      "category": "tools",
+      "title": "Claude Code Remote Control 新增服务器模式，手机可发起本地会话",
+      "summary": "Anthropic 为 Claude Code 推出 Remote Control 服务器模式，用户可通过手机发起并控制本地 Claude Code 会话，实现移动端远程调用本地编程能力。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["Claude Code", "远程控制", "移动开发"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-009",
+      "category": "tools",
+      "title": "Google 为 Antigravity 2.0 上线浏览器远程控制",
+      "summary": "Google 为 Antigravity 2.0 上线浏览器远程控制能力，进一步打通浏览器作为跨设备控制入口的链路，强化 Web 端的远程交互体验。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["Google", "Antigravity", "浏览器", "远程控制"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-010",
+      "category": "tips",
+      "title": "《人类简史》作者赫拉利：现在正是阻止 AI 获得「权利」的时机",
+      "summary": "赫拉利指出，当下正是阻止 AI 获得「权利」的关键时机，呼吁社会在 AI 治理、伦理边界和权利定义上提前布局，避免被动让渡。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["赫拉利", "AI 伦理", "AI 治理"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-011",
+      "category": "tech",
+      "title": "苹果调整 Siri 与 Vision Pro 团队，约 200 个岗位受影响",
+      "summary": "苹果对 Siri 与 Vision Pro 团队进行调整，约 200 个岗位受影响，反映苹果在 AI 助手和空间计算业务上的资源重新分配。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["苹果", "Siri", "Vision Pro", "组织调整"],
+      "publishedAt": "2026-08-24"
+    },
+    {
+      "id": "20260824-ifanr-012",
+      "category": "tech",
+      "title": "苹果首款折叠屏 iPhone 临近发布，新款 iPhone 或涨价",
+      "summary": "据彭博社 Mark Gurman 报道，苹果正准备推出首款折叠屏 iPhone，并考虑为新款 iPhone 涨价。折叠形态或重塑 iPhone 交互范式。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676314",
+      "tags": ["苹果", "折叠屏", "iPhone"],
+      "publishedAt": "2026-08-24"
+    }
+  ]
+}
