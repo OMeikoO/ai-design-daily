@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="description" content="AI 行业 + 交互设计每日资讯 · iOS 27 Liquid Glass 设计">
+<meta name="description" content="AI / 科技 / 设计每日资讯 · iOS 27 Liquid Glass 设计">
 <title>AI Design Daily · 每日资讯</title>
 <style>
 /* ============================================================
@@ -45,6 +45,8 @@
   --cat-styles: #bf5af2;
   --cat-tools: #30d158;
   --cat-tips: #ff9f0a;
+  --cat-tech: #64d2ff;
+  --cat-design: #ff375f;
 
   --radius-sm: 12px;
   --radius-md: 18px;
@@ -60,6 +62,11 @@
   --header-h: 64px;
   --search-h: 56px;
   --filter-h: 56px;
+
+  /* Layout widths */
+  --content-max: 1700px;
+  --list-col-w: 340px;
+  --kb-col-w: 360px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -89,6 +96,8 @@
     --cat-styles: #d9b4ff;
     --cat-tools: #4ade80;
     --cat-tips: #ffd60a;
+    --cat-tech: #64d2ff;
+    --cat-design: #ff6482;
   }
 }
 
@@ -120,6 +129,7 @@ body {
 
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 input, textarea { font-family: inherit; }
+a { color: inherit; }
 
 /* ============================================================
    Header (sticky glass)
@@ -136,7 +146,7 @@ input, textarea { font-family: inherit; }
 }
 
 .header-inner {
-  max-width: 1200px;
+  max-width: var(--content-max);
   margin: 0 auto;
   padding: 0 20px;
   height: var(--header-h);
@@ -206,6 +216,30 @@ input, textarea { font-family: inherit; }
 .icon-btn:hover { background: var(--glass-bg-elevated); }
 .icon-btn:active { transform: scale(0.94); }
 .icon-btn svg { width: 20px; height: 20px; }
+.icon-btn.spinning svg { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px var(--accent-glow);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+}
+.sync-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px var(--accent-glow); }
+.sync-btn:active { transform: scale(0.96); }
+.sync-btn svg { width: 16px; height: 16px; }
+.sync-btn.spinning { pointer-events: none; opacity: 0.8; }
+.sync-btn.spinning svg { animation: spin 1s linear infinite; }
 
 .badge-dot {
   position: absolute;
@@ -239,7 +273,7 @@ input, textarea { font-family: inherit; }
   border-bottom: 1px solid var(--glass-border-subtle);
 }
 .search-inner {
-  max-width: 1200px;
+  max-width: var(--content-max);
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -298,7 +332,7 @@ input, textarea { font-family: inherit; }
   border-bottom: 1px solid var(--glass-border-subtle);
 }
 .filter-inner {
-  max-width: 1200px;
+  max-width: var(--content-max);
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
@@ -345,29 +379,86 @@ input, textarea { font-family: inherit; }
 }
 
 /* ============================================================
-   Main content
+   Layout: 3-column on desktop
    ============================================================ */
-.main {
-  max-width: 1200px;
+.layout {
+  max-width: var(--content-max);
   margin: 0 auto;
-  padding: 20px 20px 100px;
+  padding: 20px 20px 40px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr; /* mobile default */
 }
 
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(320px, var(--list-col-w)) 1fr;
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .layout {
+    grid-template-columns: minmax(340px, var(--list-col-w)) 1fr minmax(340px, var(--kb-col-w));
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --list-col-w: 380px;
+    --kb-col-w: 400px;
+  }
+}
+
+@media (min-width: 1700px) {
+  :root { --content-max: 100%; --list-col-w: 420px; --kb-col-w: 440px; }
+  .layout { padding: 24px 32px 40px; }
+}
+
+/* List column */
+.list-col { min-width: 0; }
+
+/* Detail column (PC only) */
+.detail-col {
+  display: none;
+  min-height: 600px;
+}
+@media (min-width: 1024px) {
+  .detail-col { display: block; }
+}
+
+/* KB column (PC only on large screens) */
+.kb-col {
+  display: none;
+  min-height: 600px;
+}
+@media (min-width: 1280px) {
+  .kb-col { display: block; }
+}
+
+/* Mobile KB still uses drawer */
+@media (max-width: 1279px) {
+  .kb-col { display: none !important; }
+}
+
+/* ============================================================
+   Update banner
+   ============================================================ */
 .update-banner {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 18px;
+  padding: 12px 14px;
   background: var(--glass-bg-strong);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   box-shadow: var(--glass-shadow);
 }
 .update-banner-icon {
-  width: 32px; height: 32px;
+  width: 28px; height: 28px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent), #5ac8fa);
   display: flex;
@@ -376,33 +467,36 @@ input, textarea { font-family: inherit; }
   color: #fff;
   flex-shrink: 0;
 }
-.update-banner-icon svg { width: 16px; height: 16px; }
+.update-banner-icon svg { width: 14px; height: 14px; }
 .update-banner-text { flex: 1; min-width: 0; }
-.update-banner-title { font-size: 14px; font-weight: 600; }
-.update-banner-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.update-banner-title { font-size: 13px; font-weight: 600; }
+.update-banner-sub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
 .update-banner-action {
-  padding: 6px 12px;
+  padding: 5px 10px;
   background: var(--accent-soft);
   color: var(--accent);
   border-radius: var(--radius-pill);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
   transition: all 0.2s;
 }
 .update-banner-action:hover { background: var(--accent); color: #fff; }
 
+/* ============================================================
+   News grid (list column)
+   ============================================================ */
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 12px;
 }
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 1023px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ============================================================
-   News card
+   News card (list)
    ============================================================ */
 .card {
   position: relative;
@@ -411,12 +505,13 @@ input, textarea { font-family: inherit; }
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 14px 16px 12px;
   box-shadow: var(--glass-shadow);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s, border-color 0.2s;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+  cursor: pointer;
   overflow: hidden;
 }
 .card::before {
@@ -431,6 +526,10 @@ input, textarea { font-family: inherit; }
   transform: translateY(-2px);
   box-shadow: var(--glass-shadow-strong);
 }
+.card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft), var(--glass-shadow-strong);
+}
 .card.read { opacity: 0.62; }
 .card.read .card-title { color: var(--text-secondary); }
 
@@ -443,18 +542,18 @@ input, textarea { font-family: inherit; }
 .cat-tag {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
+  gap: 5px;
+  padding: 3px 8px;
   background: var(--cat-color-soft, var(--accent-soft));
   color: var(--cat-color, var(--accent));
   border-radius: var(--radius-pill);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.2px;
   text-transform: uppercase;
 }
 .cat-dot {
-  width: 6px; height: 6px;
+  width: 5px; height: 5px;
   border-radius: 50%;
   background: currentColor;
 }
@@ -465,41 +564,40 @@ input, textarea { font-family: inherit; }
 }
 
 .card-title {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.2px;
   line-height: 1.35;
   color: var(--text-primary);
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-summary {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.55;
   color: var(--text-secondary);
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: -webkit-line-clamp 0.3s;
-}
-.card-summary.expanded {
-  -webkit-line-clamp: unset;
-  overflow: visible;
 }
 
 .card-tags {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
 }
 .tag {
-  padding: 3px 8px;
+  padding: 2px 7px;
   background: var(--glass-bg-strong);
   border: 1px solid var(--glass-border-subtle);
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-secondary);
 }
 
@@ -507,13 +605,13 @@ input, textarea { font-family: inherit; }
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 4px;
-  padding-top: 12px;
+  margin-top: 2px;
+  padding-top: 8px;
   border-top: 1px solid var(--glass-border-subtle);
 }
 .card-source {
   flex: 1;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-tertiary);
   white-space: nowrap;
   overflow: hidden;
@@ -522,7 +620,7 @@ input, textarea { font-family: inherit; }
 .card-actions { display: flex; gap: 6px; }
 
 .action-btn {
-  width: 32px; height: 32px;
+  width: 28px; height: 28px;
   border-radius: var(--radius-sm);
   background: var(--glass-bg-strong);
   border: 1px solid var(--glass-border-subtle);
@@ -531,10 +629,11 @@ input, textarea { font-family: inherit; }
   justify-content: center;
   color: var(--text-secondary);
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-decoration: none;
 }
 .action-btn:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
 .action-btn:active { transform: scale(0.9); }
-.action-btn svg { width: 15px; height: 15px; }
+.action-btn svg { width: 14px; height: 14px; }
 .action-btn.active {
   background: var(--accent);
   color: #fff;
@@ -568,7 +667,7 @@ input, textarea { font-family: inherit; }
    Loading skeleton
    ============================================================ */
 .skeleton-card {
-  height: 200px;
+  height: 160px;
   border-radius: var(--radius-lg);
   background: linear-gradient(90deg, var(--glass-bg) 0%, var(--glass-bg-strong) 50%, var(--glass-bg) 100%);
   background-size: 200% 100%;
@@ -581,7 +680,324 @@ input, textarea { font-family: inherit; }
 }
 
 /* ============================================================
-   KB Panel (drawer)
+   Detail panel (PC center column)
+   ============================================================ */
+.detail-panel {
+  position: sticky;
+  top: calc(var(--safe-top) + var(--header-h) + 68px + 16px);
+  height: calc(100vh - var(--safe-top) - var(--header-h) - 68px - 32px);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.detail-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 40px;
+}
+.detail-empty svg { width: 56px; height: 56px; margin-bottom: 16px; opacity: 0.5; }
+.detail-empty-title { font-size: 15px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
+.detail-empty-sub { font-size: 12px; }
+
+.detail-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.detail-meta .cat-tag { font-size: 11px; padding: 4px 10px; }
+.detail-date { font-size: 12px; color: var(--text-tertiary); margin-left: auto; }
+
+.detail-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.detail-summary {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0;
+  padding: 16px;
+  background: var(--glass-bg-strong);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--cat-color, var(--accent));
+}
+
+.detail-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.detail-tags .tag { font-size: 11px; padding: 3px 8px; }
+
+.detail-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid var(--glass-border-subtle);
+  margin-top: auto;
+}
+.detail-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.detail-action.primary {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+.detail-action.primary:hover { transform: translateY(-1px); }
+.detail-action.primary.active {
+  background: var(--cat-tips, #ff9f0a);
+  border-color: var(--cat-tips, #ff9f0a);
+  box-shadow: 0 4px 12px rgba(255, 159, 10, 0.3);
+}
+.detail-action.secondary {
+  background: var(--glass-bg-strong);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+}
+.detail-action.secondary:hover { background: var(--glass-bg-elevated); }
+.detail-action svg { width: 15px; height: 15px; }
+.detail-action.read.active {
+  background: var(--success);
+  color: #fff;
+  border-color: var(--success);
+}
+
+.detail-source {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.detail-source a { color: var(--accent); text-decoration: none; word-break: break-all; }
+
+/* ============================================================
+   KB panel (PC right column / mobile drawer)
+   ============================================================ */
+.kb-panel {
+  position: sticky;
+  top: calc(var(--safe-top) + var(--header-h) + 68px + 16px);
+  height: calc(100vh - var(--safe-top) - var(--header-h) - 68px - 32px);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.kb-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border-subtle);
+}
+.kb-title { flex: 1; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.kb-title svg { width: 16px; height: 16px; color: var(--accent); }
+.kb-count {
+  font-size: 11px;
+  color: var(--accent);
+  padding: 2px 8px;
+  background: var(--accent-soft);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+}
+.kb-actions { display: flex; gap: 6px; }
+.kb-mini-btn {
+  width: 30px; height: 30px;
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+.kb-mini-btn:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
+.kb-mini-btn svg { width: 14px; height: 14px; }
+
+.kb-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.kb-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-tertiary);
+}
+.kb-empty svg { width: 40px; height: 40px; margin: 0 auto 12px; display: block; color: var(--text-tertiary); }
+.kb-empty-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
+.kb-empty-sub { font-size: 11px; line-height: 1.5; }
+
+.kb-item {
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.2s;
+}
+.kb-item:hover { border-color: var(--glass-border); }
+.kb-item.active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+
+.kb-item-meta { display: flex; align-items: center; gap: 6px; }
+.kb-item-meta .cat-tag { font-size: 10px; padding: 2px 7px; }
+
+.kb-item-title-edit {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  outline: none;
+  padding: 2px 0;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.2s;
+}
+.kb-item-title-edit:focus { border-bottom-color: var(--accent); }
+
+.kb-item-summary {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Rich text editor */
+.kb-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: var(--radius-sm);
+  margin-bottom: -4px;
+}
+.kb-tool {
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+.kb-tool:hover { background: var(--glass-bg-strong); color: var(--text-primary); }
+.kb-tool.active { background: var(--accent); color: #fff; }
+.kb-tool svg { width: 14px; height: 14px; }
+
+.kb-item-note-edit {
+  width: 100%;
+  min-height: 60px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--glass-border-subtle);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.6;
+  outline: none;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  transition: border-color 0.2s;
+}
+.kb-item-note-edit:focus { border-color: var(--accent); }
+.kb-item-note-edit.empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+.kb-item-note-edit b, .kb-item-note-edit strong { font-weight: 700; }
+.kb-item-note-edit i, .kb-item-note-edit em { font-style: italic; }
+.kb-item-note-edit ul, .kb-item-note-edit ol { margin: 4px 0; padding-left: 20px; }
+.kb-item-note-edit li { margin: 2px 0; }
+.kb-item-note-edit a { color: var(--accent); text-decoration: underline; }
+.kb-item-note-edit code { background: var(--glass-bg-strong); padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; }
+.kb-item-note-edit blockquote {
+  margin: 6px 0;
+  padding: 4px 10px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+.kb-item-footer {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+}
+.kb-item-btn {
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.kb-item-btn svg { width: 12px; height: 12px; }
+.kb-item-btn.open { background: var(--accent); color: #fff; }
+.kb-item-btn.remove { background: rgba(255, 59, 48, 0.12); color: var(--danger); }
+
+/* ============================================================
+   Mobile KB drawer (max-width: 1279px)
    ============================================================ */
 .kb-overlay {
   position: fixed;
@@ -595,14 +1011,15 @@ input, textarea { font-family: inherit; }
   transition: opacity 0.3s;
 }
 .kb-overlay.show { opacity: 1; pointer-events: auto; }
+@media (min-width: 1280px) {
+  .kb-overlay { display: none; }
+}
 
-.kb-panel {
+.kb-drawer {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; right: 0; bottom: 0;
   width: 100%;
-  max-width: 480px;
+  max-width: 420px;
   background: var(--bg-base);
   z-index: 100;
   transform: translateX(100%);
@@ -612,120 +1029,19 @@ input, textarea { font-family: inherit; }
   padding-top: var(--safe-top);
   padding-bottom: var(--safe-bottom);
 }
-.kb-panel.show { transform: translateX(0); }
-
-.kb-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  background: var(--glass-bg-strong);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-bottom: 1px solid var(--glass-border-subtle);
+.kb-drawer.show { transform: translateX(0); }
+@media (min-width: 1280px) {
+  .kb-drawer { display: none; }
 }
-.kb-title { flex: 1; font-size: 17px; font-weight: 700; }
-.kb-count {
-  font-size: 12px;
-  color: var(--text-secondary);
-  padding: 2px 8px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  border-radius: var(--radius-pill);
-  font-weight: 600;
-}
-.kb-actions { display: flex; gap: 6px; }
-.kb-mini-btn {
-  width: 32px; height: 32px;
-  border-radius: var(--radius-sm);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border-subtle);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-}
-.kb-mini-btn svg { width: 16px; height: 16px; }
-
-.kb-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.kb-empty {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text-tertiary);
-}
-.kb-empty svg { width: 48px; height: 48px; margin-bottom: 12px; }
-
-.kb-item {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.kb-item-title { font-size: 14px; font-weight: 600; line-height: 1.4; }
-.kb-item-summary {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.kb-item-note {
-  font-size: 12px;
-  padding: 8px 10px;
-  background: var(--accent-soft);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  line-height: 1.5;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-.kb-item-footer {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  margin-top: 4px;
-}
-.kb-item-edit {
-  flex: 1;
-  padding: 6px 10px;
-  background: var(--glass-bg-strong);
-  border: 1px solid var(--glass-border-subtle);
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  color: var(--text-primary);
-  outline: none;
-}
-.kb-item-edit:focus { border-color: var(--accent); }
-.kb-item-remove {
-  padding: 6px 10px;
-  background: rgba(255, 59, 48, 0.12);
-  color: var(--danger);
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-  font-weight: 600;
-}
-.kb-item-open {
-  padding: 6px 10px;
-  background: var(--accent);
-  color: #fff;
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-  font-weight: 600;
-  text-decoration: none;
+.kb-drawer .kb-panel {
+  position: static;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 /* ============================================================
@@ -751,8 +1067,7 @@ input, textarea { font-family: inherit; }
 .fab:active { transform: scale(0.92); }
 .fab svg { width: 24px; height: 24px; }
 .fab .badge-dot { top: 8px; right: 8px; border-color: var(--accent); }
-
-@media (min-width: 768px) {
+@media (min-width: 1280px) {
   .fab { display: none; }
 }
 
@@ -760,11 +1075,11 @@ input, textarea { font-family: inherit; }
    Footer
    ============================================================ */
 .footer {
-  max-width: 1200px;
-  margin: 40px auto 0;
-  padding: 20px;
+  max-width: var(--content-max);
+  margin: 24px auto 0;
+  padding: 16px 20px;
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-tertiary);
 }
 .footer a { color: var(--accent); text-decoration: none; }
@@ -792,12 +1107,12 @@ input, textarea { font-family: inherit; }
   pointer-events: none;
   transition: opacity 0.25s, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   white-space: nowrap;
+  max-width: 90vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-@media (min-width: 768px) {
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (min-width: 1280px) {
   .toast { bottom: 30px; }
 }
 
@@ -811,16 +1126,19 @@ input, textarea { font-family: inherit; }
   .brand-sub { font-size: 11px; }
   .icon-btn { width: 36px; height: 36px; }
   .icon-btn svg { width: 18px; height: 18px; }
+  .sync-btn { padding: 0 12px; height: 36px; font-size: 12px; }
+  .sync-btn span { display: none; }
+  .sync-btn svg { width: 18px; height: 18px; }
 
   .search-wrap { top: calc(var(--safe-top) + 56px); }
   .search-inner { padding: 0 16px; }
   .filter-wrap { top: calc(var(--safe-top) + 56px + 68px); }
   .filter-inner { padding: 0 16px; }
 
-  .main { padding: 16px 16px 100px; }
-  .card { padding: 16px; gap: 10px; }
-  .card-title { font-size: 15px; }
-  .card-summary { font-size: 13px; }
+  .layout { padding: 16px 16px 100px; gap: 12px; }
+  .card { padding: 12px 14px; gap: 6px; }
+  .card-title { font-size: 14px; }
+  .card-summary { font-size: 12px; }
 
   :root { --header-h: 56px; }
 }
@@ -841,6 +1159,10 @@ input, textarea { font-family: inherit; }
       </div>
     </div>
     <div class="header-actions">
+      <button class="sync-btn" id="sync-btn" title="同步截止上一小时的最新资讯" aria-label="同步最新资讯">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        <span>同步</span>
+      </button>
       <button class="icon-btn" id="open-kb" title="知识库" aria-label="知识库">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         <span class="badge-dot" id="kb-badge"></span>
@@ -870,20 +1192,42 @@ input, textarea { font-family: inherit; }
 </div>
 
 <!-- ============================================================
-     Main
+     Layout (3-column on desktop)
      ============================================================ -->
-<main class="main">
-  <div id="update-banner"></div>
-  <div class="grid" id="grid"></div>
+<main class="layout">
+  <!-- Left: list -->
+  <section class="list-col">
+    <div id="update-banner"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- Center: detail (PC only) -->
+  <section class="detail-col">
+    <div class="detail-panel" id="detail-panel">
+      <div class="detail-empty" id="detail-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+        <div class="detail-empty-title">点击左侧卡片预览全文</div>
+        <div class="detail-empty-sub">选中后此处展开摘要、标签与操作</div>
+      </div>
+      <div class="detail-content" id="detail-content" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- Right: KB (PC only on large screens) -->
+  <aside class="kb-col">
+    <div class="kb-panel" id="kb-panel-pc"></div>
+  </aside>
 </main>
 
 <!-- ============================================================
-     Footer
+     Mobile KB drawer
      ============================================================ -->
-<footer class="footer">
-  <div id="footer-info">每日 09:00 自动更新 · 数据来自公开网络搜索</div>
-  <div style="margin-top:6px;"><a href="https://github.com/OMeikoO/ai-design-daily" target="_blank" rel="noopener">OMeikoO/ai-design-daily</a></div>
-</footer>
+<div class="kb-overlay" id="kb-overlay"></div>
+<aside class="kb-drawer" id="kb-drawer" aria-hidden="true">
+  <div class="kb-panel" id="kb-panel-mobile"></div>
+</aside>
+
+<input type="file" id="kb-import-input" accept=".json" style="display:none">
 
 <!-- ============================================================
      FAB (mobile)
@@ -894,29 +1238,12 @@ input, textarea { font-family: inherit; }
 </button>
 
 <!-- ============================================================
-     KB Panel
+     Footer
      ============================================================ -->
-<div class="kb-overlay" id="kb-overlay"></div>
-<aside class="kb-panel" id="kb-panel" aria-hidden="true">
-  <div class="kb-header">
-    <div class="kb-title">知识库</div>
-    <div class="kb-count" id="kb-count">0</div>
-    <div class="kb-actions">
-      <button class="kb-mini-btn" id="kb-export" title="导出" aria-label="导出">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </button>
-      <button class="kb-mini-btn" id="kb-import" title="导入" aria-label="导入">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      </button>
-      <button class="kb-mini-btn" id="kb-close" title="关闭" aria-label="关闭">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  </div>
-  <div class="kb-list" id="kb-list"></div>
-</aside>
-
-<input type="file" id="kb-import-input" accept=".json" style="display:none">
+<footer class="footer">
+  <div id="footer-info">每日 09:00 自动更新 · 同步按钮获取截止上小时增量</div>
+  <div style="margin-top:6px;"><a href="https://github.com/OMeikoO/ai-design-daily" target="_blank" rel="noopener">OMeikoO/ai-design-daily</a></div>
+</footer>
 
 <!-- ============================================================
      Toast
@@ -929,33 +1256,32 @@ input, textarea { font-family: inherit; }
    ============================================================ */
 const STATE = {
   data: null,
+  incremental: null, // incrementally synced items
   filter: 'all',
   query: '',
+  selectedId: null,
   readItems: new Set(JSON.parse(localStorage.getItem('ai-design-daily:read') || '[]')),
   kbItems: new Map(JSON.parse(localStorage.getItem('ai-design-daily:kb') || '[]')),
   lastViewedDate: localStorage.getItem('ai-design-daily:last-viewed') || '',
+  lastSyncAt: localStorage.getItem('ai-design-daily:last-sync') || '',
 };
 
-const CAT_COLORS = {
-  interaction: '#0a84ff',
-  styles: '#bf5af2',
-  tools: '#30d158',
-  tips: '#ff9f0a',
-};
-const CAT_NAMES = {
-  interaction: '交互设计',
-  styles: '设计风格',
-  tools: 'AI 工具',
-  tips: 'AI 技巧',
-};
+const ALL_CATEGORIES = [
+  { id: 'interaction', name: '交互设计', icon: '✦', color: '#0a84ff' },
+  { id: 'styles', name: '设计风格', icon: '◈', color: '#bf5af2' },
+  { id: 'tools', name: 'AI 工具', icon: '◆', color: '#30d158' },
+  { id: 'tips', name: 'AI 技巧', icon: '✸', color: '#ff9f0a' },
+  { id: 'tech', name: '科技动态', icon: '❖', color: '#64d2ff' },
+  { id: 'design', name: '设计视野', icon: '❂', color: '#ff375f' },
+];
 
 /* ============================================================
    Utils
    ============================================================ */
-function $(sel) { return document.querySelector(sel); }
-function $$(sel) { return document.querySelectorAll(sel); }
+function $(sel, root) { return (root || document).querySelector(sel); }
+function $$(sel, root) { return [...(root || document).querySelectorAll(sel)]; }
 function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function fmtDate(d) {
   if (!d) return '';
@@ -977,6 +1303,7 @@ function relDate(d) {
   if (diff === 0) return '今天';
   if (diff === 1) return '昨天';
   if (diff > 0 && diff < 7) return `${diff}天前`;
+  if (diff < 0 && diff > -7) return `${-diff}天后`;
   return fmtDate(d);
 }
 function showToast(msg) {
@@ -988,16 +1315,57 @@ function showToast(msg) {
 }
 function saveState() {
   localStorage.setItem('ai-design-daily:read', JSON.stringify([...STATE.readItems]));
-  localStorage.setItem('ai-design-daily:kb', JSON.stringify([...STATE.kbItems]));
+  localStorage.setItem('ai-design-daily:kb', JSON.stringify([...STATE.kbItems].map(([k, v]) => [k, v])));
+}
+
+function findItem(id) {
+  if (!id) return null;
+  if (STATE.data) {
+    const found = STATE.data.items.find(i => i.id === id);
+    if (found) return found;
+  }
+  if (STATE.incremental) {
+    const found = STATE.incremental.items.find(i => i.id === id);
+    if (found) return found;
+  }
+  // fallback to KB-stored item
+  const note = STATE.kbItems.get(id);
+  if (note && typeof note === 'object' && note.item) return note.item;
+  return null;
+}
+
+function allItems() {
+  const seen = new Set();
+  const out = [];
+  const inc = (STATE.incremental && STATE.incremental.items) ? [...STATE.incremental.items].reverse() : [];
+  const base = (STATE.data && STATE.data.items) ? STATE.data.items : [];
+  for (const it of [...inc, ...base]) {
+    if (seen.has(it.id)) continue;
+    seen.add(it.id);
+    out.push(it);
+  }
+  return out;
+}
+
+function allCategories() {
+  if (STATE.data && STATE.data.categories && STATE.data.categories.length) {
+    return STATE.data.categories;
+  }
+  return ALL_CATEGORIES;
 }
 
 /* ============================================================
-   Render
+   Render: brand + banner + filters
    ============================================================ */
 function renderBrandSub() {
   if (!STATE.data) return;
   const d = STATE.data.date;
-  $('#brand-sub').textContent = `${fmtDate(d)} · ${STATE.data.totalItems} 条资讯`;
+  const incCount = STATE.incremental ? STATE.incremental.items.length : 0;
+  const baseCount = STATE.data.totalItems || STATE.data.items.length;
+  const total = baseCount + incCount;
+  let txt = `${fmtDate(d)} · ${total} 条`;
+  if (incCount > 0) txt += ` · 新增 ${incCount}`;
+  $('#brand-sub').textContent = txt;
 }
 
 function renderUpdateBanner() {
@@ -1012,12 +1380,11 @@ function renderUpdateBanner() {
       <div class="update-banner-title">${isNew ? '今日新内容已就绪' : '当前为最新内容'}</div>
       <div class="update-banner-sub">${STATE.data.updatedAt ? '更新于 ' + STATE.data.updatedAt.replace('T', ' ').slice(0, 16) : '每日 09:00 自动刷新'}</div>
     </div>
-    ${isNew ? `<button class="update-banner-action" id="banner-mark-read">标记为已读</button>` : ''}
+    ${isNew ? `<button class="update-banner-action" id="banner-mark-read">标为已读</button>` : ''}
   `;
   const markBtn = $('#banner-mark-read');
   if (markBtn) markBtn.onclick = markAllRead;
 
-  // Show red dot
   if (isNew) {
     $('#kb-badge').classList.add('show');
     $('#fab-kb-badge').classList.add('show');
@@ -1030,13 +1397,14 @@ function renderUpdateBanner() {
 function renderFilters() {
   const wrap = $('#filter-chips');
   if (!STATE.data) return;
-  const counts = { all: STATE.data.items.length };
-  for (const c of STATE.data.categories) {
-    counts[c.id] = STATE.data.items.filter(i => i.category === c.id).length;
+  const items = allItems();
+  const counts = { all: items.length };
+  for (const c of allCategories()) {
+    counts[c.id] = items.filter(i => i.category === c.id).length;
   }
   const chips = [
     `<button class="chip ${STATE.filter === 'all' ? 'active' : ''}" data-cat="all">全部<span class="chip-count">${counts.all}</span></button>`,
-    ...STATE.data.categories.map(c => `
+    ...allCategories().map(c => `
       <button class="chip ${STATE.filter === c.id ? 'active' : ''}" data-cat="${c.id}">
         <span class="chip-dot" style="color:${c.color}"></span>
         ${c.name}<span class="chip-count">${counts[c.id] || 0}</span>
@@ -1053,11 +1421,14 @@ function renderFilters() {
   });
 }
 
+/* ============================================================
+   Render: news list
+   ============================================================ */
 function renderGrid() {
   const grid = $('#grid');
   if (!STATE.data) return;
 
-  let items = STATE.data.items;
+  let items = allItems();
   if (STATE.filter !== 'all') {
     items = items.filter(i => i.category === STATE.filter);
   }
@@ -1084,125 +1455,354 @@ function renderGrid() {
   }
 
   grid.innerHTML = items.map(item => {
-    const cat = STATE.data.categories.find(c => c.id === item.category);
-    const color = cat ? cat.color : '#0a84ff';
+    const cat = allCategories().find(c => c.id === item.category) || { name: '', color: '#0a84ff' };
+    const color = cat.color;
     const isRead = STATE.readItems.has(item.id);
     const inKb = STATE.kbItems.has(item.id);
+    const isActive = STATE.selectedId === item.id;
+    const isInc = STATE.incremental && STATE.incremental.items.some(i => i.id === item.id);
     return `
-      <article class="card ${isRead ? 'read' : ''}" data-id="${item.id}" style="--cat-color:${color};--cat-color-soft:${color}22">
+      <article class="card ${isRead ? 'read' : ''} ${isActive ? 'active' : ''}" data-id="${item.id}" style="--cat-color:${color};--cat-color-soft:${color}22">
         <div class="card-header">
           <span class="cat-tag" style="color:${color}">
             <span class="cat-dot"></span>
-            ${cat ? cat.name : ''}
+            ${cat.name}
           </span>
+          ${isInc ? `<span class="cat-tag" style="color:#ff3b30;background:rgba(255,59,48,0.12)"><span class="cat-dot"></span>NEW</span>` : ''}
           <span class="card-date">${relDate(item.publishedAt)}</span>
         </div>
         <h3 class="card-title">${escapeHtml(item.title)}</h3>
-        <p class="card-summary" data-id="${item.id}">${escapeHtml(item.summary)}</p>
-        ${item.tags && item.tags.length ? `<div class="card-tags">${item.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+        <p class="card-summary">${escapeHtml(item.summary)}</p>
+        ${item.tags && item.tags.length ? `<div class="card-tags">${item.tags.slice(0, 4).map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
         <div class="card-footer">
           <span class="card-source">${escapeHtml(item.source || '')}</span>
           <div class="card-actions">
-            <button class="action-btn ${inKb ? 'active kb' : ''}" data-action="kb" data-id="${item.id}" title="加入知识库" aria-label="加入知识库">
+            <button class="action-btn ${inKb ? 'active kb' : ''}" data-action="kb" data-id="${item.id}" title="${inKb ? '移出知识库' : '加入知识库'}" aria-label="加入知识库">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
             </button>
             <button class="action-btn ${isRead ? 'active read' : ''}" data-action="read" data-id="${item.id}" title="${isRead ? '取消已读' : '标记已读'}" aria-label="标记已读">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
-            <a class="action-btn" href="${item.url}" target="_blank" rel="noopener" title="查看原文" aria-label="查看原文" style="text-decoration:none">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            </a>
           </div>
         </div>
       </article>
     `;
   }).join('');
 
-  // Wire actions
+  // Wire card click → select + show detail (PC)
+  grid.querySelectorAll('.card').forEach(card => {
+    card.onclick = (e) => {
+      if (e.target.closest('[data-action]') || e.target.closest('a')) return;
+      selectItem(card.dataset.id);
+    };
+  });
   grid.querySelectorAll('[data-action]').forEach(btn => {
     btn.onclick = (e) => {
       e.stopPropagation();
       const id = btn.dataset.id;
       const action = btn.dataset.action;
       if (action === 'read') toggleRead(id);
-      else if (action === 'kb') toggleKb(id);
-    };
-  });
-  grid.querySelectorAll('.card-summary').forEach(el => {
-    el.onclick = () => {
-      el.classList.toggle('expanded');
+      else if (action === 'kb') {
+        toggleKb(id);
+        // If just added, also select it so detail panel shows (PC)
+        if (STATE.kbItems.has(id)) selectItem(id);
+      }
     };
   });
 }
 
-function renderKb() {
-  const list = $('#kb-list');
-  const count = STATE.kbItems.size;
-  $('#kb-count').textContent = count;
-
-  if (count === 0) {
-    list.innerHTML = `
-      <div class="kb-empty">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-tertiary)"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        <div style="font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:4px">知识库为空</div>
-        <div style="font-size:12px">在资讯卡片上点击书签图标，把有用的内容收藏到这里</div>
-      </div>
-    `;
+/* ============================================================
+   Render: detail panel (PC center column)
+   ============================================================ */
+function renderDetail() {
+  const panel = $('#detail-panel');
+  if (!panel) return;
+  const empty = $('#detail-empty');
+  const content = $('#detail-content');
+  if (!STATE.selectedId) {
+    empty.style.display = 'flex';
+    content.style.display = 'none';
     return;
   }
+  const item = findItem(STATE.selectedId);
+  if (!item) {
+    empty.style.display = 'flex';
+    content.style.display = 'none';
+    return;
+  }
+  const cat = allCategories().find(c => c.id === item.category) || { name: '', color: '#0a84ff' };
+  const color = cat.color;
+  const isRead = STATE.readItems.has(item.id);
+  const inKb = STATE.kbItems.has(item.id);
+  empty.style.display = 'none';
+  content.style.display = 'flex';
+  content.style.setProperty('--cat-color', color);
+  content.innerHTML = `
+    <div class="detail-meta">
+      <span class="cat-tag" style="color:${color}">
+        <span class="cat-dot"></span>${cat.name}
+      </span>
+      <span class="detail-date">${fmtDate(item.publishedAt)} · ${relDate(item.publishedAt)}</span>
+    </div>
+    <h2 class="detail-title">${escapeHtml(item.title)}</h2>
+    <div class="detail-summary">${escapeHtml(item.summary)}</div>
+    ${item.tags && item.tags.length ? `<div class="detail-tags">${item.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+    <div class="detail-source">
+      来源: ${escapeHtml(item.source || '未知')}
+      ${item.url ? ` · <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">查看原文 ↗</a>` : ''}
+    </div>
+    <div class="detail-actions">
+      <button class="detail-action primary ${inKb ? 'active' : ''}" id="detail-kb-toggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        ${inKb ? '已加入知识库' : '加入知识库'}
+      </button>
+      <button class="detail-action read ${isRead ? 'active' : ''}" id="detail-read-toggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        ${isRead ? '已读' : '标为已读'}
+      </button>
+      ${item.url ? `<a class="detail-action secondary" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        原文
+      </a>` : ''}
+    </div>
+  `;
+  const kbBtn = $('#detail-kb-toggle');
+  if (kbBtn) kbBtn.onclick = () => {
+    toggleKb(item.id);
+    renderDetail();
+    renderGrid();
+  };
+  const readBtn = $('#detail-read-toggle');
+  if (readBtn) readBtn.onclick = () => {
+    toggleRead(item.id);
+    renderDetail();
+    renderGrid();
+  };
+}
 
-  const items = [...STATE.kbItems.entries()].map(([id, note]) => {
-    const newsItem = STATE.data ? STATE.data.items.find(i => i.id === id) : null;
+function selectItem(id) {
+  STATE.selectedId = id;
+  // mark read on view
+  if (!STATE.readItems.has(id)) {
+    STATE.readItems.add(id);
+    saveState();
+  }
+  renderGrid();
+  renderDetail();
+}
+
+/* ============================================================
+   Render: KB panel (both PC column and mobile drawer share the same renderer)
+   ============================================================ */
+function renderKbPanel(root) {
+  if (!root) return;
+  const count = STATE.kbItems.size;
+  root.innerHTML = `
+    <div class="kb-header">
+      <div class="kb-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        知识库
+      </div>
+      <span class="kb-count">${count}</span>
+      <div class="kb-actions">
+        <button class="kb-mini-btn kb-export" title="导出 JSON" aria-label="导出">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="kb-mini-btn kb-import" title="导入 JSON" aria-label="导入">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="kb-list">
+      ${count === 0 ? `
+        <div class="kb-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <div class="kb-empty-title">知识库为空</div>
+          <div class="kb-empty-sub">在资讯卡片上点击书签图标<br/>把有用的内容收藏到这里<br/>支持标题与富文本笔记编辑</div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  const list = $('.kb-list', root);
+  if (!list) return;
+
+  const items = [...STATE.kbItems.entries()].map(([id, stored]) => {
+    const newsItem = findItem(id);
+    const note = (typeof stored === 'object' && stored) ? (stored.note || '') : (stored || '');
+    const customTitle = (typeof stored === 'object' && stored) ? (stored.title || '') : '';
+    return { id, newsItem, note, customTitle };
+  }).reverse();
+
+  for (const { id, newsItem, note, customTitle } of items) {
     if (!newsItem) {
-      return `
-        <div class="kb-item">
-          <div class="kb-item-title">已删除的资讯</div>
-          <div class="kb-item-note">${escapeHtml(note || '')}</div>
+      // deleted source, but note kept
+      list.insertAdjacentHTML('beforeend', `
+        <div class="kb-item" data-id="${id}">
+          <div class="kb-item-title-edit" contenteditable="true" data-id="${id}" data-field="title">${escapeHtml(customTitle || '已删除的资讯')}</div>
+          <div class="kb-toolbar">
+            <button class="kb-tool" data-cmd="bold" title="粗体"><b>B</b></button>
+            <button class="kb-tool" data-cmd="italic" title="斜体"><i>I</i></button>
+            <button class="kb-tool" data-cmd="insertUnorderedList" title="列表"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+            <button class="kb-tool" data-cmd="formatBlock" data-value="blockquote" title="引用"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h2"/><path d="M14 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h2"/></svg></button>
+            <button class="kb-tool" data-cmd="createLink" title="链接"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+          </div>
+          <div class="kb-item-note-edit" contenteditable="true" data-id="${id}" data-field="note" data-placeholder="添加富文本笔记...">${note}</div>
           <div class="kb-item-footer">
-            <button class="kb-item-remove" data-remove-id="${id}">移除</button>
+            <button class="kb-item-btn remove" data-remove-id="${id}">移除</button>
           </div>
         </div>
-      `;
+      `);
+      continue;
     }
-    const cat = STATE.data.categories.find(c => c.id === newsItem.category);
-    const color = cat ? cat.color : '#0a84ff';
-    return `
-      <div class="kb-item">
-        <div style="display:flex;align-items:center;gap:6px">
+    const cat = allCategories().find(c => c.id === newsItem.category) || { name: '', color: '#0a84ff' };
+    const color = cat.color;
+    const isActive = STATE.selectedId === id;
+    list.insertAdjacentHTML('beforeend', `
+      <div class="kb-item ${isActive ? 'active' : ''}" data-id="${id}" style="--cat-color:${color}">
+        <div class="kb-item-meta">
           <span class="cat-tag" style="color:${color}">
-            <span class="cat-dot"></span>${cat ? cat.name : ''}
+            <span class="cat-dot"></span>${cat.name}
           </span>
+          <span style="font-size:10px;color:var(--text-tertiary);margin-left:auto">${relDate(newsItem.publishedAt)}</span>
         </div>
-        <div class="kb-item-title">${escapeHtml(newsItem.title)}</div>
+        <div class="kb-item-title-edit" contenteditable="true" data-id="${id}" data-field="title" style="color:${color}">${escapeHtml(customTitle || newsItem.title)}</div>
         <div class="kb-item-summary">${escapeHtml(newsItem.summary)}</div>
-        ${note ? `<div class="kb-item-note">${escapeHtml(note)}</div>` : ''}
+        <div class="kb-toolbar">
+          <button class="kb-tool" data-cmd="bold" title="粗体 (⌘B)"><b>B</b></button>
+          <button class="kb-tool" data-cmd="italic" title="斜体 (⌘I)"><i>I</i></button>
+          <button class="kb-tool" data-cmd="insertUnorderedList" title="无序列表"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+          <button class="kb-tool" data-cmd="formatBlock" data-value="blockquote" title="引用块"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h2"/><path d="M14 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h2"/></svg></button>
+          <button class="kb-tool" data-cmd="createLink" title="插入链接"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+          <button class="kb-tool" data-cmd="formatBlock" data-value="pre" title="代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></button>
+        </div>
+        <div class="kb-item-note-edit ${note ? '' : 'empty'}" contenteditable="true" data-id="${id}" data-field="note" data-placeholder="点击这里写笔记 · 支持粗体 / 列表 / 链接 / 引用">${note}</div>
         <div class="kb-item-footer">
-          <input class="kb-item-edit" data-edit-id="${id}" placeholder="添加笔记..." value="${escapeHtml(note || '')}">
-          <a class="kb-item-open" href="${newsItem.url}" target="_blank" rel="noopener">原文</a>
-          <button class="kb-item-remove" data-remove-id="${id}">移除</button>
+          <a class="kb-item-btn open" href="${escapeHtml(newsItem.url || '#')}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            原文
+          </a>
+          <button class="kb-item-btn remove" data-remove-id="${id}">移除</button>
         </div>
       </div>
-    `;
-  });
-  list.innerHTML = items.join('');
+    `);
+  }
 
-  list.querySelectorAll('[data-remove-id]').forEach(btn => {
+  // Wire KB item interactions
+  $$('.kb-item', root).forEach(item => {
+    const id = item.dataset.id;
+    // Click item (not on interactive) → select news item to show detail
+    item.addEventListener('click', (e) => {
+      if (e.target.closest('.kb-item-title-edit, .kb-item-note-edit, .kb-tool, .kb-item-btn, a')) return;
+      const newsItem = findItem(id);
+      if (newsItem) selectItem(id);
+    });
+  });
+
+  // Editable title (single line enter → blur)
+  $$('.kb-item-title-edit', root).forEach(el => {
+    el.addEventListener('blur', () => saveKbField(el));
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    });
+  });
+
+  // Editable rich text note
+  $$('.kb-item-note-edit', root).forEach(el => {
+    el.addEventListener('blur', () => {
+      saveKbField(el);
+      el.classList.toggle('empty', !el.textContent.trim());
+    });
+    el.addEventListener('input', () => {
+      el.classList.toggle('empty', !el.textContent.trim());
+    });
+    el.addEventListener('paste', (e) => {
+      // strip formatting on paste, keep plain text (optional - here we allow rich paste)
+      // e.preventDefault(); const text = (e.clipboardData || window.clipboardData).getData('text'); document.execCommand('insertText', false, text);
+    });
+  });
+
+  // Toolbar buttons → execCommand
+  $$('.kb-tool', root).forEach(btn => {
+    btn.addEventListener('mousedown', (e) => {
+      e.preventDefault(); // keep selection in the editor
+    });
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const cmd = btn.dataset.cmd;
+      const value = btn.dataset.value;
+      // Find the active editable in the same kb-item
+      const item = btn.closest('.kb-item');
+      const editor = $('.kb-item-note-edit', item);
+      if (!editor) return;
+      editor.focus();
+      if (cmd === 'createLink') {
+        const url = prompt('输入链接 URL:', 'https://');
+        if (url) document.execCommand('createLink', false, url);
+      } else if (cmd === 'formatBlock') {
+        const cur = document.queryCommandValue('formatBlock');
+        // toggle blockquote / pre
+        if (cur === value || cur === (value.toLowerCase())) {
+          document.execCommand('formatBlock', false, 'div');
+        } else {
+          document.execCommand('formatBlock', false, value);
+        }
+      } else {
+        document.execCommand(cmd, false, null);
+      }
+      // update active state
+      setTimeout(() => updateToolbarActive(btn), 0);
+      // save on next blur
+      editor.dispatchEvent(new Event('input'));
+    });
+  });
+
+  // Remove buttons
+  $$('[data-remove-id]', root).forEach(btn => {
     btn.onclick = () => {
       STATE.kbItems.delete(btn.dataset.removeId);
       saveState();
       renderKb();
       renderGrid();
+      renderDetail();
       showToast('已从知识库移除');
     };
   });
-  list.querySelectorAll('[data-edit-id]').forEach(input => {
-    input.onchange = () => {
-      const id = input.dataset.editId;
-      STATE.kbItems.set(id, input.value.trim());
-      saveState();
-      renderKb();
-    };
+
+  // Export / import
+  const exportBtn = $('.kb-export', root);
+  if (exportBtn) exportBtn.onclick = exportKb;
+  const importBtn = $('.kb-import', root);
+  if (importBtn) importBtn.onclick = () => $('#kb-import-input').click();
+}
+
+function updateToolbarActive(btn) {
+  // simple state reflection
+  const item = btn.closest('.kb-item');
+  const tools = $$('.kb-tool', item);
+  tools.forEach(t => {
+    try {
+      if (t.dataset.cmd && document.queryCommandState(t.dataset.cmd)) t.classList.add('active');
+      else t.classList.remove('active');
+    } catch (_) {}
   });
+}
+
+function saveKbField(el) {
+  const id = el.dataset.id;
+  const field = el.dataset.field;
+  const value = el.innerHTML;
+  let stored = STATE.kbItems.get(id);
+  if (typeof stored !== 'object' || stored === null) stored = { note: stored || '' };
+  if (field === 'title') stored.title = value.trim();
+  else if (field === 'note') stored.note = value;
+  STATE.kbItems.set(id, stored);
+  saveState();
+}
+
+function renderKb() {
+  renderKbPanel($('#kb-panel-pc'));
+  renderKbPanel($('#kb-panel-mobile'));
 }
 
 /* ============================================================
@@ -1217,24 +1817,30 @@ function toggleRead(id) {
   }
   saveState();
   renderGrid();
+  renderDetail();
 }
 
 function toggleKb(id) {
+  const item = findItem(id);
+  if (!item) return;
   if (STATE.kbItems.has(id)) {
     STATE.kbItems.delete(id);
     showToast('已移出知识库');
   } else {
-    STATE.kbItems.set(id, '');
-    showToast('已加入知识库');
+    // store both note (empty) + item snapshot for cross-device export
+    STATE.kbItems.set(id, { note: '', title: '', item: item });
+    showToast('已加入知识库 · 可在右侧编辑');
   }
   saveState();
   renderGrid();
   renderKb();
+  renderDetail();
 }
 
 function markAllRead() {
   if (!STATE.data) return;
-  STATE.data.items.forEach(i => STATE.readItems.add(i.id));
+  const all = allItems();
+  all.forEach(i => STATE.readItems.add(i.id));
   STATE.lastViewedDate = STATE.data.date;
   localStorage.setItem('ai-design-daily:last-viewed', STATE.lastViewedDate);
   saveState();
@@ -1262,26 +1868,107 @@ searchClear.addEventListener('click', () => {
 });
 
 /* ============================================================
-   KB panel
+   Sync button (manual incremental fetch)
    ============================================================ */
-function openKb() {
+async function syncIncremental() {
+  const btn = $('#sync-btn');
+  btn.classList.add('spinning');
+  try {
+    // Try to fetch news.json again - if updatedAt changed, merge as incremental
+    // Also try a separate sync.json if exists
+    const candidates = ['./sync.json', 'sync.json', '/sync.json', '/ai-design-daily/sync.json'];
+    let data = null;
+    for (const p of candidates) {
+      try {
+        const res = await fetch(p + '?t=' + Date.now());
+        if (!res.ok) continue;
+        data = await res.json();
+        break;
+      } catch (_) {}
+    }
+    if (data && data.items && data.items.length) {
+      // Merge: only keep items not already in base data
+      const baseIds = new Set((STATE.data && STATE.data.items || []).map(i => i.id));
+      const merged = data.items.filter(i => !baseIds.has(i.id));
+      if (merged.length > 0) {
+        STATE.incremental = { items: merged, updatedAt: data.updatedAt || new Date().toISOString() };
+        STATE.lastSyncAt = new Date().toISOString();
+        localStorage.setItem('ai-design-daily:last-sync', STATE.lastSyncAt);
+        showToast(`同步成功 · 新增 ${merged.length} 条`);
+        renderBrandSub();
+        renderFilters();
+        renderGrid();
+      } else {
+        showToast('已是最新 · 暂无新增');
+      }
+    } else {
+      // No sync.json — fallback to refetching news.json (which may include new items)
+      const refetchPaths = ['./news.json', 'news.json'];
+      let refreshed = null;
+      for (const p of refetchPaths) {
+        try {
+          const res = await fetch(p + '?t=' + Date.now());
+          if (!res.ok) continue;
+          refreshed = await res.json();
+          break;
+        } catch (_) {}
+      }
+      if (refreshed && STATE.data) {
+        const oldIds = new Set(allItems().map(i => i.id));
+        const newOnes = (refreshed.items || []).filter(i => !oldIds.has(i.id));
+        if (newOnes.length > 0) {
+          STATE.incremental = { items: newOnes, updatedAt: refreshed.updatedAt };
+          STATE.lastSyncAt = new Date().toISOString();
+          localStorage.setItem('ai-design-daily:last-sync', STATE.lastSyncAt);
+          showToast(`同步成功 · 新增 ${newOnes.length} 条`);
+          renderBrandSub();
+          renderFilters();
+          renderGrid();
+        } else {
+          showToast('已是最新 · 截止上一小时暂无新增');
+        }
+      } else {
+        showToast('暂无可同步的新内容');
+      }
+    }
+  } catch (e) {
+    showToast('同步失败: ' + (e.message || '未知错误'));
+  } finally {
+    btn.classList.remove('spinning');
+  }
+}
+$('#sync-btn').onclick = syncIncremental;
+
+/* ============================================================
+   Mobile KB drawer
+   ============================================================ */
+function openKbDrawer() {
   $('#kb-overlay').classList.add('show');
-  $('#kb-panel').classList.add('show');
-  $('#kb-panel').setAttribute('aria-hidden', 'false');
+  $('#kb-drawer').classList.add('show');
+  $('#kb-drawer').setAttribute('aria-hidden', 'false');
   renderKb();
 }
-function closeKb() {
+function closeKbDrawer() {
   $('#kb-overlay').classList.remove('show');
-  $('#kb-panel').classList.remove('show');
-  $('#kb-panel').setAttribute('aria-hidden', 'true');
+  $('#kb-drawer').classList.remove('show');
+  $('#kb-drawer').setAttribute('aria-hidden', 'true');
 }
-$('#open-kb').onclick = openKb;
-$('#fab-kb').onclick = openKb;
-$('#kb-close').onclick = closeKb;
-$('#kb-overlay').onclick = closeKb;
+$('#open-kb').onclick = () => {
+  // On large screens KB is already visible in right column - just scroll to it
+  if (window.innerWidth >= 1280) {
+    const col = $('.kb-col');
+    if (col) col.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+  openKbDrawer();
+};
+$('#fab-kb').onclick = openKbDrawer;
+$('#kb-overlay').onclick = closeKbDrawer;
 
-// Export
-$('#kb-export').onclick = () => {
+/* ============================================================
+   KB import / export
+   ============================================================ */
+function exportKb() {
   if (STATE.kbItems.size === 0) {
     showToast('知识库为空,无法导出');
     return;
@@ -1289,9 +1976,11 @@ $('#kb-export').onclick = () => {
   const exportData = {
     exportedAt: new Date().toISOString(),
     source: 'ai-design-daily',
-    items: [...STATE.kbItems.entries()].map(([id, note]) => {
-      const newsItem = STATE.data ? STATE.data.items.find(i => i.id === id) : null;
-      return newsItem ? { ...newsItem, note } : { id, note };
+    items: [...STATE.kbItems.entries()].map(([id, stored]) => {
+      const newsItem = findItem(id);
+      const note = (typeof stored === 'object' && stored) ? (stored.note || '') : (stored || '');
+      const title = (typeof stored === 'object' && stored) ? (stored.title || '') : '';
+      return { id, note, customTitle: title, item: newsItem };
     }),
   };
   const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -1302,10 +1991,8 @@ $('#kb-export').onclick = () => {
   a.click();
   URL.revokeObjectURL(url);
   showToast('已导出 ' + STATE.kbItems.size + ' 条');
-};
+}
 
-// Import
-$('#kb-import').onclick = () => $('#kb-import-input').click();
 $('#kb-import-input').addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -1318,7 +2005,9 @@ $('#kb-import-input').addEventListener('change', (e) => {
       let added = 0;
       for (const item of items) {
         if (item.id) {
-          STATE.kbItems.set(item.id, item.note || '');
+          const note = item.note || '';
+          const title = item.customTitle || item.title || '';
+          STATE.kbItems.set(item.id, { note, title, item: item.item || null });
           added++;
         }
       }
@@ -1339,16 +2028,9 @@ $('#kb-import-input').addEventListener('change', (e) => {
    ============================================================ */
 async function loadData() {
   const grid = $('#grid');
-  // Skeleton
   grid.innerHTML = Array(4).fill('<div class="skeleton-card"></div>').join('');
 
-  // Try multiple paths (local / GitHub Pages root / subpath)
-  const candidates = [
-    './news.json',
-    'news.json',
-    '/news.json',
-    '/ai-design-daily/news.json',
-  ];
+  const candidates = ['./news.json', 'news.json', '/news.json', '/ai-design-daily/news.json'];
   let data = null;
   let lastErr = null;
   for (const p of candidates) {
@@ -1357,9 +2039,7 @@ async function loadData() {
       if (!res.ok) continue;
       data = await res.json();
       break;
-    } catch (e) {
-      lastErr = e;
-    }
+    } catch (e) { lastErr = e; }
   }
   if (!data) {
     grid.innerHTML = `
@@ -1378,6 +2058,7 @@ async function loadData() {
   renderUpdateBanner();
   renderFilters();
   renderGrid();
+  renderDetail();
   renderKb();
 }
 
@@ -1389,7 +2070,15 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     searchInput.focus();
   } else if (e.key === 'Escape') {
-    if ($('#kb-panel').classList.contains('show')) closeKb();
+    if ($('#kb-drawer').classList.contains('show')) closeKbDrawer();
+    else if (STATE.selectedId) {
+      STATE.selectedId = null;
+      renderGrid();
+      renderDetail();
+    }
+  } else if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    syncIncremental();
   }
 });
 </script>

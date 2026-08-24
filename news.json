@@ -1,12 +1,14 @@
 {
   "date": "2026-08-23",
-  "updatedAt": "2026-08-24T09:00:00+08:00",
-  "totalItems": 12,
+  "updatedAt": "2026-08-24T10:50:00+08:00",
+  "totalItems": 16,
   "categories": [
     { "id": "interaction", "name": "交互设计", "icon": "✦", "color": "#0a84ff" },
     { "id": "styles", "name": "设计风格", "icon": "◈", "color": "#bf5af2" },
     { "id": "tools", "name": "AI 工具", "icon": "◆", "color": "#30d158" },
-    { "id": "tips", "name": "AI 技巧", "icon": "✸", "color": "#ff9f0a" }
+    { "id": "tips", "name": "AI 技巧", "icon": "✸", "color": "#ff9f0a" },
+    { "id": "tech", "name": "科技动态", "icon": "❖", "color": "#64d2ff" },
+    { "id": "design", "name": "设计视野", "icon": "❂", "color": "#ff375f" }
   ],
   "items": [
     {
@@ -128,6 +130,46 @@
       "url": "https://developer.cloud.tencent.com.cn/article/2725503",
       "tags": ["多感官", "全案设计", "实操案例"],
       "publishedAt": "2026-08-13"
+    },
+    {
+      "id": "20260823-013",
+      "category": "tech",
+      "title": "Anthropic 在 Claude 文本中嵌入 SynthID 水印应对 EU AI Act",
+      "summary": "为符合 2026 年 8 月生效的欧盟 AI Act 透明度条款，Anthropic 在 Claude 模型与 API 输出中嵌入 Google DeepMind 的 SynthID-Text 文本水印。水印对人类不可见但可被算法检测，用于标识 AI 生成内容。引发用户关于检测、隐私与学术诚信的讨论。",
+      "source": "AIBW Newsroom",
+      "url": "https://aibreakingwire.com/news/anthropic-reveals-synthid-text-watermarking-details-for-claude-ai",
+      "tags": ["Anthropic", "水印", "合规", "EU AI Act"],
+      "publishedAt": "2026-08-16"
+    },
+    {
+      "id": "20260823-014",
+      "category": "tech",
+      "title": "SpaceX 60 亿美元收购 AI 编程工具 Cursor",
+      "summary": "SpaceX 正式完成对 AI 编程平台 Cursor 的 60 亿美元收购，为这家初创公司提供大规模算力基础设施。Cursor 团队将获得 SpaceX 的算力资源支持模型训练与推理，可能重塑 AI 编程工具市场格局。",
+      "source": "AIBW Newsroom",
+      "url": "https://aibreakingwire.com/news/spacex-closes-60b-acquisition-of-ai-coding-startup-cursor",
+      "tags": ["收购", "Cursor", "SpaceX", "AI 编程"],
+      "publishedAt": "2026-08-15"
+    },
+    {
+      "id": "20260823-015",
+      "category": "design",
+      "title": "Config 2026：Figma Motion 与 Agent 生成 Shader 亮相",
+      "summary": "Config 2026 大会上 Figma 发布 Motion 动效功能与 Agent 生成 Shader 能力，意图通过对话式交互让动效与材质创作门槛大幅降低。当前仍处永久 Beta 阶段，实际生产能力有限，但方向明确：把创意构建块从手动界面操作转向对话式访问。",
+      "source": "Mazette",
+      "url": "https://www.mazette.co/en/blog/figma-motion-shaders-an-agent-stuck-in-permanent-beta-config-2026-under-the-microscope",
+      "tags": ["Figma", "Config 2026", "Motion", "Shader"],
+      "publishedAt": "2026-08-18"
+    },
+    {
+      "id": "20260823-016",
+      "category": "design",
+      "title": "Jin Lh 三段式 3D 工作流：ZBrush 造型、Blender 渲染、Photoshop 收尾",
+      "summary": "Creative Bloq 报道中国概念艺术家 Jin Lh（16 年经验）以写实黑暗奇幻与科幻题材见长。他的工作流分三段：ZBrush 完成高模造型、Blender 处理材质与渲染、Photoshop 做最终合成与色彩调整。对独立 3D 艺术家有借鉴价值：每一步都用最擅长的工具，不强行单软件全流程。",
+      "source": "Creative Bloq",
+      "url": "https://www.creativebloq.com/3d/video-game-design/stunning-demo-shows-unreal-engine-6-should-be-a-game-changer-for-rendering-cinematics",
+      "tags": ["3D 工作流", "ZBrush", "Blender", "概念艺术"],
+      "publishedAt": "2026-08-14"
     }
   ]
 }
