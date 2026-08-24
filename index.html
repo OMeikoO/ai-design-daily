@@ -857,6 +857,166 @@ a { color: inherit; }
 .kb-mini-btn:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
 .kb-mini-btn svg { width: 14px; height: 14px; }
 
+.kb-mini-btn.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+.kb-mini-btn.primary:hover { background: #006edc; }
+
+/* New item form */
+.kb-new-form {
+  padding: 12px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+.kb-new-form.show { display: flex; }
+.kb-new-form input,
+.kb-new-form textarea,
+.kb-new-form select {
+  width: 100%;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+}
+.kb-new-form input:focus,
+.kb-new-form textarea:focus,
+.kb-new-form select:focus { border-color: var(--accent); }
+.kb-new-form textarea { min-height: 70px; resize: vertical; line-height: 1.5; }
+.kb-new-form-row { display: flex; gap: 6px; }
+.kb-new-form-row > * { flex: 1; }
+.kb-new-submit {
+  padding: 8px 14px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.kb-new-submit:hover { background: #006edc; }
+.kb-new-cancel {
+  padding: 8px 14px;
+  background: var(--glass-bg-strong);
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+}
+.kb-new-hint { font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
+.kb-new-fetch-btn {
+  padding: 8px 10px;
+  background: var(--glass-bg-strong);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.kb-new-fetch-btn:hover { background: var(--glass-bg-elevated); }
+.kb-new-fetch-btn.spinning svg { animation: spin 1s linear infinite; }
+
+/* Article full text */
+.detail-article {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text-primary);
+  padding: 16px;
+  background: var(--glass-bg-strong);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border-subtle);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.detail-article p { margin: 0 0 12px; }
+.detail-article h1, .detail-article h2, .detail-article h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 16px 0 8px;
+  color: var(--text-primary);
+}
+.detail-article img { max-width: 100%; height: auto; border-radius: var(--radius-sm); margin: 8px 0; }
+.detail-article a { color: var(--accent); text-decoration: underline; word-break: break-all; }
+.detail-article blockquote {
+  margin: 12px 0;
+  padding: 8px 14px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--text-primary);
+  font-style: italic;
+}
+.detail-article pre {
+  background: var(--bg-base);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  font-size: 12px;
+  margin: 8px 0;
+}
+.detail-article code { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.detail-article ul, .detail-article ol { margin: 8px 0; padding-left: 24px; }
+.detail-article li { margin: 4px 0; }
+.detail-article-loading {
+  text-align: center;
+  padding: 30px 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.detail-article-loading .spinner {
+  width: 28px; height: 28px;
+  border: 3px solid var(--accent-soft);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.detail-article-error {
+  padding: 14px 16px;
+  background: rgba(255, 59, 48, 0.08);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  color: var(--danger);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.detail-article-error a { color: var(--accent); text-decoration: underline; }
+.detail-article-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--glass-bg-strong);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  transition: all 0.2s;
+}
+.detail-article-toggle:hover { background: var(--glass-bg-elevated); }
+.detail-article-toggle svg { width: 15px; height: 15px; }
+.detail-article-toggle.loading { pointer-events: none; opacity: 0.7; }
+.detail-article-toggle.loading svg { animation: spin 1s linear infinite; }
+
 .kb-list {
   flex: 1;
   overflow-y: auto;
@@ -1551,6 +1711,11 @@ function renderDetail() {
       来源: ${escapeHtml(item.source || '未知')}
       ${item.url ? ` · <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">查看原文 ↗</a>` : ''}
     </div>
+    ${item.url ? `<button class="detail-article-toggle" id="detail-load-article">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+      <span class="detail-article-toggle-label">加载全文</span>
+    </button>` : ''}
+    <div id="detail-article-container"></div>
     <div class="detail-actions">
       <button class="detail-action primary ${inKb ? 'active' : ''}" id="detail-kb-toggle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
@@ -1566,6 +1731,9 @@ function renderDetail() {
       </a>` : ''}
     </div>
   `;
+  // Load article full text button
+  const loadBtn = $('#detail-load-article');
+  if (loadBtn) loadBtn.onclick = () => loadArticleFullText(item, loadBtn);
   const kbBtn = $('#detail-kb-toggle');
   if (kbBtn) kbBtn.onclick = () => {
     toggleKb(item.id);
@@ -1605,6 +1773,9 @@ function renderKbPanel(root) {
       </div>
       <span class="kb-count">${count}</span>
       <div class="kb-actions">
+        <button class="kb-mini-btn primary kb-new-toggle" title="新建条目" aria-label="新建条目">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
         <button class="kb-mini-btn kb-export" title="导出 JSON" aria-label="导出">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </button>
@@ -1613,12 +1784,34 @@ function renderKbPanel(root) {
         </button>
       </div>
     </div>
+    <div class="kb-new-form" id="kb-new-form-${root.id}">
+      <input class="kb-new-url" type="url" placeholder="原文 URL（可选，粘贴后点抓取自动填充）">
+      <div class="kb-new-form-row">
+        <button class="kb-new-fetch-btn" title="从 URL 抓取标题和摘要">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          抓取
+        </button>
+      </div>
+      <input class="kb-new-title" type="text" placeholder="标题（必填）">
+      <textarea class="kb-new-summary" placeholder="摘要 / 笔记正文（可选，富文本在加入后编辑）"></textarea>
+      <div class="kb-new-form-row">
+        <select class="kb-new-cat">
+          ${allCategories().map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+        </select>
+        <input class="kb-new-tags" type="text" placeholder="标签，逗号分隔">
+      </div>
+      <div class="kb-new-hint">填写后点"添加"会在知识库创建一条独立条目，可继续编辑笔记。</div>
+      <div class="kb-new-form-row">
+        <button class="kb-new-submit">添加</button>
+        <button class="kb-new-cancel">取消</button>
+      </div>
+    </div>
     <div class="kb-list">
       ${count === 0 ? `
         <div class="kb-empty">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           <div class="kb-empty-title">知识库为空</div>
-          <div class="kb-empty-sub">在资讯卡片上点击书签图标<br/>把有用的内容收藏到这里<br/>支持标题与富文本笔记编辑</div>
+          <div class="kb-empty-sub">点右上角 + 主动新建条目<br/>或在资讯卡片上点书签收藏<br/>支持标题与富文本笔记编辑</div>
         </div>
       ` : ''}
     </div>
@@ -1774,6 +1967,269 @@ function renderKbPanel(root) {
   if (exportBtn) exportBtn.onclick = exportKb;
   const importBtn = $('.kb-import', root);
   if (importBtn) importBtn.onclick = () => $('#kb-import-input').click();
+
+  // New item form (toggle + fetch + submit)
+  const newToggle = $('.kb-new-toggle', root);
+  const newForm = $('.kb-new-form', root);
+  if (newToggle && newForm) {
+    newToggle.onclick = () => {
+      const showing = newForm.classList.toggle('show');
+      if (showing) {
+        const titleInput = $('.kb-new-title', newForm);
+        if (titleInput) titleInput.focus();
+      }
+    };
+    const fetchBtn = $('.kb-new-fetch-btn', newForm);
+    const urlInput = $('.kb-new-url', newForm);
+    const titleInput = $('.kb-new-title', newForm);
+    const summaryInput = $('.kb-new-summary', newForm);
+    const catSelect = $('.kb-new-cat', newForm);
+    const tagsInput = $('.kb-new-tags', newForm);
+
+    if (fetchBtn) fetchBtn.onclick = async () => {
+      const url = (urlInput.value || '').trim();
+      if (!url) { showToast('请先输入 URL'); return; }
+      fetchBtn.classList.add('spinning');
+      try {
+        const result = await fetchArticle(url, { metaOnly: true });
+        if (result.title) titleInput.value = result.title;
+        if (result.summary) summaryInput.value = result.summary;
+        if (result.source && !titleInput.dataset.filled) titleInput.dataset.filled = '1';
+        showToast('已抓取元数据');
+      } catch (e) {
+        showToast('抓取失败: ' + (e.message || 'CORS 限制') + ' · 可手动填写');
+      } finally {
+        fetchBtn.classList.remove('spinning');
+      }
+    };
+
+    const submitBtn = $('.kb-new-submit', newForm);
+    if (submitBtn) submitBtn.onclick = () => {
+      const title = titleInput.value.trim();
+      if (!title) { showToast('标题必填'); titleInput.focus(); return; }
+      const url = (urlInput.value || '').trim();
+      const summary = summaryInput.value.trim();
+      const cat = catSelect.value;
+      const tags = tagsInput.value.split(/[,，]/).map(t => t.trim()).filter(Boolean);
+      const id = 'manual-' + Date.now().toString(36);
+      const item = {
+        id, category: cat, title, summary: summary || '（暂无摘要）',
+        source: '手动添加', url, tags, publishedAt: fmtDate(new Date().toISOString()),
+      };
+      STATE.kbItems.set(id, { note: '', title: '', item });
+      saveState();
+      renderKb();
+      renderGrid();
+      // clear + hide
+      urlInput.value = ''; titleInput.value = ''; summaryInput.value = ''; tagsInput.value = '';
+      newForm.classList.remove('show');
+      showToast('已添加到知识库');
+    };
+
+    const cancelBtn = $('.kb-new-cancel', newForm);
+    if (cancelBtn) cancelBtn.onclick = () => {
+      newForm.classList.remove('show');
+    };
+  }
+}
+
+/* ============================================================
+   Article full text fetcher (with CORS proxy fallback)
+   ============================================================ */
+const CORS_PROXIES = [
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+  url => `https://r.jina.ai/${url}`, // reader mode (returns clean markdown/text)
+];
+
+async function fetchArticle(url, opts) {
+  opts = opts || {};
+  const errors = [];
+
+  // Try direct fetch first
+  try {
+    const res = await fetch(url, { mode: 'cors', credentials: 'omit' });
+    if (res.ok) {
+      const html = await res.text();
+      return parseArticleHtml(html, url);
+    }
+    errors.push(`direct: HTTP ${res.status}`);
+  } catch (e) {
+    errors.push('direct: ' + (e.message || 'CORS'));
+  }
+
+  // Fallback to proxies
+  for (const makeProxy of CORS_PROXIES) {
+    try {
+      const proxyUrl = makeProxy(url);
+      const res = await fetch(proxyUrl);
+      if (!res.ok) { errors.push(`proxy: HTTP ${res.status}`); continue; }
+      const text = await res.text();
+      if (makeProxy === CORS_PROXIES[2]) {
+        // r.jina.ai returns reader text
+        return { title: extractTitleFromText(text), summary: text.slice(0, 200), html: '<pre style="white-space:pre-wrap">' + escapeHtml(text) + '</pre>', source: extractDomain(url) };
+      }
+      return parseArticleHtml(text, url);
+    } catch (e) {
+      errors.push('proxy: ' + (e.message || 'fail'));
+    }
+  }
+  throw new Error(errors.join(' | '));
+}
+
+function parseArticleHtml(html, url) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  // Title
+  let title = '';
+  const ogTitle = doc.querySelector('meta[property="og:title"]');
+  if (ogTitle) title = ogTitle.getAttribute('content');
+  if (!title) title = doc.querySelector('title')?.textContent || '';
+  if (!title) {
+    const h1 = doc.querySelector('h1');
+    if (h1) title = h1.textContent;
+  }
+  title = title.trim();
+
+  // Summary / description
+  let summary = '';
+  const ogDesc = doc.querySelector('meta[property="og:description"]') || doc.querySelector('meta[name="description"]');
+  if (ogDesc) summary = ogDesc.getAttribute('content') || '';
+  summary = summary.trim().slice(0, 300);
+
+  // Main content - try common article selectors
+  const selectors = [
+    'article',
+    'main [role="main"]',
+    'main',
+    '.article-content', '.article-body', '.article',
+    '.post-content', '.post-body', '.entry-content',
+    '.content-body', '.story-body',
+    '#article-body', '#article',
+    '[itemprop="articleBody"]',
+    '.markdown-body', '.rich-text',
+  ];
+  let articleEl = null;
+  for (const sel of selectors) {
+    const el = doc.querySelector(sel);
+    if (el && el.textContent.trim().length > 200) {
+      articleEl = el;
+      break;
+    }
+  }
+  if (!articleEl) articleEl = doc.body;
+
+  // Clean: remove scripts, styles, ads, nav, footer
+  articleEl.querySelectorAll('script, style, noscript, iframe, nav, footer, header, aside, .ad, .ads, .advertisement, .share, .social, .related, .comments, .sidebar, .newsletter, .subscribe, [aria-hidden="true"]').forEach(n => n.remove());
+
+  // Convert to safe HTML (sanitize)
+  let html2 = articleEl.innerHTML;
+  // Allow only safe tags
+  const allowedTags = 'p,br,h1,h2,h3,h4,h5,h6,ul,ol,li,blockquote,pre,code,em,strong,b,i,a,img,figure,figcaption,table,thead,tbody,tr,td,th,div,span';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html2;
+  const cleaned = document.createElement('div');
+  const allowed = new Set(allowedTags.split(','));
+  function walk(src, dst) {
+    for (const node of [...src.childNodes]) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const t = node.textContent.replace(/\s+/g, ' ').trim();
+        if (t) dst.appendChild(document.createTextNode(t + ' '));
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const tag = node.tagName.toLowerCase();
+        if (!allowed.has(tag)) {
+          // recurse into blocked element (pull out its text/children)
+          walk(node, dst);
+          continue;
+        }
+        const clone = document.createElement(tag);
+        // sanitize attributes
+        for (const attr of [...node.attributes]) {
+          const name = attr.name.toLowerCase();
+          if (name === 'href' || name === 'src') {
+            try {
+              const abs = new URL(attr.value, url).href;
+              clone.setAttribute(name, abs);
+            } catch (_) {}
+          } else if (name === 'alt' || name === 'title' || name === 'class' === false) {
+            // keep alt/title only
+            if (name === 'alt' || name === 'title') clone.setAttribute(name, attr.value);
+          }
+        }
+        // skip empty paragraphs
+        walk(node, clone);
+        if (clone.textContent.trim() || tag === 'img' || tag === 'br') {
+          dst.appendChild(clone);
+        }
+      }
+    }
+  }
+  walk(tmp, cleaned);
+  // trim excessive empty paragraphs
+  cleaned.querySelectorAll('p').forEach(p => {
+    if (!p.textContent.trim() && !p.querySelector('img')) p.remove();
+  });
+
+  return {
+    title,
+    summary,
+    html: cleaned.innerHTML,
+    source: extractDomain(url),
+  };
+}
+
+function extractTitleFromText(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  return lines[0] || '';
+}
+function extractDomain(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch (_) { return ''; }
+}
+
+let _articleCache = new Map();
+async function loadArticleFullText(item, btn) {
+  const container = $('#detail-article-container');
+  if (!container) return;
+  // Toggle off if already loaded
+  if (container.dataset.loaded === '1' && container.dataset.loadedFor === item.id) {
+    container.innerHTML = '';
+    container.dataset.loaded = '0';
+    container.dataset.loadedFor = '';
+    btn.classList.remove('loading');
+    const label = $('.detail-article-toggle-label', btn.parentElement.parentElement) || $('.detail-article-toggle-label', btn);
+    if (label) label.textContent = '加载全文';
+    return;
+  }
+  if (btn) { btn.classList.add('loading'); const label = btn.querySelector('.detail-article-toggle-label'); if (label) label.textContent = '加载中...'; }
+  container.innerHTML = `<div class="detail-article-loading"><div class="spinner"></div><div>正在抓取原文...</div></div>`;
+  try {
+    let result = _articleCache.get(item.url);
+    if (!result) {
+      result = await fetchArticle(item.url);
+      _articleCache.set(item.url, result);
+    }
+    if (result.html && result.html.trim()) {
+      container.innerHTML = `<div class="detail-article">${result.html}</div>`;
+      container.dataset.loaded = '1';
+      container.dataset.loadedFor = item.id;
+      if (btn) { btn.classList.remove('loading'); const label = btn.querySelector('.detail-article-toggle-label'); if (label) label.textContent = '收起全文'; }
+    } else if (result.summary) {
+      container.innerHTML = `<div class="detail-article"><p>${escapeHtml(result.summary)}</p></div>`;
+      container.dataset.loaded = '1';
+      container.dataset.loadedFor = item.id;
+      if (btn) { btn.classList.remove('loading'); const label = btn.querySelector('.detail-article-toggle-label'); if (label) label.textContent = '收起全文'; }
+    } else {
+      throw new Error('未抓取到正文内容');
+    }
+  } catch (e) {
+    container.innerHTML = `
+      <div class="detail-article-error">
+        <div><strong>无法在站内加载全文</strong></div>
+        <div style="margin-top:6px">原因: ${escapeHtml(e.message || 'CORS 限制或网络问题')}</div>
+        <div style="margin-top:8px">该网站禁止跨域抓取。请点击下方"原文"在新标签打开阅读。</div>
+      </div>
+    `;
+    if (btn) { btn.classList.remove('loading'); const label = btn.querySelector('.detail-article-toggle-label'); if (label) label.textContent = '加载全文'; }
+  }
 }
 
 function updateToolbarActive(btn) {
