@@ -864,130 +864,58 @@ a { color: inherit; }
 .kb-mini-btn:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
 .kb-mini-btn svg { width: 14px; height: 14px; }
 
-/* DingTalk-style note compose area — unified glass panel */
-.kb-compose {
-  margin: 8px;
-  padding: 8px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  transition: border-color 0.2s;
-}
-.kb-compose:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
-}
-
-/* Title row: input + add button, no visible borders */
-.kb-compose-row {
+/* ============================================================
+   KB: New document editor (DingTalk-style)
+   ============================================================ */
+.kb-new-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-}
-.kb-compose-title {
-  flex: 1;
-  border: none;
-  background: transparent;
-  color: var(--text-primary);
-  padding: 8px 10px;
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  font-weight: 600;
-  outline: none;
-  font-family: inherit;
-  line-height: 1.4;
-  min-width: 0;
-  transition: background 0.15s;
-}
-.kb-compose-title:hover { background: var(--glass-bg-strong); }
-.kb-compose-title::placeholder { color: var(--text-tertiary); font-weight: 500; }
-
-/* Add button inside the panel, subtle pill */
-.kb-compose-add {
   padding: 7px 14px;
   background: var(--accent);
   color: #fff;
   border-radius: var(--radius-pill);
   font-size: 12px;
   font-weight: 600;
-  white-space: nowrap;
   transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  border: none;
+  cursor: pointer;
   flex-shrink: 0;
 }
-.kb-compose-add:hover { background: #006edc; transform: scale(1.02); }
-.kb-compose-add:active { transform: scale(0.97); }
-.kb-compose-add:disabled { opacity: 0.4; pointer-events: none; }
+.kb-new-btn:hover { background: #006edc; transform: scale(1.02); }
+.kb-new-btn:active { transform: scale(0.97); }
+.kb-new-btn svg { width: 14px; height: 14px; }
 
-/* Body textarea — no border, subtle bg */
-.kb-compose-body {
-  width: 100%;
-  min-height: 40px;
-  max-height: 160px;
-  resize: vertical;
-  border: none;
-  background: transparent;
-  color: var(--text-primary);
-  padding: 4px 10px 8px;
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  line-height: 1.6;
-  outline: none;
-  font-family: inherit;
-  transition: background 0.15s;
+.kb-doc-editor {
+  margin: 8px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  display: none;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  animation: kbDocSlideDown 0.25s ease-out;
 }
-.kb-compose-body:hover { background: var(--glass-bg-strong); }
-.kb-compose-body::placeholder { color: var(--text-tertiary); }
+@keyframes kbDocSlideDown {
+  from { opacity: 0; transform: translateY(-8px); max-height: 0; }
+  to { opacity: 1; transform: translateY(0); max-height: 2000px; }
+}
+.kb-doc-editor.show { display: flex; }
 
-/* Meta row: category, tags, URL toggle — all inline chips */
-.kb-compose-meta-row {
+.kb-doc-header {
   display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
   align-items: center;
-  padding: 4px 6px 2px;
-  border-top: 1px solid var(--glass-border-subtle);
-  margin-top: 2px;
-}
-.kb-compose-cat-select {
-  border: 1px solid var(--glass-border-subtle);
+  gap: 8px;
+  padding: 10px 12px;
   background: var(--glass-bg-strong);
-  color: var(--text-secondary);
-  padding: 4px 8px;
-  border-radius: var(--radius-pill);
-  font-size: 11px;
-  outline: none;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.15s;
+  border-bottom: 1px solid var(--glass-border-subtle);
 }
-.kb-compose-cat-select:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
-.kb-compose-tags-input {
-  border: none;
-  background: transparent;
-  color: var(--text-primary);
-  padding: 4px 8px;
-  border-radius: var(--radius-pill);
-  font-size: 11px;
-  outline: none;
-  font-family: inherit;
-  flex: 1;
-  min-width: 60px;
-  transition: background 0.15s;
-}
-.kb-compose-tags-input:hover { background: var(--glass-bg-strong); }
-.kb-compose-tags-input::placeholder { color: var(--text-tertiary); }
-
-/* URL toggle — minimal icon button */
-.kb-compose-url-toggle {
-  width: 26px; height: 26px;
+.kb-doc-close {
+  width: 24px; height: 24px;
   border-radius: var(--radius-sm);
   background: transparent;
   display: flex;
@@ -997,24 +925,14 @@ a { color: inherit; }
   transition: all 0.15s;
   flex-shrink: 0;
 }
-.kb-compose-url-toggle:hover { background: var(--glass-bg-strong); color: var(--text-primary); }
-.kb-compose-url-toggle.active { background: var(--accent-soft); color: var(--accent); }
-.kb-compose-url-toggle svg { width: 14px; height: 14px; }
-
-/* URL row — inline expansion */
-.kb-compose-url-row {
-  display: none;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 6px;
-}
-.kb-compose-url-row.show { display: flex; }
-.kb-compose-url {
+.kb-doc-close:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
+.kb-doc-close svg { width: 14px; height: 14px; }
+.kb-doc-url-input {
   flex: 1;
   border: 1px solid var(--glass-border-subtle);
-  background: var(--glass-bg-strong);
+  background: var(--bg-base);
   color: var(--text-primary);
-  padding: 5px 10px;
+  padding: 6px 10px;
   border-radius: var(--radius-sm);
   font-size: 12px;
   outline: none;
@@ -1022,12 +940,12 @@ a { color: inherit; }
   transition: border-color 0.15s;
   min-width: 0;
 }
-.kb-compose-url:focus { border-color: var(--accent); }
-.kb-compose-fetch {
-  padding: 5px 10px;
-  background: var(--glass-bg-strong);
-  color: var(--text-primary);
-  border: 1px solid var(--glass-border-subtle);
+.kb-doc-url-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.kb-doc-url-input.loading { opacity: 0.6; }
+.kb-doc-fetch-btn {
+  padding: 6px 10px;
+  background: var(--accent);
+  color: #fff;
   border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 600;
@@ -1035,24 +953,213 @@ a { color: inherit; }
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  border: none;
+  cursor: pointer;
   transition: all 0.15s;
+  flex-shrink: 0;
 }
-.kb-compose-fetch:hover { background: var(--glass-bg-elevated); }
-.kb-compose-fetch.spinning svg { animation: spin 1s linear infinite; }
+.kb-doc-fetch-btn:hover { background: #006edc; }
+.kb-doc-fetch-btn.spinning svg { animation: spin 1s linear infinite; }
 
-/* Hint — subtle footer text */
-.kb-compose-hint {
-  font-size: 10px;
-  color: var(--text-tertiary);
-  line-height: 1.4;
-  padding: 2px 10px 4px;
+.kb-doc-body {
+  display: flex;
+  flex-direction: column;
 }
+.kb-doc-title {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  padding: 14px 16px 6px;
+  font-size: 17px;
+  font-weight: 700;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.4;
+  width: 100%;
+}
+.kb-doc-title::placeholder { color: var(--text-tertiary); font-weight: 500; }
+
+.kb-doc-content {
+  min-height: 160px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 10px 16px 16px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--text-primary);
+  outline: none;
+  font-family: inherit;
+  border: none;
+  background: transparent;
+  transition: background 0.2s;
+}
+.kb-doc-content:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+.kb-doc-content b, .kb-doc-content strong { font-weight: 700; }
+.kb-doc-content i, .kb-doc-content em { font-style: italic; }
+.kb-doc-content ul, .kb-doc-content ol { margin: 6px 0; padding-left: 20px; }
+.kb-doc-content li { margin: 3px 0; }
+.kb-doc-content a { color: var(--accent); text-decoration: underline; word-break: break-all; }
+.kb-doc-content code {
+  background: var(--glass-bg-strong);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+}
+.kb-doc-content blockquote {
+  margin: 8px 0;
+  padding: 8px 14px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text-secondary);
+}
+.kb-doc-content p { margin: 0 0 8px; }
+.kb-doc-content img { max-width: 100%; border-radius: var(--radius-sm); margin: 4px 0; }
+.kb-doc-content h1, .kb-doc-content h2, .kb-doc-content h3 {
+  font-weight: 700;
+  margin: 10px 0 6px;
+  line-height: 1.3;
+}
+.kb-doc-content h3 { font-size: 15px; }
+.kb-doc-content h4 { font-size: 14px; }
+.kb-doc-content div { margin: 4px 0; }
+
+.kb-doc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 7px 10px;
+  border-top: 1px solid var(--glass-border-subtle);
+  border-bottom: 1px solid var(--glass-border-subtle);
+  background: var(--glass-bg-strong);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.kb-doc-tool {
+  width: 28px; height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 12px;
+  font-weight: 600;
+}
+.kb-doc-tool:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
+.kb-doc-tool.active { background: var(--accent-soft); color: var(--accent); }
+.kb-doc-tool svg { width: 14px; height: 14px; }
+.kb-doc-tool.sep { width: 1px; height: 16px; background: var(--glass-border-subtle); margin: 0 4px; }
+
+.kb-doc-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--glass-bg-strong);
+  border-top: 1px solid var(--glass-border-subtle);
+}
+.kb-doc-cat {
+  border: 1px solid var(--glass-border-subtle);
+  background: var(--bg-base);
+  color: var(--text-secondary);
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  outline: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+.kb-doc-cat:hover { border-color: var(--accent); }
+.kb-doc-tags {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  padding: 5px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  outline: none;
+  font-family: inherit;
+  min-width: 60px;
+}
+.kb-doc-tags::placeholder { color: var(--text-tertiary); }
+.kb-doc-save {
+  padding: 7px 16px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.kb-doc-save:hover { background: #006edc; transform: scale(1.02); }
+.kb-doc-save:active { transform: scale(0.97); }
+.kb-doc-save:disabled { opacity: 0.5; pointer-events: none; }
 
 /* Article iframe preview */
 .detail-iframe-section {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+.detail-article-content {
+  width: 100%;
+  margin-top: 8px;
+  padding: 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(20px);
+  max-height: 600px;
+  overflow-y: auto;
+}
+.detail-full-content {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-primary);
+}
+.detail-full-content p {
+  margin: 0 0 12px;
+}
+.detail-full-content h1, .detail-full-content h2, .detail-full-content h3 {
+  margin: 16px 0 8px;
+  font-weight: 600;
+}
+.detail-full-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+  margin: 8px 0;
+}
+.detail-full-content blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+  color: var(--text-secondary);
+  margin: 12px 0;
+}
+.detail-full-content a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.detail-full-content ul, .detail-full-content ol {
+  padding-left: 20px;
+  margin: 8px 0;
 }
 .detail-iframe-wrap {
   position: relative;
@@ -1710,7 +1817,7 @@ function renderGrid() {
         <div class="card-footer">
           <span class="card-source">${escapeHtml(item.source || '')}</span>
           <div class="card-actions">
-            <button class="action-btn ${inKb ? 'active kb' : ''}" data-action="kb" data-id="${item.id}" title="${inKb ? '移出知识库' : '加入知识库'}" aria-label="加入知识库">
+            <button class="action-btn ${inKb ? 'active kb' : ''}" data-action="kb" data-id="${item.id}" title="${inKb ? '编辑知识库文档' : '保存到知识库 · 解析全文'}" aria-label="保存到知识库">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
             </button>
             <button class="action-btn ${isRead ? 'active read' : ''}" data-action="read" data-id="${item.id}" title="${isRead ? '取消已读' : '标记已读'}" aria-label="标记已读">
@@ -1736,9 +1843,11 @@ function renderGrid() {
       const action = btn.dataset.action;
       if (action === 'read') toggleRead(id);
       else if (action === 'kb') {
-        toggleKb(id);
-        // If just added, also select it so detail panel shows (PC)
-        if (STATE.kbItems.has(id)) selectItem(id);
+        const item = findItem(id);
+        if (!item) return;
+        // Open the document editor pre-filled with article data (DingTalk-style)
+        openEditorForArticle(item);
+        selectItem(id);
       }
     };
   });
@@ -1785,20 +1894,25 @@ function renderDetail() {
       ${item.url ? ` · <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">查看原文 ↗</a>` : ''}
     </div>
     ${item.url ? `<div class="detail-iframe-section">
+      <button class="detail-article-toggle" id="detail-parse-full">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span id="detail-parse-full-label">解析全文</span>
+      </button>
       <button class="detail-article-toggle" id="detail-iframe-toggle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-        <span class="detail-article-toggle-label">预览原文</span>
+        <span>预览原文</span>
       </button>
       <button class="detail-article-toggle" id="detail-copy-summary" title="复制摘要到剪贴板">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         <span>复制摘要</span>
       </button>
     </div>
+    <div id="detail-article-content" class="detail-article-content" style="display:none;"></div>
     <div id="detail-iframe-container"></div>` : ''}
     <div class="detail-actions">
       <button class="detail-action primary ${inKb ? 'active' : ''}" id="detail-kb-toggle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        ${inKb ? '已加入知识库' : '加入知识库'}
+        ${inKb ? '从知识库移除' : '保存到知识库'}
       </button>
       <button class="detail-action read ${isRead ? 'active' : ''}" id="detail-read-toggle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1810,16 +1924,57 @@ function renderDetail() {
       </a>` : ''}
     </div>
   `;
-  // iframe preview + copy summary buttons
+  // iframe preview + copy summary + parse full text buttons
   const iframeBtn = $('#detail-iframe-toggle');
   const copyBtn = $('#detail-copy-summary');
+  const parseBtn = $('#detail-parse-full');
+  const parseLabel = $('#detail-parse-full-label');
+  const articleContent = $('#detail-article-content');
   if (iframeBtn) iframeBtn.onclick = () => toggleIframePreview(item, iframeBtn);
   if (copyBtn) copyBtn.onclick = () => copySummaryToClipboard(item);
+  if (parseBtn && articleContent) {
+    parseBtn.onclick = async () => {
+      if (articleContent.style.display !== 'none' && articleContent.innerHTML.trim()) {
+        // Already loaded, just toggle visibility
+        articleContent.style.display = articleContent.style.display === 'none' ? 'block' : 'none';
+        return;
+      }
+      parseBtn.classList.add('spinning');
+      if (parseLabel) parseLabel.textContent = '抓取中...';
+      articleContent.style.display = 'block';
+      articleContent.innerHTML = '<p style="color:var(--text-tertiary);font-style:italic;padding:16px;">正在抓取全文内容...</p>';
+      try {
+        const result = await fetchArticleFull(item.url);
+        if (result.html) {
+          articleContent.innerHTML = '<div class="detail-full-content">' + result.html + '</div>';
+          if (parseLabel) parseLabel.textContent = '收起全文';
+          showToast('全文解析成功');
+        } else {
+          articleContent.innerHTML = '<p style="color:var(--text-tertiary);padding:16px;">未能解析到内容</p>';
+        }
+      } catch (e) {
+        articleContent.innerHTML = '<p style="color:var(--text-tertiary);padding:16px;">抓取失败: ' + escapeHtml(e.message || '网络错误') + '</p>';
+      } finally {
+        parseBtn.classList.remove('spinning');
+        if (parseLabel && parseLabel.textContent === '抓取中...') {
+          parseLabel.textContent = '解析全文';
+        }
+      }
+    };
+  }
   const kbBtn = $('#detail-kb-toggle');
   if (kbBtn) kbBtn.onclick = () => {
-    toggleKb(item.id);
-    renderDetail();
-    renderGrid();
+    // If already in KB, remove it; otherwise open editor to create new doc
+    if (STATE.kbItems.has(item.id)) {
+      STATE.kbItems.delete(item.id);
+      saveState();
+      renderKb();
+      renderGrid();
+      renderDetail();
+      showToast('已从知识库移除');
+    } else {
+      openEditorForArticle(item);
+    }
   };
   const readBtn = $('#detail-read-toggle');
   if (readBtn) readBtn.onclick = () => {
@@ -1854,6 +2009,10 @@ function renderKbPanel(root) {
       </div>
       <span class="kb-count">${count}</span>
       <div class="kb-actions">
+        <button class="kb-new-btn kb-create-btn" title="新建文档" aria-label="新建文档">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新建
+        </button>
         <button class="kb-mini-btn kb-export" title="导出 JSON" aria-label="导出">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </button>
@@ -1862,29 +2021,46 @@ function renderKbPanel(root) {
         </button>
       </div>
     </div>
-    <div class="kb-compose">
-      <div class="kb-compose-row">
-        <input class="kb-compose-title" type="text" placeholder="写一句标题..." autocomplete="off">
-        <button class="kb-compose-add" title="添加到知识库">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          添加
+    <div class="kb-doc-editor" id="kb-doc-editor-${root.id}">
+      <div class="kb-doc-header">
+        <button class="kb-doc-close" title="关闭" aria-label="关闭">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
-      </div>
-      <textarea class="kb-compose-body" placeholder="正文（可选）：粘贴摘录、自己的思考、命令片段..." autocomplete="off"></textarea>
-      <div class="kb-compose-meta-row">
-        <select class="kb-compose-cat-select">
-          ${allCategories().map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
-        </select>
-        <input class="kb-compose-tags-input" type="text" placeholder="标签，逗号分隔" autocomplete="off">
-        <button class="kb-compose-url-toggle" title="展开 URL 抓取入口" aria-label="URL 抓取">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-        </button>
-      </div>
-      <div class="kb-compose-url-row">
-        <input class="kb-compose-url" type="url" placeholder="原文 URL（可选）" autocomplete="off">
-        <button class="kb-compose-fetch" title="从 URL 自动抓取标题与摘要">
+        <input class="kb-doc-url-input" type="url" placeholder="粘贴 URL 自动解析文章内容..." autocomplete="off">
+        <button class="kb-doc-fetch-btn" title="从 URL 抓取全文">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           抓取
+        </button>
+      </div>
+      <div class="kb-doc-body">
+        <input class="kb-doc-title" type="text" placeholder="标题..." autocomplete="off">
+        <div class="kb-doc-toolbar">
+          <button class="kb-doc-tool" data-cmd="bold" title="粗体"><b>B</b></button>
+          <button class="kb-doc-tool" data-cmd="italic" title="斜体"><i>I</i></button>
+          <button class="kb-doc-tool" data-cmd="insertUnorderedList" title="列表">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+          <button class="kb-doc-tool" data-cmd="formatBlock" data-value="blockquote" title="引用">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h2"/><path d="M14 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h2"/></svg>
+          </button>
+          <button class="kb-doc-tool" data-cmd="createLink" title="链接">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </button>
+          <span class="kb-doc-tool sep"></span>
+          <button class="kb-doc-tool" data-cmd="insertHTML" data-value="&nbsp;&nbsp;&nbsp;" title="缩进">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 3 16"/><line x1="21" y1="12" x2="11" y2="12"/><line x1="21" y1="6" x2="11" y2="6"/><line x1="21" y1="18" x2="11" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="kb-doc-content" contenteditable="true" data-placeholder="在这里写下你的想法、摘录、或粘贴 URL 抓取的内容..."></div>
+      </div>
+      <div class="kb-doc-footer">
+        <select class="kb-doc-cat">
+          ${allCategories().map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+        </select>
+        <input class="kb-doc-tags" type="text" placeholder="标签，逗号分隔" autocomplete="off">
+        <button class="kb-doc-save" title="保存到知识库">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          保存
         </button>
       </div>
     </div>
@@ -1893,7 +2069,7 @@ function renderKbPanel(root) {
         <div class="kb-empty">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           <div class="kb-empty-title">知识库为空</div>
-          <div class="kb-empty-sub">上方输入标题，回车快速创建小记<br/>点 ⟳ 展开 URL 抓取入口<br/>也可在资讯卡片点书签收藏</div>
+          <div class="kb-empty-sub">点击顶部「+ 新建」创建文档<br/>或在资讯卡片点 🔖 一键保存并解析全文<br/>支持粘贴 URL 自动抓取内容</div>
         </div>
       ` : ''}
     </div>
@@ -2050,112 +2226,302 @@ function renderKbPanel(root) {
   const importBtn = $('.kb-import', root);
   if (importBtn) importBtn.onclick = () => $('#kb-import-input').click();
 
-  // DingTalk-style compose area
-  const titleInput = $('.kb-compose-title', root);
-  const bodyInput = $('.kb-compose-body', root);
-  const catSelect = $('.kb-compose-cat-select', root);
-  const tagsInput = $('.kb-compose-tags-input', root);
-  const urlToggle = $('.kb-compose-url-toggle', root);
-  const urlRow = $('.kb-compose-url-row', root);
-  const urlInput = $('.kb-compose-url', root);
-  const fetchBtn = $('.kb-compose-fetch', root);
-  const addBtn = $('.kb-compose-add', root);
+  // New document editor
+  const newBtn = $('.kb-create-btn', root);
+  const docEditor = $('.kb-doc-editor', root);
+  const docClose = $('.kb-doc-close', root);
+  const docUrlInput = $('.kb-doc-url-input', root);
+  const docFetchBtn = $('.kb-doc-fetch-btn', root);
+  const docTitle = $('.kb-doc-title', root);
+  const docContent = $('.kb-doc-content', root);
+  const docCat = $('.kb-doc-cat', root);
+  const docTags = $('.kb-doc-tags', root);
+  const docSave = $('.kb-doc-save', root);
 
-  if (urlToggle && urlRow) {
-    urlToggle.onclick = () => {
-      const on = urlRow.classList.toggle('show');
-      urlToggle.classList.toggle('active', on);
-      if (on) urlInput.focus();
-    };
+  function openDocEditor(prefill) {
+    prefill = prefill || {};
+    docEditor.classList.add('show');
+    docUrlInput.value = prefill.url || '';
+    docTitle.value = prefill.title || '';
+    docContent.innerHTML = '';
+    if (prefill.content) {
+      docContent.innerHTML = prefill.content;
+    } else if (prefill.autoFetch) {
+      // Show loading placeholder while fetching, but also pre-populate with summary
+      const summaryHtml = prefill.summary ? 
+        '<p style="color:var(--text-tertiary);font-size:12px;">原文摘要：</p><p>' + escapeHtml(prefill.summary) + '</p><p></p>' : '';
+      docContent.innerHTML = summaryHtml + '<p style="color:var(--text-tertiary);font-style:italic;">正在抓取全文...</p>';
+    } else if (prefill.summary) {
+      docContent.innerHTML = '<p>' + escapeHtml(prefill.summary) + '</p><p></p>';
+    }
+    docCat.value = prefill.category || 'interaction';
+    docTags.value = prefill.tags || '';
+    if (prefill.url) {
+      docUrlInput.value = prefill.url;
+    }
+    if (prefill.sourceUrl) {
+      docUrlInput.value = prefill.sourceUrl;
+    }
+    // Auto-trigger fetch if needed
+    if (prefill.autoFetch && prefill.url && isLikelyUrl(prefill.url)) {
+      showToast('正在抓取全文...');
+      autoFetchUrl(prefill.url, docTitle, docContent, docFetchBtn);
+    }
+    setTimeout(() => docTitle.focus(), 50);
+  }
+  // Store on panel for external access (used by openEditorForArticle)
+  root._openDocEditor = openDocEditor;
+  function closeDocEditor() {
+    docEditor.classList.remove('show');
   }
 
-  if (fetchBtn) fetchBtn.onclick = async () => {
-    const url = (urlInput.value || '').trim();
+  if (newBtn) newBtn.onclick = () => openDocEditor({});
+  if (docClose) docClose.onclick = closeDocEditor;
+
+  // URL auto-detect: when user pastes a URL, auto-fetch
+  if (docUrlInput) {
+    docUrlInput.addEventListener('paste', (e) => {
+      setTimeout(() => {
+        const url = docUrlInput.value.trim();
+        if (isLikelyUrl(url)) {
+          autoFetchUrl(url, docTitle, docContent, docFetchBtn);
+        }
+      }, 50);
+    });
+    docUrlInput.addEventListener('change', () => {
+      const url = docUrlInput.value.trim();
+      if (isLikelyUrl(url) && docContent.innerHTML.replace(/<[^>]*>/g, '').trim().length < 20) {
+        autoFetchUrl(url, docTitle, docContent, docFetchBtn);
+      }
+    });
+  }
+
+  if (docFetchBtn) docFetchBtn.onclick = () => {
+    const url = docUrlInput.value.trim();
     if (!url) { showToast('请先输入 URL'); return; }
-    fetchBtn.classList.add('spinning');
-    try {
-      const result = await fetchArticleMeta(url);
-      if (result.title) titleInput.value = result.title;
-      if (result.summary && !bodyInput.value.trim()) bodyInput.value = result.summary;
-      showToast('已抓取元数据 · 可继续编辑');
-    } catch (e) {
-      showToast('抓取失败 · 可手动填写: ' + (e.message || '').slice(0, 60));
-    } finally {
-      fetchBtn.classList.remove('spinning');
-    }
+    autoFetchUrl(url, docTitle, docContent, docFetchBtn);
   };
 
-  function composeAdd() {
-    const title = titleInput.value.trim();
-    if (!title) { showToast('标题不能为空'); titleInput.focus(); return; }
-    const body = bodyInput.value.trim();
-    const url = (urlInput.value || '').trim();
-    const cat = catSelect.value;
-    const tags = tagsInput.value.split(/[,，]/).map(t => t.trim()).filter(Boolean);
-    const id = 'note-' + Date.now().toString(36);
+  // Rich text toolbar
+  $$('.kb-doc-tool', docEditor).forEach(btn => {
+    btn.onclick = (e) => {
+      e.preventDefault();
+      const cmd = btn.dataset.cmd;
+      const val = btn.dataset.value || null;
+      if (cmd === 'createLink') {
+        const url = prompt('输入链接地址:', 'https://');
+        if (url) document.execCommand('createLink', false, url);
+      } else if (cmd) {
+        document.execCommand(cmd, false, val);
+      }
+      docContent.focus();
+    };
+  });
+
+  // Paste handler in content area: detect URLs and optionally fetch
+  if (docContent) {
+    docContent.addEventListener('paste', (e) => {
+      const text = (e.clipboardData || window.clipboardData).getData('text');
+      if (text && isLikelyUrl(text.trim())) {
+        // Let paste happen, then auto-fetch
+        setTimeout(() => {
+          const url = text.trim();
+          docUrlInput.value = url;
+          autoFetchUrl(url, docTitle, docContent, docFetchBtn);
+        }, 100);
+      }
+    });
+  }
+
+  if (docSave) docSave.onclick = () => {
+    const title = docTitle.value.trim();
+    if (!title) { showToast('标题不能为空'); docTitle.focus(); return; }
+    const contentHTML = docContent.innerHTML;
+    const contentText = docContent.textContent.trim();
+    const url = docUrlInput.value.trim();
+    const cat = docCat.value;
+    const tags = docTags.value.split(/[,，]/).map(t => t.trim()).filter(Boolean);
+    const id = 'doc-' + Date.now().toString(36);
     const item = {
       id, category: cat, title,
-      summary: body || '（暂无正文，加入后可在卡片里继续编辑）',
+      summary: contentText.slice(0, 200) || '（暂无内容）',
       source: url ? extractDomain(url) || '小记' : '小记',
       url, tags, publishedAt: fmtDate(new Date().toISOString()),
     };
-    STATE.kbItems.set(id, { note: body, title: '', item });
+    STATE.kbItems.set(id, { note: contentHTML, title: '', item });
     saveState();
-    // clear
-    titleInput.value = '';
-    bodyInput.value = '';
-    urlInput.value = '';
-    tagsInput.value = '';
-    urlRow.classList.remove('show');
-    urlToggle.classList.remove('active');
     renderKb();
     renderGrid();
-    showToast('已添加到知识库');
-    titleInput.focus();
-  }
+    showToast('已保存到知识库');
+    closeDocEditor();
+  };
 
-  if (addBtn) addBtn.onclick = composeAdd;
-  if (titleInput) titleInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); composeAdd(); }
-  });
-  if (bodyInput) bodyInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); composeAdd(); }
-  });
+  // Note: KB_PREFILL mechanism removed; openEditorForArticle now directly
+  // calls panel._openDocEditor() after renderKb() completes.
 }
 
 /* ============================================================
-   Article text extractor (for KB URL fetch)
+   URL helpers + article text extractor
    ============================================================ */
-async function fetchArticleMeta(url) {
+function isLikelyUrl(str) {
+  return /^https?:\/\//i.test(str.trim());
+}
+
+async function autoFetchUrl(url, titleEl, contentEl, fetchBtn) {
+  if (fetchBtn) fetchBtn.classList.add('spinning');
   try {
-    // Try r.jina.ai for metadata
-    const res = await fetch('https://r.jina.ai/' + url);
-    if (res.ok) {
+    const result = await fetchArticleFull(url);
+    if (result.title && titleEl && !titleEl.value.trim()) {
+      titleEl.value = result.title;
+    }
+    if (result.html && contentEl) {
+      // Only overwrite if content is basically empty (loading placeholder)
+      const existingText = contentEl.textContent.trim();
+      if (existingText.length < 30) {
+        contentEl.innerHTML = result.html;
+      } else {
+        // Append as a new section
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = result.html;
+        contentEl.appendChild(wrapper);
+      }
+      showToast('已抓取全文 · 可继续编辑');
+    } else if (result.text && contentEl) {
+      contentEl.textContent = result.text;
+      showToast('已抓取文本内容');
+    } else {
+      // No content returned - clear loading placeholder
+      if (contentEl && contentEl.textContent.trim().length < 30) {
+        contentEl.innerHTML = '<p style="color:var(--text-tertiary);font-style:italic;">未能获取到内容，请手动编辑或尝试其他 URL</p>';
+      }
+      showToast('未能解析该页面内容');
+    }
+  } catch (e) {
+    // If fetch fails, replace loading placeholder but preserve any existing content
+    if (contentEl) {
+      const html = contentEl.innerHTML;
+      // Check if the loading message is still there (meaning fetch didn't get any content)
+      if (html.includes('正在抓取全文') || html.includes('加载中')) {
+        // Replace loading message with a note, but keep any pre-populated summary
+        const cleaned = html
+          .replace(/<p[^>]*>正在抓取全文<\/p>/g, '')
+          .replace(/<p[^>]*>加载中\.\.\.<\/p>/g, '')
+          .trim();
+        contentEl.innerHTML = cleaned + 
+          (cleaned ? '<p></p>' : '') + 
+          '<p style="color:var(--text-tertiary);font-style:italic;">抓取失败 · 可手动粘贴内容或点击"抓取"重试</p>';
+      }
+    }
+    showToast('抓取失败: ' + (e.message || '网络错误').slice(0, 50));
+  } finally {
+    if (fetchBtn) fetchBtn.classList.remove('spinning');
+  }
+}
+
+async function fetchArticleFull(url) {
+  // List of CORS proxies to try, in order of preference
+  const proxies = [
+    // 1. jina.ai reader mode - best quality markdown
+    { url: 'https://r.jina.ai/' + url, parser: 'jina' },
+    // 2. allorigins - full HTML fetch
+    { url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url), parser: 'html' },
+    // 3. codetabs
+    { url: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url), parser: 'html' },
+    // 4. corsproxy.io
+    { url: 'https://corsproxy.io/?url=' + encodeURIComponent(url), parser: 'text' },
+    // 5. CORS.sh
+    { url: 'https://proxy.cors.sh/' + url, parser: 'html' },
+  ];
+
+  for (const proxy of proxies) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const res = await fetch(proxy.url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      
+      if (!res.ok) continue;
+      
       const text = await res.text();
-      const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-      const title = lines[0] || '';
-      const summary = lines.slice(0, 10).join('\n').slice(0, 300);
-      return { title, summary, source: extractDomain(url) };
-    }
-  } catch (_) {}
+      if (!text || text.length < 100) continue;
 
-  // Fallback: try allorigins
-  try {
-    const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
-    if (res.ok) {
-      const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      let title = '';
-      const ogTitle = doc.querySelector('meta[property="og:title"]');
-      if (ogTitle) title = ogTitle.getAttribute('content');
-      if (!title) title = doc.querySelector('title')?.textContent || '';
-      const ogDesc = doc.querySelector('meta[property="og:description"]') || doc.querySelector('meta[name="description"]');
-      const summary = ogDesc ? (ogDesc.getAttribute('content') || '').slice(0, 300) : '';
-      return { title: title.trim(), summary, source: extractDomain(url) };
-    }
-  } catch (_) {}
+      if (proxy.parser === 'jina') {
+        // jina returns markdown-like text
+        const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+        const title = lines[0] || '';
+        const html = text
+          .replace(/^# (.+)$/gm, '<h3>$1</h3>')
+          .replace(/^## (.+)$/gm, '<h4>$1</h4>')
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>')
+          .replace(/^- (.+)$/gm, '<li>$1</li>')
+          .replace(/\n\n+/g, '</p><p>')
+          .replace(/\n/g, '<br>');
+        return { title, html: '<p>' + html + '</p>', text };
+      }
 
-  throw new Error('无法抓取该 URL 的元数据');
+      if (proxy.parser === 'html') {
+        // HTML parsing proxies
+        const doc = new DOMParser().parseFromString(text, 'text/html');
+        let title = '';
+        const ogTitle = doc.querySelector('meta[property="og:title"]');
+        if (ogTitle) title = ogTitle.getAttribute('content');
+        if (!title) title = doc.querySelector('title')?.textContent || '';
+        if (!title) { const h1 = doc.querySelector('h1'); if (h1) title = h1.textContent; }
+        title = title.trim();
+
+        const selectors = ['article', 'main', '.article-content', '.entry-content', '.post-content', 'main[role="main"]', '.content', '#content', 'article[itemprop="articleBody"]'];
+        let article = null;
+        for (const sel of selectors) {
+          article = doc.querySelector(sel);
+          if (article && article.textContent.trim().length > 200) break;
+        }
+        if (!article) article = doc.body;
+
+        article.querySelectorAll('script,style,nav,footer,aside,.ad,.comments,.sidebar,.newsletter').forEach(n => n.remove());
+
+        const allowed = new Set(['p','h1','h2','h3','h4','h5','h6','ul','ol','li','blockquote','pre','code','em','strong','b','i','a','img','br','div','span','figure','figcaption','table','thead','tbody','tr','td','th']);
+        function sanitize(src) {
+          const dst = document.createElement('div');
+          for (const node of src.childNodes) {
+            if (node.nodeType === Node.TEXT_NODE) {
+              const t = node.textContent.replace(/\s+/g, ' ').trim();
+              if (t) dst.appendChild(document.createTextNode(t + ' '));
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+              const tag = node.tagName.toLowerCase();
+              if (!allowed.has(tag)) { sanitize(node, dst); continue; }
+              const clone = document.createElement(tag);
+              for (const attr of node.attributes) {
+                const name = attr.name.toLowerCase();
+                if (name === 'href' || name === 'src') {
+                  try { clone.setAttribute(name, new URL(attr.value, url).href); } catch (_) {}
+                } else if (name === 'alt' || name === 'title') {
+                  clone.setAttribute(name, attr.value);
+                }
+              }
+              sanitize(node, clone);
+              if (clone.textContent.trim() || tag === 'img' || tag === 'br') dst.appendChild(clone);
+            }
+          }
+          return dst.innerHTML;
+        }
+        const cleanHtml = sanitize(article);
+        if (cleanHtml && cleanHtml.length > 100) {
+          return { title, html: cleanHtml, text: article.textContent };
+        }
+      }
+
+      if (proxy.parser === 'text') {
+        // Simple text proxy
+        return { title: '', html: '<p>' + escapeHtml(text.slice(0, 5000)) + '</p>', text };
+      }
+    } catch (_) {
+      // Try next proxy
+      continue;
+    }
+  }
+
+  throw new Error('无法抓取该 URL 的内容');
 }
 
 function extractDomain(url) {
@@ -2173,7 +2539,7 @@ function toggleIframePreview(item, btn) {
     container.innerHTML = '';
     container.dataset.loaded = '0';
     container.dataset.loadedFor = '';
-    const label = $('.detail-article-toggle-label', btn);
+    const label = btn.querySelector('span');
     if (label) label.textContent = '预览原文';
     btn.classList.remove('active');
     return;
@@ -2195,7 +2561,7 @@ function toggleIframePreview(item, btn) {
   `;
   container.dataset.loaded = '1';
   container.dataset.loadedFor = item.id;
-  const label = $('.detail-article-toggle-label', btn);
+  const label = btn.querySelector('span');
   if (label) label.textContent = '收起预览';
   btn.classList.add('active');
 }
@@ -2307,6 +2673,62 @@ function toggleRead(id) {
   saveState();
   renderGrid();
   renderDetail();
+}
+
+// Global prefill state for KB editor (used by openEditorForArticle)
+let KB_PREFILL = null;
+
+/**
+ * Open the KB document editor pre-filled with an article's data.
+ * This is the main entry point for "加入知识库" → DingTalk-style new document flow.
+ */
+function openEditorForArticle(item) {
+  if (!item) return;
+
+  // 1. Ensure KB panel is visible (mobile drawer or scroll on PC)
+  if (window.innerWidth < 1280) {
+    openKbDrawer();  // This calls renderKb() internally, which sets up _openDocEditor
+  } else {
+    const col = $('.kb-col');
+    if (col) col.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // On PC, renderKb() may not have been called yet if KB was never interacted with
+    renderKb();
+  }
+
+  // 2. After render, find the visible panel and call its openDocEditor
+  setTimeout(() => {
+    // Find the visible KB panel
+    const pcPanel = $('#kb-panel-pc');
+    const mobilePanel = $('#kb-panel-mobile');
+    let panel = null;
+    
+    // Check which panel is visible
+    if (pcPanel && pcPanel.offsetParent !== null) {
+      panel = pcPanel;
+    } else if (mobilePanel && mobilePanel.offsetParent !== null) {
+      panel = mobilePanel;
+    } else if (mobilePanel && $('#kb-drawer').classList.contains('show')) {
+      panel = mobilePanel;
+    }
+    
+    if (!panel) {
+      console.warn('[openEditorForArticle] No visible KB panel found');
+      return;
+    }
+    
+    // Use the panel's stored openDocEditor function
+    if (panel._openDocEditor) {
+      panel._openDocEditor({
+        url: item.url || '',
+        title: item.title || '',
+        summary: item.summary || '',
+        category: item.category || 'interaction',
+        autoFetch: !!(item.url && isLikelyUrl(item.url)),
+      });
+    } else {
+      console.warn('[openEditorForArticle] panel._openDocEditor not found for', panel.id);
+    }
+  }, 150);
 }
 
 function toggleKb(id) {
