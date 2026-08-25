@@ -1161,6 +1161,233 @@ a { color: inherit; }
   padding-left: 20px;
   margin: 8px 0;
 }
+.detail-full-content code {
+  background: var(--glass-bg-strong);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  color: var(--accent);
+}
+.detail-full-content pre {
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.detail-full-content pre code {
+  background: none;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+/* ============================================================
+   KB document preview in detail panel
+   ============================================================ */
+.kb-doc-preview {
+  width: 100%;
+  margin-top: 8px;
+  padding: 24px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(20px);
+  max-height: calc(100vh - 320px);
+  overflow-y: auto;
+}
+.kb-doc-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--glass-border-subtle);
+}
+.kb-doc-preview-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(10, 132, 255, 0.1);
+  color: #0a84ff;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.kb-doc-preview-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+}
+.kb-doc-preview-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: var(--glass-bg-strong);
+  border-radius: var(--radius-sm);
+}
+.kb-doc-preview-content {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+.kb-doc-preview-content p {
+  margin: 0 0 12px;
+}
+.kb-doc-preview-content h1 { font-size: 24px; margin: 24px 0 12px; font-weight: 700; line-height: 1.3; }
+.kb-doc-preview-content h2 { font-size: 20px; margin: 20px 0 10px; font-weight: 700; line-height: 1.3; }
+.kb-doc-preview-content h3 { font-size: 17px; margin: 16px 0 8px; font-weight: 600; line-height: 1.4; }
+.kb-doc-preview-content h4 { font-size: 15px; margin: 12px 0 6px; font-weight: 600; }
+.kb-doc-preview-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+  margin: 12px 0;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.kb-doc-preview-content blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 8px 16px;
+  color: var(--text-secondary);
+  margin: 12px 0;
+  background: var(--glass-bg-strong);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.kb-doc-preview-content a {
+  color: var(--accent);
+  text-decoration: none;
+  word-break: break-all;
+  transition: opacity 0.2s;
+}
+.kb-doc-preview-content a:hover { opacity: 0.7; }
+.kb-doc-preview-content ul, .kb-doc-preview-content ol {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+.kb-doc-preview-content li {
+  margin: 4px 0;
+  line-height: 1.6;
+}
+.kb-doc-preview-content code {
+  background: var(--glass-bg-strong);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  color: var(--accent);
+}
+.kb-doc-preview-content pre {
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.kb-doc-preview-content pre code {
+  background: none;
+  padding: 0;
+  color: var(--text-primary);
+}
+.kb-doc-preview-content hr {
+  border: none;
+  border-top: 1px solid var(--glass-border);
+  margin: 24px 0;
+}
+.kb-doc-preview-content strong { font-weight: 700; }
+.kb-doc-preview-content em { font-style: italic; }
+.kb-doc-preview-content:empty::before {
+  content: '尚未添加笔记内容';
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* Tab switcher for detail / KB preview */
+.detail-tab-switch {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--glass-bg-strong);
+  border-radius: var(--radius-md);
+  margin-bottom: 0;
+}
+.detail-tab {
+  flex: 1;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.detail-tab.active {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.detail-tab:hover:not(.active) {
+  color: var(--text-secondary);
+}
+.detail-tab svg { width: 14px; height: 14px; }
+
+/* KB item preview in KB panel - show more content */
+.kb-item.expanded .kb-item-summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.kb-item.expanded .kb-item-note-edit {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.kb-item-preview-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(10, 132, 255, 0.1);
+  color: #0a84ff;
+  border: none;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.kb-item-preview-btn:hover {
+  background: rgba(10, 132, 255, 0.2);
+  transform: scale(1.05);
+}
+.kb-item-preview-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
 .detail-iframe-wrap {
   position: relative;
   width: 100%;
@@ -1604,6 +1831,7 @@ const STATE = {
   kbItems: new Map(JSON.parse(localStorage.getItem('ai-design-daily:kb') || '[]')),
   lastViewedDate: localStorage.getItem('ai-design-daily:last-viewed') || '',
   lastSyncAt: localStorage.getItem('ai-design-daily:last-sync') || '',
+  kbPreviewMode: 'detail', // 'detail' | 'kb' - which view to show in middle panel
 };
 
 const ALL_CATEGORIES = [
@@ -1670,7 +1898,23 @@ function findItem(id) {
   }
   // fallback to KB-stored item
   const note = STATE.kbItems.get(id);
-  if (note && typeof note === 'object' && note.item) return note.item;
+  if (note && typeof note === 'object') {
+    // If it has an item property, return it directly
+    if (note.item) return note.item;
+    // Otherwise construct a minimal item from stored data
+    if (note.note || note.title) {
+      return {
+        id: id,
+        title: note.title || '知识库文档',
+        summary: '',
+        category: 'interaction',
+        source: '小记',
+        url: '',
+        tags: [],
+        publishedAt: new Date().toISOString(),
+      };
+    }
+  }
   return null;
 }
 
@@ -1876,116 +2120,232 @@ function renderDetail() {
   const color = cat.color;
   const isRead = STATE.readItems.has(item.id);
   const inKb = STATE.kbItems.has(item.id);
+  const kbStored = STATE.kbItems.get(item.id);
+  
+  // Reset kbPreviewMode if not in KB
+  if (!inKb) STATE.kbPreviewMode = 'detail';
+  
   empty.style.display = 'none';
   content.style.display = 'flex';
   content.style.setProperty('--cat-color', color);
-  content.innerHTML = `
-    <div class="detail-meta">
-      <span class="cat-tag" style="color:${color}">
-        <span class="cat-dot"></span>${cat.name}
-      </span>
-      <span class="detail-date">${fmtDate(item.publishedAt)} · ${relDate(item.publishedAt)}</span>
-    </div>
-    <h2 class="detail-title">${escapeHtml(item.title)}</h2>
-    <div class="detail-summary">${escapeHtml(item.summary)}</div>
-    ${item.tags && item.tags.length ? `<div class="detail-tags">${item.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
-    <div class="detail-source">
-      来源: ${escapeHtml(item.source || '未知')}
-      ${item.url ? ` · <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">查看原文 ↗</a>` : ''}
-    </div>
-    ${item.url ? `<div class="detail-iframe-section">
-      <button class="detail-article-toggle" id="detail-parse-full">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        <span id="detail-parse-full-label">解析全文</span>
+  
+  // Build tab switcher if item is in KB
+  const tabSwitch = inKb ? `
+    <div class="detail-tab-switch" id="detail-tab-switch">
+      <button class="detail-tab ${STATE.kbPreviewMode === 'detail' ? 'active' : ''}" data-tab="detail">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        资讯详情
       </button>
-      <button class="detail-article-toggle" id="detail-iframe-toggle">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-        <span>预览原文</span>
-      </button>
-      <button class="detail-article-toggle" id="detail-copy-summary" title="复制摘要到剪贴板">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        <span>复制摘要</span>
+      <button class="detail-tab ${STATE.kbPreviewMode === 'kb' ? 'active' : ''}" data-tab="kb">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        知识库预览
       </button>
     </div>
-    <div id="detail-article-content" class="detail-article-content" style="display:none;"></div>
-    <div id="detail-iframe-container"></div>` : ''}
-    <div class="detail-actions">
-      <button class="detail-action primary ${inKb ? 'active' : ''}" id="detail-kb-toggle">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        ${inKb ? '从知识库移除' : '保存到知识库'}
-      </button>
-      <button class="detail-action read ${isRead ? 'active' : ''}" id="detail-read-toggle">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        ${isRead ? '已读' : '标为已读'}
-      </button>
-      ${item.url ? `<a class="detail-action secondary" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        原文
-      </a>` : ''}
-    </div>
-  `;
-  // iframe preview + copy summary + parse full text buttons
-  const iframeBtn = $('#detail-iframe-toggle');
-  const copyBtn = $('#detail-copy-summary');
-  const parseBtn = $('#detail-parse-full');
-  const parseLabel = $('#detail-parse-full-label');
-  const articleContent = $('#detail-article-content');
-  if (iframeBtn) iframeBtn.onclick = () => toggleIframePreview(item, iframeBtn);
-  if (copyBtn) copyBtn.onclick = () => copySummaryToClipboard(item);
-  if (parseBtn && articleContent) {
-    parseBtn.onclick = async () => {
-      if (articleContent.style.display !== 'none' && articleContent.innerHTML.trim()) {
-        // Already loaded, just toggle visibility
-        articleContent.style.display = articleContent.style.display === 'none' ? 'block' : 'none';
-        return;
-      }
-      parseBtn.classList.add('spinning');
-      if (parseLabel) parseLabel.textContent = '抓取中...';
-      articleContent.style.display = 'block';
-      articleContent.innerHTML = '<p style="color:var(--text-tertiary);font-style:italic;padding:16px;">正在抓取全文内容...</p>';
-      try {
-        const result = await fetchArticleFull(item.url);
-        if (result.html) {
-          articleContent.innerHTML = '<div class="detail-full-content">' + result.html + '</div>';
-          if (parseLabel) parseLabel.textContent = '收起全文';
-          showToast('全文解析成功');
-        } else {
-          articleContent.innerHTML = '<p style="color:var(--text-tertiary);padding:16px;">未能解析到内容</p>';
-        }
-      } catch (e) {
-        articleContent.innerHTML = '<p style="color:var(--text-tertiary);padding:16px;">抓取失败: ' + escapeHtml(e.message || '网络错误') + '</p>';
-      } finally {
-        parseBtn.classList.remove('spinning');
-        if (parseLabel && parseLabel.textContent === '抓取中...') {
-          parseLabel.textContent = '解析全文';
-        }
-      }
+  ` : '';
+  
+  // Determine which view to render
+  if (inKb && STATE.kbPreviewMode === 'kb') {
+    // KB document preview mode
+    const kbTitle = (typeof kbStored === 'object' && kbStored) ? (kbStored.title || '') : '';
+    const kbNote = (typeof kbStored === 'object' && kbStored) ? (kbStored.note || '') : (kbStored || '');
+    const displayTitle = kbTitle || item.title;
+    
+    content.innerHTML = `
+      ${tabSwitch}
+      <div class="kb-doc-preview">
+        <div class="kb-doc-preview-header">
+          <span class="kb-doc-preview-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            知识库文档
+          </span>
+          <span style="font-size:11px;color:var(--text-tertiary)">${fmtDate(item.publishedAt)} · ${relDate(item.publishedAt)}</span>
+        </div>
+        <h1 class="kb-doc-preview-title" style="color:${color}">${escapeHtml(displayTitle)}</h1>
+        <div class="kb-doc-preview-meta">
+          <span class="cat-tag" style="color:${color};font-size:11px;padding:2px 8px">
+            <span class="cat-dot"></span>${cat.name}
+          </span>
+          ${item.tags && item.tags.length ? item.tags.map(t => `<span class="tag" style="font-size:10px;padding:1px 6px">#${escapeHtml(t)}</span>`).join('') : ''}
+          <span style="font-size:10px;color:var(--text-tertiary);margin-left:auto">来自: ${escapeHtml(item.source || '未知')}</span>
+        </div>
+        <div class="kb-doc-preview-content">${kbNote}</div>
+        ${item.url ? `<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--glass-border-subtle);display:flex;gap:8px;align-items:center">
+          <span style="font-size:11px;color:var(--text-tertiary)">原文链接:</span>
+          <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent);word-break:break-all">${escapeHtml(item.url)}</a>
+        </div>` : ''}
+      </div>
+      <div class="detail-actions">
+        <button class="detail-action" id="detail-edit-kb">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          编辑文档
+        </button>
+        <button class="detail-action primary" id="detail-kb-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          从知识库移除
+        </button>
+        ${item.url ? `<a class="detail-action secondary" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          原文
+        </a>` : ''}
+      </div>
+    `;
+    
+    // Wire up tab switcher
+    const tabBtns = $$('.detail-tab', content);
+    tabBtns.forEach(btn => {
+      btn.onclick = () => {
+        STATE.kbPreviewMode = btn.dataset.tab;
+        renderDetail();
+      };
+    });
+    
+    // Wire up edit KB button
+    const editBtn = $('#detail-edit-kb');
+    if (editBtn) editBtn.onclick = () => {
+      openEditorForArticle(item);
     };
-  }
-  const kbBtn = $('#detail-kb-toggle');
-  if (kbBtn) kbBtn.onclick = () => {
-    // If already in KB, remove it; otherwise open editor to create new doc
-    if (STATE.kbItems.has(item.id)) {
+    
+    // Wire up KB toggle (remove from KB)
+    const kbBtn = $('#detail-kb-toggle');
+    if (kbBtn) kbBtn.onclick = () => {
       STATE.kbItems.delete(item.id);
+      STATE.kbPreviewMode = 'detail';
       saveState();
       renderKb();
       renderGrid();
       renderDetail();
       showToast('已从知识库移除');
-    } else {
-      openEditorForArticle(item);
+    };
+    
+  } else {
+    // News detail mode (default)
+    content.innerHTML = `
+      ${tabSwitch}
+      <div class="detail-meta">
+        <span class="cat-tag" style="color:${color}">
+          <span class="cat-dot"></span>${cat.name}
+        </span>
+        <span class="detail-date">${fmtDate(item.publishedAt)} · ${relDate(item.publishedAt)}</span>
+      </div>
+      <h2 class="detail-title">${escapeHtml(item.title)}</h2>
+      <div class="detail-summary">${escapeHtml(item.summary)}</div>
+      ${item.tags && item.tags.length ? `<div class="detail-tags">${item.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+      <div class="detail-source">
+        来源: ${escapeHtml(item.source || '未知')}
+        ${item.url ? ` · <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">查看原文 ↗</a>` : ''}
+      </div>
+      ${item.url ? `<div class="detail-iframe-section">
+        <button class="detail-article-toggle" id="detail-parse-full">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span id="detail-parse-full-label">解析全文</span>
+        </button>
+        <button class="detail-article-toggle" id="detail-iframe-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <span>预览原文</span>
+        </button>
+        <button class="detail-article-toggle" id="detail-copy-summary" title="复制摘要到剪贴板">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>复制摘要</span>
+        </button>
+      </div>
+      <div id="detail-article-content" class="detail-article-content" style="display:none;"></div>
+      <div id="detail-iframe-container"></div>` : ''}
+      <div class="detail-actions">
+        <button class="detail-action primary ${inKb ? 'active' : ''}" id="detail-kb-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          ${inKb ? '从知识库移除' : '保存到知识库'}
+        </button>
+        <button class="detail-action read ${isRead ? 'active' : ''}" id="detail-read-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          ${isRead ? '已读' : '标为已读'}
+        </button>
+        ${item.url ? `<a class="detail-action secondary" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          原文
+        </a>` : ''}
+      </div>
+    `;
+    
+    // Wire up tab switcher
+    if (inKb) {
+      const tabBtns = $$('.detail-tab', content);
+      tabBtns.forEach(btn => {
+        btn.onclick = () => {
+          STATE.kbPreviewMode = btn.dataset.tab;
+          renderDetail();
+        };
+      });
     }
-  };
-  const readBtn = $('#detail-read-toggle');
-  if (readBtn) readBtn.onclick = () => {
-    toggleRead(item.id);
-    renderDetail();
-    renderGrid();
-  };
+    
+    // iframe preview + copy summary + parse full text buttons
+    const iframeBtn = $('#detail-iframe-toggle');
+    const copyBtn = $('#detail-copy-summary');
+    const parseBtn = $('#detail-parse-full');
+    const parseLabel = $('#detail-parse-full-label');
+    const articleContent = $('#detail-article-content');
+    if (iframeBtn) iframeBtn.onclick = () => toggleIframePreview(item, iframeBtn);
+    if (copyBtn) copyBtn.onclick = () => copySummaryToClipboard(item);
+    if (parseBtn && articleContent) {
+      parseBtn.onclick = async () => {
+        if (articleContent.style.display !== 'none' && articleContent.innerHTML.trim()) {
+          // Already loaded, just toggle visibility
+          articleContent.style.display = articleContent.style.display === 'none' ? 'block' : 'none';
+          return;
+        }
+        parseBtn.classList.add('spinning');
+        if (parseLabel) parseLabel.textContent = '抓取中...';
+        articleContent.style.display = 'block';
+        articleContent.innerHTML = '<p style="color:var(--text-tertiary);font-style:italic;padding:16px;">正在抓取全文内容...</p>';
+        try {
+          const result = await fetchArticleFull(item.url);
+          if (result.html) {
+            articleContent.innerHTML = '<div class="detail-full-content">' + result.html + '</div>';
+            if (parseLabel) parseLabel.textContent = '收起全文';
+            showToast('全文解析成功');
+          } else {
+            articleContent.innerHTML = '<p style="color:var(--text-tertiary);padding:16px;">未能解析到内容</p>';
+          }
+        } catch (e) {
+          articleContent.innerHTML = '<p style="color:var(--text-tertiary);padding:16px;">抓取失败: ' + escapeHtml(e.message || '网络错误') + '</p>';
+        } finally {
+          parseBtn.classList.remove('spinning');
+          if (parseLabel && parseLabel.textContent === '抓取中...') {
+            parseLabel.textContent = '解析全文';
+          }
+        }
+      };
+    }
+    const kbBtn = $('#detail-kb-toggle');
+    if (kbBtn) kbBtn.onclick = () => {
+      // If already in KB, remove it; otherwise open editor to create new doc
+      if (STATE.kbItems.has(item.id)) {
+        STATE.kbItems.delete(item.id);
+        saveState();
+        renderKb();
+        renderGrid();
+        renderDetail();
+        showToast('已从知识库移除');
+      } else {
+        openEditorForArticle(item);
+      }
+    };
+    const readBtn = $('#detail-read-toggle');
+    if (readBtn) readBtn.onclick = () => {
+      toggleRead(item.id);
+      renderDetail();
+      renderGrid();
+    };
+  }
 }
 
-function selectItem(id) {
+function selectItem(id, mode) {
   STATE.selectedId = id;
+  // Set preview mode if specified
+  if (mode === 'kb') {
+    STATE.kbPreviewMode = 'kb';
+  } else {
+    STATE.kbPreviewMode = 'detail';
+  }
   // mark read on view
   if (!STATE.readItems.has(id)) {
     STATE.readItems.add(id);
@@ -2087,25 +2447,20 @@ function renderKbPanel(root) {
 
   for (const { id, newsItem, note, customTitle } of items) {
     if (!newsItem) {
-      // deleted source, but note kept
-      list.insertAdjacentHTML('beforeend', `
-        <div class="kb-item" data-id="${id}">
-          <div class="kb-item-title-edit" contenteditable="true" data-id="${id}" data-field="title">${escapeHtml(customTitle || '已删除的资讯')}</div>
-          <div class="kb-toolbar">
-            <button class="kb-tool" data-cmd="bold" title="粗体"><b>B</b></button>
-            <button class="kb-tool" data-cmd="italic" title="斜体"><i>I</i></button>
-            <button class="kb-tool" data-cmd="insertUnorderedList" title="列表"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
-            <button class="kb-tool" data-cmd="formatBlock" data-value="blockquote" title="引用"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h2"/><path d="M14 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h2"/></svg></button>
-            <button class="kb-tool" data-cmd="createLink" title="链接"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
-          </div>
-          <div class="kb-item-note-edit" contenteditable="true" data-id="${id}" data-field="note" data-placeholder="添加富文本笔记...">${note}</div>
-          <div class="kb-item-footer">
-            <button class="kb-item-btn remove" data-remove-id="${id}">移除</button>
-          </div>
-        </div>
-      `);
-      continue;
+      // deleted source, but note kept - construct a minimal item
+      const minimalItem = {
+        id: id,
+        title: customTitle || '已删除的资讯',
+        summary: '',
+        category: 'interaction',
+        source: '小记',
+        url: '',
+        tags: [],
+        publishedAt: new Date().toISOString(),
+      };
+      newsItem = minimalItem;
     }
+    // Continue rendering with the item
     const cat = allCategories().find(c => c.id === newsItem.category) || { name: '', color: '#0a84ff' };
     const color = cat.color;
     const isActive = STATE.selectedId === id;
@@ -2116,6 +2471,10 @@ function renderKbPanel(root) {
             <span class="cat-dot"></span>${cat.name}
           </span>
           <span style="font-size:10px;color:var(--text-tertiary);margin-left:auto">${relDate(newsItem.publishedAt)}</span>
+          <button class="kb-item-preview-btn" data-preview-id="${id}" title="在中间预览知识库文档">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="10" height="10"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            预览
+          </button>
         </div>
         <div class="kb-item-title-edit" contenteditable="true" data-id="${id}" data-field="title" style="color:${color}">${escapeHtml(customTitle || newsItem.title)}</div>
         <div class="kb-item-summary">${escapeHtml(newsItem.summary)}</div>
@@ -2142,11 +2501,29 @@ function renderKbPanel(root) {
   // Wire KB item interactions
   $$('.kb-item', root).forEach(item => {
     const id = item.dataset.id;
-    // Click item (not on interactive) → select news item to show detail
+    // Click item (not on interactive) → select news item to show KB preview
     item.addEventListener('click', (e) => {
-      if (e.target.closest('.kb-item-title-edit, .kb-item-note-edit, .kb-tool, .kb-item-btn, a')) return;
+      if (e.target.closest('.kb-item-title-edit, .kb-item-note-edit, .kb-tool, .kb-item-btn, a, .kb-item-preview-btn')) return;
       const newsItem = findItem(id);
-      if (newsItem) selectItem(id);
+      if (newsItem) selectItem(id, 'kb');
+    });
+  });
+
+  // Wire preview buttons
+  $$('.kb-item-preview-btn', root).forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.previewId;
+      const newsItem = findItem(id);
+      if (newsItem) {
+        // On mobile, open KB drawer first
+        if (window.innerWidth < 1280) {
+          openKbDrawer();
+        }
+        STATE.kbPreviewMode = 'kb';
+        selectItem(id, 'kb');
+        showToast('正在预览知识库文档...');
+      }
     });
   });
 
@@ -2349,9 +2726,17 @@ function renderKbPanel(root) {
       url, tags, publishedAt: fmtDate(new Date().toISOString()),
     };
     STATE.kbItems.set(id, { note: contentHTML, title: '', item });
+    // Add to data so it can be found by findItem
+    if (STATE.data && STATE.data.items) {
+      STATE.data.items.unshift(item);
+    }
     saveState();
     renderKb();
     renderGrid();
+    // Switch to KB preview mode to show the new document
+    STATE.selectedId = id;
+    STATE.kbPreviewMode = 'kb';
+    renderDetail();
     showToast('已保存到知识库');
     closeDocEditor();
   };
@@ -2695,7 +3080,13 @@ function openEditorForArticle(item) {
     renderKb();
   }
 
-  // 2. After render, find the visible panel and call its openDocEditor
+  // 2. Set the selected item and switch to KB preview mode
+  STATE.selectedId = item.id;
+  STATE.kbPreviewMode = 'kb';
+  renderGrid();
+  renderDetail();
+
+  // 3. After render, find the visible panel and call its openDocEditor
   setTimeout(() => {
     // Find the visible KB panel
     const pcPanel = $('#kb-panel-pc');
