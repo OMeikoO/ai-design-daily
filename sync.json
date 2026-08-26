@@ -1,128 +1,98 @@
 {
-  "date": "2026-08-24",
-  "updatedAt": "2026-08-24T11:00:00+08:00",
-  "source": "爱范儿每日早报",
-  "sourceUrl": "https://www.ifanr.com/1676314",
+  "date": "2026-08-25",
+  "updatedAt": "2026-08-26T09:07:59+08:00",
+  "source": "爱范儿每日早报 + WebSearch",
+  "sourceUrl": "https://www.ifanr.com/1676529",
   "items": [
     {
-      "id": "20260824-ifanr-001",
+      "id": "20260825-ifanr-007",
       "category": "tech",
-      "title": "小米公布玄戒芯片新进展",
-      "summary": "小米于今日 14 点公布自研玄戒芯片最新进展，持续加码自研芯片战略，这是小米手机+AIoT 生态的核心底层能力之一。",
+      "title": "英伟达Groq 3 LPX全面量产Vera Rubin推理吞吐量跃升30倍",
+      "summary": "英伟达宣布面向AI推理的Groq 3 LPX机架全面量产，主打低延迟Token生成。Vera Rubin NVL72平台在智能体工作负载测试中每兆瓦吞吐量达上代GB300的30倍，每Token成本降低最高35倍。",
       "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["小米", "玄戒", "自研芯片"],
-      "publishedAt": "2026-08-24"
+      "url": "https://www.ifanr.com/1676731",
+      "tags": ["英伟达", "AI推理", "芯片"]
     },
     {
-      "id": "20260824-ifanr-002",
+      "id": "20260825-ifanr-004",
       "category": "tools",
-      "title": "DeepSeek API 周末改为全天低谷计费",
-      "summary": "DeepSeek 宣布周末 API 计费调整为全天低谷价格，降低开发者周末调用成本，利好个人开发者和中小团队周末跑批量任务。",
+      "title": "字节跳动推出豆包工作Agent可操作虚拟桌面读取飞书上下文",
+      "summary": "字节跳动整合TRAE与扣子团队后正式推出「豆包工作」AI办公产品，Agent可操作虚拟桌面并读取飞书企业上下文，围绕用户目标自主拆解任务、调用工具、持续推进复杂工作流程。",
       "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["DeepSeek", "API", "计费"],
-      "publishedAt": "2026-08-24"
+      "url": "https://www.ifanr.com/1676731",
+      "tags": ["AI办公", "豆包", "Agent"]
     },
     {
-      "id": "20260824-ifanr-003",
+      "id": "20260825-ifanr-008",
       "category": "tech",
-      "title": "宇树机器人百米预赛小组垫底，公司称赛事准备受限",
-      "summary": "宇树科技人形机器人参加百米预赛仅获小组垫底，公司回应称受赛事准备时间与场地条件限制。折射出当前人形机器人在动态运动控制上的工程瓶颈。",
+      "title": "小米发布玄戒O3/O100/D100三款芯片贯通手机端侧AI智驾",
+      "summary": "小米发布玄戒O3、O100和D100三款自研芯片：O3为3nm手机SoC集成200TOPS NPU，O100为6nm端侧AI加速芯片每秒330Token推理，D100为3nm智驾芯片支持本地200B参数模型。",
       "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["宇树", "人形机器人", "运动控制"],
-      "publishedAt": "2026-08-24"
+      "url": "https://www.ifanr.com/1676529",
+      "tags": ["小米", "自研芯片", "端侧AI"]
     },
     {
-      "id": "20260824-ifanr-004",
+      "id": "20260825-ifanr-009",
+      "category": "tech",
+      "title": "小鹏机器人完成超9亿美元首轮融资IRON年底启动量产",
+      "summary": "小鹏集团旗下人形机器人业务完成超9亿美元首轮融资，投后估值超63亿美元。IRON机器人全身76自由度，搭载3颗自研图灵AI芯片总算力2250TOPS，计划年底投入门店和园区。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1676529",
+      "tags": ["人形机器人", "小鹏", "融资"]
+    },
+    {
+      "id": "20260825-search-004",
       "category": "tools",
-      "title": "OpenAI 限时下调 GPT-5.6 Sol API 价格",
-      "summary": "OpenAI 对 GPT-5.6 Sol 模型 API 进行限时降价，进一步降低高性能模型调用门槛，加剧大模型 API 价格竞争。",
-      "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["OpenAI", "GPT-5.6", "API", "价格"],
-      "publishedAt": "2026-08-24"
+      "title": "Figma发布AI自然语言编辑功能支持文字指令修改设计",
+      "summary": "Figma正式上线AI驱动的设计编辑能力，允许设计师通过自然语言指令修改设计，可自动生成图层重命名、批量调整、图像生成和交互原型，显著降低设计迭代技术门槛。",
+      "source": "AI D A M N",
+      "url": "https://ai-damn.com/figma-introduces-ai-powered-design-tools-for-streamlined-editing-1758150077315",
+      "tags": ["Figma", "AI设计工具", "自然语言编辑"]
     },
     {
-      "id": "20260824-ifanr-005",
-      "category": "tools",
-      "title": "神秘「牛来」模型 Ox Alpha 在 OpenRouter 和 OpenCode 限时免费开放",
-      "summary": "名为 Ox Alpha 的神秘模型在 OpenRouter 与 OpenCode 平台限时免费开放，被称为「牛来」模型，引发社区对其来源与能力的热议。",
-      "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["Ox Alpha", "OpenRouter", "免费模型"],
-      "publishedAt": "2026-08-24"
+      "id": "20260825-search-001",
+      "category": "interaction",
+      "title": "Mode AI 2.0发布AI Magic Frame重塑人机协作交互",
+      "summary": "设计助手平台Mode发布AI 2.0，核心功能「AI Magic Frame」允许设计师通过框选工作区域分享上下文，让AI更直观地理解项目并参与创作，标志着AI产品交互范式的重要转变。",
+      "source": "AI D A M N",
+      "url": "https://ai-damn.com/mode-ai-2-0-launches-shifting-focus-to-human-machine-collaboration-1747734299238",
+      "tags": ["AI设计工具", "人机协作", "交互创新"]
     },
     {
-      "id": "20260824-ifanr-006",
-      "category": "tech",
-      "title": "英伟达 AI 服务器被曝明年涨价超 15%",
-      "summary": "据爆料，英伟达 AI 服务器明年将涨价超过 15%，反映出 AI 算力需求持续旺盛，也意味着训练大模型的硬件成本将进一步上升。",
+      "id": "20260825-ifanr-001",
+      "category": "interaction",
+      "title": "MINI Spike接入阿里与DeepSeek模型升级智能座舱交互",
+      "summary": "MINI为旗下Spike车载助手接入阿里大语言模型与DeepSeek深度思考能力，实现连续对话、复杂任务处理和自然问答，座舱交互从「指令触发」进化到「意图理解」。",
       "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["英伟达", "AI 服务器", "涨价"],
-      "publishedAt": "2026-08-24"
+      "url": "https://www.ifanr.com/1676529",
+      "tags": ["车机交互", "HMI设计", "智能座舱"]
     },
     {
-      "id": "20260824-ifanr-007",
-      "category": "tech",
-      "title": "阿里拟配售 800 亿港元新股，净募资全部投入 AI",
-      "summary": "阿里巴巴拟配售 800 亿港元新股，净募资将全部投入 AI 相关业务，显示头部互联网公司持续将 AI 作为核心战略方向。",
-      "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["阿里", "融资", "AI 投资"],
-      "publishedAt": "2026-08-24"
+      "id": "20260825-search-002",
+      "category": "styles",
+      "title": "2026年UI/UX设计七大趋势：液态玻璃美学成主流视觉语言",
+      "summary": "2026年UI/UX设计七大核心趋势包括生成式界面GenUI、液态玻璃美学、多模态与感知交互等。液态玻璃美学通过动态模糊、镜面高光营造物理质感，正成为重塑数字产品视觉语言的核心风格。",
+      "source": "CSDN",
+      "url": "https://blog.csdn.net/lovechris00/article/details/159201040",
+      "tags": ["设计趋势", "液态玻璃", "GenUI"]
     },
     {
-      "id": "20260824-ifanr-008",
-      "category": "tools",
-      "title": "Claude Code Remote Control 新增服务器模式，手机可发起本地会话",
-      "summary": "Anthropic 为 Claude Code 推出 Remote Control 服务器模式，用户可通过手机发起并控制本地 Claude Code 会话，实现移动端远程调用本地编程能力。",
+      "id": "20260825-ifanr-012",
+      "category": "design",
+      "title": "天工机器人运动会获5金2银6铜展现具身设计新维度",
+      "summary": "天工系列在第二届世界人形机器人运动会上斩获5金2银6铜，天工Ultra大型组百米8.86秒刷新纪录。运动流畅性、场景适应性、人与机器人共存时的安全感设计，将成为新的设计竞技维度。",
       "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["Claude Code", "远程控制", "移动开发"],
-      "publishedAt": "2026-08-24"
+      "url": "https://www.ifanr.com/1676529",
+      "tags": ["人形机器人", "具身设计", "设计趋势"]
     },
     {
-      "id": "20260824-ifanr-009",
-      "category": "tools",
-      "title": "Google 为 Antigravity 2.0 上线浏览器远程控制",
-      "summary": "Google 为 Antigravity 2.0 上线浏览器远程控制能力，进一步打通浏览器作为跨设备控制入口的链路，强化 Web 端的远程交互体验。",
-      "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["Google", "Antigravity", "浏览器", "远程控制"],
-      "publishedAt": "2026-08-24"
-    },
-    {
-      "id": "20260824-ifanr-010",
-      "category": "tips",
-      "title": "《人类简史》作者赫拉利：现在正是阻止 AI 获得「权利」的时机",
-      "summary": "赫拉利指出，当下正是阻止 AI 获得「权利」的关键时机，呼吁社会在 AI 治理、伦理边界和权利定义上提前布局，避免被动让渡。",
-      "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["赫拉利", "AI 伦理", "AI 治理"],
-      "publishedAt": "2026-08-24"
-    },
-    {
-      "id": "20260824-ifanr-011",
-      "category": "tech",
-      "title": "苹果调整 Siri 与 Vision Pro 团队，约 200 个岗位受影响",
-      "summary": "苹果对 Siri 与 Vision Pro 团队进行调整，约 200 个岗位受影响，反映苹果在 AI 助手和空间计算业务上的资源重新分配。",
-      "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["苹果", "Siri", "Vision Pro", "组织调整"],
-      "publishedAt": "2026-08-24"
-    },
-    {
-      "id": "20260824-ifanr-012",
-      "category": "tech",
-      "title": "苹果首款折叠屏 iPhone 临近发布，新款 iPhone 或涨价",
-      "summary": "据彭博社 Mark Gurman 报道，苹果正准备推出首款折叠屏 iPhone，并考虑为新款 iPhone 涨价。折叠形态或重塑 iPhone 交互范式。",
-      "source": "爱范儿",
-      "url": "https://www.ifanr.com/1676314",
-      "tags": ["苹果", "折叠屏", "iPhone"],
-      "publishedAt": "2026-08-24"
+      "id": "20260825-ifanr-011",
+      "category": "design",
+      "title": "界面正在变薄体验正在变厚：AI时代设计价值重新定义",
+      "summary": "当AI开始替人行动，界面正在变薄，体验却在变厚。设计价值正从页面走向行为，设计师需要关注意图设计、边界设计和可托付性，核心能力从「画界面」转变为「设计规则」。",
+      "source": "品玩",
+      "url": "http://m.toutiao.com/group/7674880871865811519/",
+      "tags": ["设计哲学", "AI体验", "意图设计"]
     }
   ]
 }
