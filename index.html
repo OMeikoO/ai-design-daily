@@ -1963,6 +1963,7 @@ function findItem(id) {
 function allItems() {
   const seen = new Set();
   const out = [];
+  // Incremental items first (newest), then base items
   const inc = (STATE.incremental && STATE.incremental.items) ? [...STATE.incremental.items].reverse() : [];
   const base = (STATE.data && STATE.data.items) ? STATE.data.items : [];
   for (const it of [...inc, ...base]) {
@@ -1970,6 +1971,12 @@ function allItems() {
     seen.add(it.id);
     out.push(it);
   }
+  // Sort by publishedAt descending (newest first) for consistent display
+  out.sort((a, b) => {
+    const da = a.publishedAt || '';
+    const db = b.publishedAt || '';
+    return db.localeCompare(da);
+  });
   return out;
 }
 
@@ -3253,69 +3260,175 @@ searchClear.addEventListener('click', () => {
 });
 
 /* ============================================================
-   Sync button (manual incremental fetch)
+   Data loading + sync logic
+   ============================================================ */
+
+// Cache key for local persistence (survives CDN cache misses / network failures)
+const NEWS_CACHE_KEY = 'ai-design-daily:news-cache';
+
+function loadCachedData() {
+  try {
+    const cached = localStorage.getItem(NEWS_CACHE_KEY);
+    if (cached) return JSON.parse(cached);
+  } catch (_) {}
+  return null;
+}
+
+function saveCachedData(data) {
+  try {
+    // Only store essential fields to stay within localStorage limits (~5MB)
+    const slim = {
+      date: data.date,
+      updatedAt: data.updatedAt,
+      totalItems: data.totalItems,
+      categories: data.categories,
+      // Keep last 50 items max to manage storage
+      items: (data.items || []).slice(0, 50),
+    };
+    localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify(slim));
+  } catch (_) {}
+}
+
+async function loadData() {
+  const grid = $('#grid');
+  // Try to show cached data immediately (instant render, no flash)
+  const cached = loadCachedData();
+  if (cached && cached.items && cached.items.length) {
+    STATE.data = cached;
+    renderBrandSub();
+    renderDateBar();
+    renderUpdateBanner();
+    renderFilters();
+    renderGrid();
+    renderDetail();
+    renderKb();
+  }
+
+  // Fetch fresh data with cache-busting
+  const candidates = [
+    './news.json',
+    'news.json',
+    'https://raw.githubusercontent.com/OMeikoO/ai-design-daily/main/news.json',
+  ];
+  let data = null;
+  let lastErr = null;
+  for (const p of candidates) {
+    try {
+      const res = await fetch(p + '?v=' + Date.now());
+      if (!res.ok) continue;
+      data = await res.json();
+      break;
+    } catch (e) { lastErr = e; }
+  }
+
+  if (!data) {
+    // If we have cached data, keep showing it
+    if (cached) {
+      showToast('网络异常 · 显示上次缓存数据');
+      return;
+    }
+    grid.innerHTML = `
+      <div class="empty" style="grid-column:1/-1">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="empty-title">无法加载资讯数据</div>
+        <div class="empty-sub">${escapeHtml((lastErr && lastErr.message) || '请稍后刷新重试')}</div>
+      </div>
+    `;
+    return;
+  }
+
+  // If we already have cached data, merge incremental items
+  if (cached && cached.items) {
+    const oldIds = new Set(cached.items.map(i => i.id));
+    const newOnes = (data.items || []).filter(i => !oldIds.has(i.id));
+    if (newOnes.length > 0) {
+      // New items detected — store as incremental
+      STATE.incremental = { items: newOnes, updatedAt: data.updatedAt || new Date().toISOString() };
+    } else {
+      // No new items — clear incremental to avoid duplicates
+      STATE.incremental = null;
+    }
+  }
+
+  STATE.data = data;
+  saveCachedData(data);
+  renderBrandSub();
+  renderDateBar();
+  renderUpdateBanner();
+  renderFilters();
+  renderGrid();
+  renderDetail();
+  renderKb();
+}
+
+/* ============================================================
+   Sync button: manual incremental fetch
+   Single clear path — refetch news.json, compare IDs, merge new items
    ============================================================ */
 async function syncIncremental() {
   const btn = $('#sync-btn');
   btn.classList.add('spinning');
   try {
-    // Try to fetch news.json again - if updatedAt changed, merge as incremental
-    // Also try a separate sync.json if exists
-    const candidates = ['./sync.json', 'sync.json', '/sync.json', '/ai-design-daily/sync.json'];
+    // Always refetch news.json with cache-busting
+    const candidates = [
+      './news.json?v=' + Date.now(),
+      'https://raw.githubusercontent.com/OMeikoO/ai-design-daily/main/news.json?v=' + Date.now(),
+    ];
     let data = null;
     for (const p of candidates) {
       try {
-        const res = await fetch(p + '?t=' + Date.now());
+        const res = await fetch(p);
         if (!res.ok) continue;
         data = await res.json();
         break;
       } catch (_) {}
     }
-    if (data && data.items && data.items.length) {
-      // Merge: only keep items not already in base data
-      const baseIds = new Set((STATE.data && STATE.data.items || []).map(i => i.id));
-      const merged = data.items.filter(i => !baseIds.has(i.id));
-      if (merged.length > 0) {
-        STATE.incremental = { items: merged, updatedAt: data.updatedAt || new Date().toISOString() };
-        STATE.lastSyncAt = new Date().toISOString();
-        localStorage.setItem('ai-design-daily:last-sync', STATE.lastSyncAt);
-        showToast(`同步成功 · 新增 ${merged.length} 条`);
+
+    if (!data) {
+      showToast('同步失败 · 无法连接服务器');
+      return;
+    }
+
+    // Collect current IDs from base + existing incremental
+    const currentIds = new Set(allItems().map(i => i.id));
+
+    // Find new items (IDs not yet seen)
+    const newOnes = (data.items || []).filter(i => !currentIds.has(i.id));
+
+    if (newOnes.length > 0) {
+      // Merge new items into incremental
+      const prevIncremental = (STATE.incremental && STATE.incremental.items) || [];
+      const mergedNew = [...newOnes, ...prevIncremental.filter(i => !currentIds.has(i.id))];
+      STATE.incremental = { items: mergedNew, updatedAt: data.updatedAt || new Date().toISOString() };
+
+      // Update base data if it changed (e.g. new date or more items)
+      STATE.data = data;
+      saveCachedData(data);
+
+      STATE.lastSyncAt = new Date().toISOString();
+      localStorage.setItem('ai-design-daily:last-sync', STATE.lastSyncAt);
+      showToast(`同步成功 · 新增 ${newOnes.length} 条`);
+      renderBrandSub();
+      renderDateBar();
+      renderFilters();
+      renderGrid();
+    } else {
+      // Check if data itself is newer than what we have
+      const ourUpdatedAt = STATE.data ? STATE.data.updatedAt : '';
+      const remoteUpdatedAt = data.updatedAt || '';
+      if (remoteUpdatedAt && remoteUpdatedAt !== ourUpdatedAt) {
+        // Data changed but no new item IDs — could be content updates
+        STATE.data = data;
+        saveCachedData(data);
+        showToast('数据已更新 · 内容刷新');
         renderBrandSub();
         renderDateBar();
         renderFilters();
         renderGrid();
       } else {
         showToast('已是最新 · 暂无新增');
-      }
-    } else {
-      // No sync.json — fallback to refetching news.json (which may include new items)
-      const refetchPaths = ['./news.json', 'news.json'];
-      let refreshed = null;
-      for (const p of refetchPaths) {
-        try {
-          const res = await fetch(p + '?t=' + Date.now());
-          if (!res.ok) continue;
-          refreshed = await res.json();
-          break;
-        } catch (_) {}
-      }
-      if (refreshed && STATE.data) {
-        const oldIds = new Set(allItems().map(i => i.id));
-        const newOnes = (refreshed.items || []).filter(i => !oldIds.has(i.id));
-        if (newOnes.length > 0) {
-          STATE.incremental = { items: newOnes, updatedAt: refreshed.updatedAt };
-          STATE.lastSyncAt = new Date().toISOString();
-          localStorage.setItem('ai-design-daily:last-sync', STATE.lastSyncAt);
-          showToast(`同步成功 · 新增 ${newOnes.length} 条`);
-          renderBrandSub();
-          renderDateBar();
-          renderFilters();
-          renderGrid();
-        } else {
-          showToast('已是最新 · 截止上一小时暂无新增');
-        }
-      } else {
-        showToast('暂无可同步的新内容');
       }
     }
   } catch (e) {
@@ -3411,45 +3524,8 @@ $('#kb-import-input').addEventListener('change', (e) => {
 });
 
 /* ============================================================
-   Load data
+   Boot
    ============================================================ */
-async function loadData() {
-  const grid = $('#grid');
-  grid.innerHTML = Array(4).fill('<div class="skeleton-card"></div>').join('');
-
-  const candidates = ['./news.json', 'news.json', '/news.json', '/ai-design-daily/news.json'];
-  let data = null;
-  let lastErr = null;
-  for (const p of candidates) {
-    try {
-      const res = await fetch(p + '?t=' + Date.now());
-      if (!res.ok) continue;
-      data = await res.json();
-      break;
-    } catch (e) { lastErr = e; }
-  }
-  if (!data) {
-    grid.innerHTML = `
-      <div class="empty" style="grid-column:1/-1">
-        <div class="empty-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        </div>
-        <div class="empty-title">无法加载资讯数据</div>
-        <div class="empty-sub">${escapeHtml((lastErr && lastErr.message) || '请稍后刷新重试')}</div>
-      </div>
-    `;
-    return;
-  }
-  STATE.data = data;
-  renderBrandSub();
-  renderDateBar();
-  renderUpdateBanner();
-  renderFilters();
-  renderGrid();
-  renderDetail();
-  renderKb();
-}
-
 loadData();
 
 // Keyboard shortcuts
