@@ -420,6 +420,46 @@ a { color: inherit; }
   display: flex;
   flex-direction: column;
 }
+
+/* Date filter bar */
+.date-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0;
+  flex-shrink: 0;
+}
+.date-bar::-webkit-scrollbar { display: none; }
+.date-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.date-chip:hover { background: var(--glass-bg-elevated); color: var(--text-primary); }
+.date-chip.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+.date-chip-count {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
 @media (min-width: 1024px) {
   .list-col {
     height: calc(100vh - var(--safe-top) - var(--header-h) - 60px - 24px);
@@ -1764,6 +1804,7 @@ a { color: inherit; }
 <main class="layout">
   <!-- Left: list (independent scroll on PC) -->
   <section class="list-col">
+    <div class="date-bar" id="date-bar"></div>
     <div id="update-banner"></div>
     <div class="grid-wrap"><div class="grid" id="grid"></div></div>
   </section>
@@ -1827,6 +1868,7 @@ const STATE = {
   filter: 'all',
   query: '',
   selectedId: null,
+  selectedDate: 'all', // 'all' | 'YYYY-MM-DD'
   readItems: new Set(JSON.parse(localStorage.getItem('ai-design-daily:read') || '[]')),
   kbItems: new Map(JSON.parse(localStorage.getItem('ai-design-daily:kb') || '[]')),
   lastViewedDate: localStorage.getItem('ai-design-daily:last-viewed') || '',
@@ -1952,6 +1994,42 @@ function renderBrandSub() {
   $('#brand-sub').textContent = txt;
 }
 
+/* ============================================================
+   Render: date filter bar
+   ============================================================ */
+function renderDateBar() {
+  const bar = $('#date-bar');
+  if (!bar) return;
+  const items = allItems();
+  if (!items.length) { bar.innerHTML = ''; return; }
+  
+  // Collect unique dates from publishedAt
+  const dateMap = new Map();
+  for (const item of items) {
+    const d = fmtDate(item.publishedAt);
+    if (d) dateMap.set(d, (dateMap.get(d) || 0) + 1);
+  }
+  
+  // Sort dates descending (newest first)
+  const dates = [...dateMap.entries()].sort((a, b) => b[0].localeCompare(a[0]));
+  
+  const chips = [
+    `<button class="date-chip ${STATE.selectedDate === 'all' ? 'active' : ''}" data-date="all">全部<span class="date-chip-count">${items.length}</span></button>`,
+    ...dates.map(([d, count]) => {
+      const label = d.slice(5); // MM-DD
+      return `<button class="date-chip ${STATE.selectedDate === d ? 'active' : ''}" data-date="${d}">${label}<span class="date-chip-count">${count}</span></button>`;
+    }),
+  ];
+  bar.innerHTML = chips.join('');
+  bar.querySelectorAll('.date-chip').forEach(btn => {
+    btn.onclick = () => {
+      STATE.selectedDate = btn.dataset.date;
+      renderDateBar();
+      renderGrid();
+    };
+  });
+}
+
 function renderUpdateBanner() {
   const banner = $('#update-banner');
   if (!STATE.data) return;
@@ -1981,7 +2059,8 @@ function renderUpdateBanner() {
 function renderFilters() {
   const wrap = $('#filter-chips');
   if (!STATE.data) return;
-  const items = allItems();
+  // Count based on date-filtered items
+  const items = STATE.selectedDate === 'all' ? allItems() : allItems().filter(i => fmtDate(i.publishedAt) === STATE.selectedDate);
   const counts = { all: items.length };
   for (const c of allCategories()) {
     counts[c.id] = items.filter(i => i.category === c.id).length;
@@ -2013,6 +2092,10 @@ function renderGrid() {
   if (!STATE.data) return;
 
   let items = allItems();
+  // Date filter
+  if (STATE.selectedDate !== 'all') {
+    items = items.filter(i => fmtDate(i.publishedAt) === STATE.selectedDate);
+  }
   if (STATE.filter !== 'all') {
     items = items.filter(i => i.category === STATE.filter);
   }
@@ -3198,6 +3281,7 @@ async function syncIncremental() {
         localStorage.setItem('ai-design-daily:last-sync', STATE.lastSyncAt);
         showToast(`同步成功 · 新增 ${merged.length} 条`);
         renderBrandSub();
+        renderDateBar();
         renderFilters();
         renderGrid();
       } else {
@@ -3224,6 +3308,7 @@ async function syncIncremental() {
           localStorage.setItem('ai-design-daily:last-sync', STATE.lastSyncAt);
           showToast(`同步成功 · 新增 ${newOnes.length} 条`);
           renderBrandSub();
+          renderDateBar();
           renderFilters();
           renderGrid();
         } else {
@@ -3357,6 +3442,7 @@ async function loadData() {
   }
   STATE.data = data;
   renderBrandSub();
+  renderDateBar();
   renderUpdateBanner();
   renderFilters();
   renderGrid();
