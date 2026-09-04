@@ -1,7 +1,7 @@
 {
-  "date": "2026-09-03",
-  "updatedAt": "2026-09-03T10:00:00+08:00",
-  "totalItems": 10,
+  "date": "2026-09-04",
+  "updatedAt": "2026-09-04T10:00:00+08:00",
+  "totalItems": 8,
   "categories": [
     {
       "id": "interaction",
@@ -42,164 +42,132 @@
   ],
   "items": [
     {
-      "id": "20260903-ifanr-daily",
+      "id": "20260904-ifanr-daily",
       "category": "tech",
-      "title": "爱范儿早报：WorkBuddy开放、VAST 30亿融资、Tripo P2.0 3D大模型",
-      "summary": "①是什么：腾讯WorkBuddy开放平台上线，百家伙伴+9款联名硬件接入定位Agent操作系统；VAST合计融资30亿（累计50亿刷新AI 3D纪录），同步发布Tripo P2.0全球首个原生四边面拓扑3D大模型，端到端直出工业级网格；荣耀机器人闪电亮相海外，荣耀上半年成全球唯一安卓正增长中国厂商（+9%）。②对设计/PM的价值：Agent能力从独立App卖点转为可嵌入的平台能力，Tripo让3D素材生产从周级压缩到秒级，游戏/XR/影视团队可直连接口降低资产门槛。③建议：梳理自有产品对Agent的能力开放清单，评估Tripo API接入3D原型迭代的ROI。",
+      "title": "爱范儿早报：GPT-6 Astra破AGI测试、腾讯WorkBuddy开放平台上线、VAST30亿融资",
+      "summary": "9月4日OpenAI正式发布GPT-6 Astra，在FrontierMath Tier4获97.6%分、ARC-AGI-3获99.9%分、ExploitBench满分，全面超越Claude Fable 5.1，OpenAI称这是AGI时代起点；腾讯9月2日宣布WorkBuddy开放平台正式上线，首批接入百家生态伙伴、9款联名硬件、30+行业应用，目标是Agent时代的操作系统而非工具；VAST完成B+B+轮合计30亿融资，发布Tripo P2.0全球首个原生四边面3D大模型，支持秒级生成和引擎直出；毕马威发布世界模型报告，大晓机器人Kairos 3.1进入感知-生成-预测一体化架构第一梯队。",
       "source": "爱范儿",
-      "url": "https://www.ifanr.com/digest/1678124/",
+      "url": "https://www.ifanr.com/",
       "tags": [
-        "WorkBuddy开放平台",
-        "VAST融资",
-        "Tripo P2.0",
-        "Agent基座",
-        "3D大模型"
-      ],
-      "publishedAt": "2026-09-03"
-    },
-    {
-      "id": "20260903-36kr-001",
-      "category": "interaction",
-      "title": "36氪：WorkBuddy交出半条命，从AI办公助手走向Agent开放平台操作系统",
-      "summary": "①是什么：腾讯WorkBuddy 9月2日召开专场发布会，公布开放平台战略——过去是面向C端用户的AI办公助手（PC端月活658万排名办公Agent第一），现在转型为通用Agent插排，让合作伙伴的智能硬件、行业应用都能接入其Agent内核，首批9款联名硬件+30余个行业应用落地20+领域。②对产品/设计的价值：这标志着Agent产品的竞争从「单工具体验」升级为「生态连接广度」，交互设计不再只考虑人机对话，而是要设计Agent与外部硬件、跨App、跨服务的协同交互规范（MCP协议调用、上下文跨端同步、权限委托UI）。③实操建议：梳理Agent产品的接入层设计，定义好三类接口——对人（确认/授权/接管界面）、对硬件（能力注册/调用反馈）、对服务（事件订阅/结果回传），提前准备Agent生态的设计系统。",
-      "source": "36氪",
-      "url": "https://36kr.com/p/3966172585467398",
-      "tags": [
+        "GPT-6",
+        "AGI",
         "WorkBuddy",
-        "Agent开放平台",
-        "交互设计",
-        "MCP",
-        "生态连接"
+        "VAST",
+        "世界模型"
       ],
-      "publishedAt": "2026-09-03"
+      "publishedAt": "2026-09-04"
     },
     {
-      "id": "20260903-36kr-002",
+      "id": "20260904-36kr-astra",
       "category": "tech",
-      "title": "36氪：Anthropic Fable 5.1 屠榜+降本45%+反蒸馏，IPO前夕企业市场加码",
-      "summary": "①是什么：Anthropic 9月1日发布旗舰模型Fable 5.1，8项公开基准测试全面夺冠（科研Terminal-Bench得分从24.7%跃升至52.6%），编程与长链路代码库任务稳定性大幅提升；缓存读取价格降75%，智能体负载整体成本最多省45%；新增企业数据自有云留存、思维链签名反蒸馏机制；预计9月底美股上市，目标估值2万亿美元+。②设计/产品价值：长链路推理稳定性跃升意味着AI Agent可真正承担代码审查、设计系统全量校验、多文件资源编排等复杂任务；成本结构优化使设计团队大规模接入高推理模型的ROI变得可算；反蒸馏机制保护了企业的Prompt工程与设计知识资产不被竞品复刻。③行动建议：升级Fable 5.1的企业版试用，重点测试设计代码库全量扫描、设计规范文档→组件代码转换这两个场景的成本和质量变化。",
+      "title": "GPT-6 Astra发布：AGI测试干到近满分，全面狙击Claude Fable 5.1",
+      "summary": "OpenAI 9月4日正式推出GPT-6 Astra，在多项权威基准测试中创造历史级表现：FrontierMath Tier4 97.6%（首次解决数学开放性问题）、ARC-AGI-3 99.9%（AGI通用智能测试近满分）、ExploitBench 100%满分（网络安全攻防）。OpenAI联合创始人Greg Brockman称这或许就是「AGI时代」的起点。Astra已成为公司首个达到Preparedness Framework「关键级」网络安全能力阈值的模型。对产品经理和设计师的核心影响：模型能力天花板再次跃升，意味着AI产品可以从「辅助」转向「执行」，多步骤复杂任务（如自动设计一整套品牌系统）即将成为AI原生产品的标配能力。",
       "source": "36氪",
-      "url": "https://36kr.com/p/3965946765417989",
+      "url": "https://36kr.com/p/3968299418415362",
       "tags": [
-        "Anthropic",
-        "Fable 5.1",
-        "模型降价",
-        "反蒸馏",
-        "IPO"
-      ],
-      "publishedAt": "2026-09-03"
-    },
-    {
-      "id": "20260903-36kr-003",
-      "category": "tech",
-      "title": "36氪：英伟达拟140亿美元收购HuggingFace，开源AI生态格局将重写",
-      "summary": "①是什么：据财联社9月2日报道，英伟达即将以约140亿美元（129亿现金+10亿员工留任）收购Hugging Face，最快本周达成协议。Hugging Face托管300万+公开模型、100万+数据集、1300万开发者、月活访客1800万+，是全球开源模型分发的核心入口（年化收入约1.5亿美元）；其D轮估值仅45亿，本次报价涨近3倍。②设计/产品价值：英伟达GPU+CUDA+HF模型生态一旦合并，开源模型的硬件算力适配、推理加速方案将深度绑定，设计团队选用开源模型时的推理成本和部署门槛会显著下降；但同时闭源与开源阵营的对垒将更激烈，企业在设计系统和模型选型时需关注长期生态锁定风险。③实操建议：在AI设计工具选型中增加「开源模型兼容性」权重，评估将自有设计资产（组件规范、Prompt模板）优先托管于HF或等效中立平台以保持流动性。",
-      "source": "36氪",
-      "url": "https://36kr.com/p/3966094074600965",
-      "tags": [
-        "英伟达",
-        "Hugging Face",
-        "并购",
-        "开源AI",
-        "生态格局"
-      ],
-      "publishedAt": "2026-09-03"
-    },
-    {
-      "id": "20260903-woshipm-001",
-      "category": "interaction",
-      "title": "人人都是产品经理：当Agent成为产品新用户，AX设计方法论全解析",
-      "summary": "①是什么：文章从Cloudflare AI浏览器Kitesurf切入，系统提出AX（Agent Experience）设计框架——Agent是直接使用者（读信息/调能力/改状态）、人是最终责任承担者，UI从操作界面逐步演变为「目标表达→方案查看→取舍理解→决定确认→异常接管」的控制界面；AX设计的五大原则是可理解、可调用、可授权、可确认、可恢复；建议采用L0-L3分级授权匹配任务风险。②对PM/设计师的价值：首次给出AX与UX的清晰边界，避免产品设计陷入「对话框即AI化」的偷懒路径，提供了一套可以直接写入PRD的权限分级和交互规范模板。③实操建议：在现有产品中先落地L1级Agent能力（只读建议+人工确认），同步设计权限升级的「逃生舱」界面与回滚流程，把AX评审加入常规设计Review环节。",
-      "source": "人人都是产品经理",
-      "url": "https://www.woshipm.com/ai/6443744.html",
-      "tags": [
-        "AX设计",
-        "Agent交互",
-        "权限分级",
-        "设计方法论",
-        "Agent Experience"
-      ],
-      "publishedAt": "2026-09-03"
-    },
-    {
-      "id": "20260903-tools-001",
-      "category": "tools",
-      "title": "Kimi API兼容Responses/Messages，Codex、Claude Code无缝直连",
-      "summary": "①是什么：月之暗面官宣Kimi API全面支持OpenAI Responses与Anthropic Messages双协议，Codex/Claude Code开发者通过自定义model provider即可直连kimi-k3、kimi-k2.7-code等模型无需转换；同日阿里发布Qwen3.8-Max旗舰模型（编程+办公专项后训练）已接入千问家族；智谱AI入驻天猫开设旗舰店售卖Coding Plan订阅。②对设计/开发者的价值：多模型切换的工程成本骤降，设计团队可在同一工作流按需调用各模型强项（长文档理解/代码生成/Prompt改写），不必维护三套独立接入层。③建议：在团队工具链中增加「模型路由」面板，以Kimi为长上下文备选，定期A/B对比各模型对设计Prompt的产出质量。",
-      "source": "界面新闻",
-      "url": "https://m.jiemian.com/article/15047101.html",
-      "tags": [
-        "Kimi API",
-        "Codex",
-        "Qwen3.8",
-        "模型兼容",
-        "API协议"
-      ],
-      "publishedAt": "2026-09-03"
-    },
-    {
-      "id": "20260903-tools-002",
-      "category": "tools",
-      "title": "2026年9月AI设计工具全景：Flowstep/Figma/Claude梯队成型",
-      "summary": "①是什么：近期多份盘点报告集中发布，2026 Q3 AI设计工具格局已分出清晰梯队：第一梯队Flowstep（单Prompt→多屏UI+代码导出，Cursor/Claude MCP直连）、Figma Make（设计系统内AI生成，协作仍是护城河）、Claude Design（GitHub设计系统导入+品牌合规自审+代码同步）、v0 by Vercel（Tailwind代码优先）；第二梯队Google Stitch（氛围设计/风格迁移）、Lovable（原型→全栈应用）、Motiff（AI原生UI协作）等。②对设计团队的价值：跳出「每款都试用」的混乱期，按团队角色（Coder→v0/Flowstep、Designer→Figma/Motiff、PM→Lovable）快速搭出3套以内的标准工作流。③建议：把评估标准从「出图好看」升级为「直通代码+复用设计系统」，用真实项目跑3周POC再选型。",
-      "source": "CSDN",
-      "url": "https://blog.csdn.net/xzp19841203xzp/article/details/162133042",
-      "tags": [
-        "AI设计工具",
-        "Flowstep",
-        "Figma AI",
-        "Claude Design",
-        "工具选型"
-      ],
-      "publishedAt": "2026-09-03"
-    },
-    {
-      "id": "20260903-design-001",
-      "category": "design",
-      "title": "Dev.to年度盘点：2026最好用的AI设计工具关键是「工作流契合度」而非功能堆砌",
-      "summary": "①是什么：Dev.to资深设计师Elsie Rainee 8月底发布的2026 AI设计工具选型长文提出一项核心反直觉结论——大部分团队把AI工具当设计思维的替代品是最大误区，正确姿势是让它们成为已有工作流的效率放大器；文章从「移除了我工作流中哪一段摩擦」而非「哪个最火」出发，推荐Flowstep（端到端产品设计+多屏+代码）、Figma AI（协作+设计系统内生成）、v0（代码直达）三大核心工具搭配。②对设计师/PM的职业价值：当AI工具对所有人都可用时，决定产出质量的是用户自己的审美和策略判断，设计师需要从「会不会出图」升级为「懂不懂如何通过Prompt和参考图把AI产出锚定到品牌调性和用户场景上」。③行动建议：每周做一次「AI生成×人工精修」复盘日志，记录哪些任务AI可以直接交付、哪些只能做灵感素材，用数据校准团队对AI的预期边界。",
-      "source": "Dev.to",
-      "url": "https://dev.to/elsie-rainee/best-ai-design-tools-to-know-and-use-in-2026-2oi6",
-      "tags": [
-        "工具选型",
-        "工作流",
-        "设计师职业",
-        "效率提升",
-        "审美判断"
-      ],
-      "publishedAt": "2026-09-03"
-    },
-    {
-      "id": "20260827-zcool-gpt-image2",
-      "category": "tools",
-      "title": "OpenAI GPT-Image-2支持透明背景PNG，设计师可直接产出Alpha通道素材",
-      "summary": "OpenAI GPT-Image-2模型新增支持生成带Alpha通道的透明背景PNG图像。设计师可直接产出带透明背景的设计素材，省去手动抠图步骤，大幅缩短商品主图、UI图标、营销贴纸、PPT插图等项目的素材处理周期。目前仅支持API调用，适合能对接自有工作流的设计团队，独立设计师接入仍有门槛。对设计工作流的影响：抠图这一传统设计前序工序正在被AI生成原生取代，素材获取从「拍摄+后期」转向「描述+生成」。",
-      "source": "站酷AI日报",
-      "url": "https://www.zcool.com.cn/ai/daily-news",
-      "tags": [
+        "GPT-6 Astra",
+        "AGI",
         "OpenAI",
-        "GPT-Image-2",
-        "透明PNG",
-        "抠图",
-        "API"
+        "模型竞争",
+        "安全"
       ],
-      "publishedAt": "2026-08-27"
+      "publishedAt": "2026-09-04"
     },
     {
-      "id": "20260827-zcool-adobe-express",
+      "id": "20260904-zcool-qwen-layered",
       "category": "tools",
-      "title": "Adobe Express更新AI品牌合规编辑与智能布局优化，自动应用品牌规范",
-      "summary": "Adobe Express近期完成功能更新，推出AI品牌合规编辑与智能布局优化。设计师可在AI助手提示栏附加品牌信息，AI自动将品牌颜色、字体、样式规范应用到设计全稿，同时支持AI自动修正布局优化间距与对齐。新增设计版本还原、自定义题注样式、企业版支持250页演示文稿等功能。对设计团队的价值：大幅减少品牌设计中统一规范和调整排版的重复性工作，保障多场景品牌调性一致性，让设计师将更多精力投入创意策划。",
+      "title": "阿里开源Qwen-Image-Layered模型，实现PS级原生分层AI图像编辑",
+      "summary": "阿里开源的Qwen-Image-Layered打破了主流视觉大模型的扁平生成逻辑，首次实现PS级原生分层编辑能力。AI生图不再是一次性输出整张图，而是生成带独立图层的结构化文件，设计师可以单独选中某个图层调整、替换或删除，精度与Photoshop原生编辑一致。这项技术直接解决了AI生图「生成后不可编辑」的核心痛点，让AI输出从「灵感草图」升级为「可交付素材」。对设计工作流的改变：精细抠图、局部调整、多元素替换这些原本占设计师40%以上工时的重复性工作将被彻底消除，设计师角色加速转向创意决策和风格把控。",
       "source": "站酷AI日报",
       "url": "https://www.zcool.com.cn/ai/daily-news",
       "tags": [
-        "Adobe",
-        "品牌合规",
-        "智能布局",
-        "设计规范",
-        "自动排版"
+        "阿里",
+        "Qwen",
+        "分层编辑",
+        "AI生图",
+        "PS替代"
       ],
-      "publishedAt": "2026-08-27"
+      "publishedAt": "2026-09-03"
+    },
+    {
+      "id": "20260904-zcool-google-pics",
+      "category": "tools",
+      "title": "Google Pics企业级AI设计工具发布：双模型协同+Workspace深度集成",
+      "summary": "谷歌正式发布企业级AI设计工具Google Pics，搭载Gemini与Nano Banana双模型协同架构，面向Google AI Pro/Ultra订阅用户和Workspace企业客户开放。核心能力包括：语义级精准局部编辑、无损4K超分辨率输出、多场景尺寸快速适配（如一张图自动生成海报/传单/社交图全套尺寸）、图片文字修改翻译且保留原设计风格、多人实时协作，还可直接嵌入Docs/Slides等Workspace应用。对设计团队的实用价值：省去跨Figma-PS-多平台导出的冗长流程，让营销物料、办公演示设计的创作周期从小时级压缩到分钟级，AI真正成为设计团队的生产协作伙伴而非独立工具。",
+      "source": "站酷AI日报",
+      "url": "https://www.zcool.com.cn/ai/daily-news",
+      "tags": [
+        "Google",
+        "Pics",
+        "企业级设计",
+        "Workspace",
+        "双模型"
+      ],
+      "publishedAt": "2026-09-03"
+    },
+    {
+      "id": "20260904-36kr-workbuddy-open",
+      "category": "tech",
+      "title": "腾讯WorkBuddy开放平台上线：Agent操作系统战略曝光，9款硬件+30+应用接入",
+      "summary": "腾讯9月2日正式开放WorkBuddy开放平台（open.WorkBuddy.cn），首批引入百家生态伙伴、9款联名智能硬件（Plaud/Rokid/影石/科大讯飞/安克等）、30+行业应用，覆盖金融、法律、医疗、教育等20多个领域。腾讯云副总裁刘毅明确表示：WorkBuddy定位是Agent时代的操作系统，不是做一个更强的工具，而是承载所有工具的平台。魅族AI小方块概念机同步亮相发布会，搭载Flyme AIOS深度融合WorkBuddy云端能力。对产品设计师的启示：Agent正在从纯软件形态渗透到硬件终端，设计思维需要从「App界面」转向「场景-硬件-Agent」三位一体，交互设计要考虑多设备无缝协作和云端Agent的跨终端感知能力。",
+      "source": "爱范儿",
+      "url": "https://open.WorkBuddy.cn",
+      "tags": [
+        "腾讯",
+        "WorkBuddy",
+        "Agent平台",
+        "硬件生态",
+        "魅族"
+      ],
+      "publishedAt": "2026-09-02"
+    },
+    {
+      "id": "20260904-36kr-chat-to-agent",
+      "category": "interaction",
+      "title": "人人都是产品经理：AI Chat时代结束，所有AI产品必须转向Agent形态",
+      "summary": "行业分析文章以Cherry Studio v2为例论证：AI产品的价值单位已从「单次回答」变成「可验收的完整结果」。Chat架构的核心数据是消息，无法表达任务进度、失败恢复点和产物归属，用户被迫当调度器。判断Agent产品不是看有没有工具调用，而是看产品是否对完整目标负责（具备目标、状态、工具、执行循环和验收机制）。文章给出落地顺序：先写结果卡定义验收标准，把会话改成任务对象，功能工具化，按风险分配自主权，最终用结果通过率验证效果。对AI产品设计师的直接指导：交互设计的核心从「消息气泡」转向「任务状态面板」，要设计任务进度可视化、失败恢复引导、产物管理等全新界面元素。",
+      "source": "人人都是产品经理",
+      "url": "https://www.woshipm.com/ai/6452200.html",
+      "tags": [
+        "Agent",
+        "Chat终结",
+        "Cherry Studio",
+        "产品架构",
+        "交互重构"
+      ],
+      "publishedAt": "2026-08-28"
+    },
+    {
+      "id": "20260904-36kr-xiaomi-inspiration-ball",
+      "category": "interaction",
+      "title": "小米18 Fold小爱灵感球：拖拽式AI交互让折叠屏大屏真正产生生产力",
+      "summary": "雷军9月2日预热小米18 Fold中折叠机型，重点展示小爱灵感球的全新AI交互方式。区别于传统语音助手的单向问答，灵感球支持拖拽式操作——用户直接把屏幕上的图文内容拖给悬浮球，配合一句自然语言指令，即可完成翻译、摘要、信息整理等复杂任务。演示场景充分利用折叠屏大屏多窗口优势：一边拖选网页资料，一边让AI生成结构化摘要，再拖到另一边笔记应用自动归档。对交互设计的启示：AI交互的未来不是「打开AI App」，而是「AI介入屏幕上的任何内容」，拖拽+悬浮球的物理隐喻比对话框更适合多窗口并行场景，值得所有多设备/大屏产品参考。",
+      "source": "头条",
+      "url": "http://m.toutiao.com/group/7680898057051734563/",
+      "tags": [
+        "小米",
+        "小爱",
+        "折叠屏",
+        "拖拽交互",
+        "多窗口"
+      ],
+      "publishedAt": "2026-09-02"
+    },
+    {
+      "id": "20260904-zcool-ai-design-expo",
+      "category": "design",
+      "title": "国际AI设计展深圳开幕：人机协作创作从辅助工具升级为全流程核心协作者",
+      "summary": "「人工智能语境下的当代设计实践」国际AI设计展在深圳开幕，汇集全球十余个国家顶尖设计团队作品，覆盖视觉设计、实验字体、交互媒体等领域。展览明确提出AI已从设计辅助工具升级为深度参与全流程创作的核心协作者，设计创作从静态线性模式转向「生成-反馈-修正-迭代」的动态闭环。同期开幕的AI广告创意技能竞赛首次将AI工具使用纳入考核核心，要求设计师自主创意+AI生成多版方案+人工风格校准。对设计师的启示：行业分工加速重构，仅会基础软件操作的设计师已无法满足市场，创意判断、风格把控、伦理思辨这类不可替代的核心能力必须优先强化。",
+      "source": "站酷AI日报",
+      "url": "https://www.zcool.com.cn/ai/daily-news",
+      "tags": [
+        "AI设计展",
+        "人机协作",
+        "行业趋势",
+        "设计师",
+        "技能竞赛"
+      ],
+      "publishedAt": "2026-09-03"
     }
   ]
 }
