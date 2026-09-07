@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>未择之路 · 人生推演模拟器</title>
+<style>
+:root {
+  --bg-0: #0d0d17;
+  --bg-1: #15152235;
+  --card: rgba(255,255,255,0.05);
+  --card-hover: rgba(255,255,255,0.1);
+  --border: rgba(255,255,255,0.08);
+  --text: #e8e8f0;
+  --text-dim: #7a7a92;
+  --gold: #fbbf24;
+  --purple: #a78bfa;
+  --blue: #60a5fa;
+  --green: #4ade80;
+  --red: #f87171;
+  --orange: #fb923c;
+  --pink: #f472b6;
+  --cyan: #22d3ee;
+  --radius: 20px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg-0);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+#app { min-height: 100vh; display: flex; justify-content: center; }
+.screen { display: none; width: 100%; max-width: 580px; padding: 20px 16px; }
+.screen.active { display: block; animation: fadeUp 0.5s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+/* ====== Title Screen ====== */
+#screen-title { text-align: center; padding-top: 12vh; }
+.logo {
+  font-size: 2.6em; font-weight: 900;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 8px; letter-spacing: 3px;
+}
+.tagline { color: var(--text-dim); font-size: 1em; margin-bottom: 48px; }
+.btn-primary {
+  display: inline-block; padding: 16px 56px;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  color: #fff; font-size: 1.15em; font-weight: 700;
+  border: none; border-radius: 14px; cursor: pointer;
+  transition: all 0.3s; box-shadow: 0 4px 24px rgba(167,139,250,0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(167,139,250,0.4); }
+.btn-primary:active { transform: scale(0.98); }
+.tips { color: var(--text-dim); font-size: 0.82em; margin-top: 28px; line-height: 1.8; }
+
+/* ====== Character Creation ====== */
+.section-header { text-align: center; margin-bottom: 24px; }
+.section-header h2 { font-size: 1.4em; font-weight: 700; margin-bottom: 4px; }
+.section-header p { color: var(--text-dim); font-size: 0.85em; }
+
+.form-group { margin-bottom: 20px; }
+.form-label { font-size: 0.85em; color: var(--text-dim); margin-bottom: 8px; display: block; }
+.form-input {
+  width: 100%; padding: 14px 16px; border-radius: 12px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text); font-size: 1em; transition: border-color 0.2s;
+}
+.form-input:focus { outline: none; border-color: var(--purple); }
+.option-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.option-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.option-btn {
+  padding: 12px 8px; text-align: center; border-radius: 10px;
+  background: var(--card); border: 2px solid var(--border);
+  color: var(--text); font-size: 0.88em; cursor: pointer;
+  transition: all 0.2s;
+}
+.option-btn:hover { border-color: var(--purple); background: var(--card-hover); }
+.option-btn.selected { border-color: var(--purple); background: rgba(167,139,250,0.12); color: var(--purple); }
+.option-btn:active { transform: scale(0.97); }
+
+.mbti-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.mbti-pair { display: flex; gap: 6px; }
+.mbti-btn {
+  flex: 1; padding: 14px 8px; text-align: center; border-radius: 10px;
+  background: var(--card); border: 2px solid var(--border);
+  color: var(--text-dim); font-size: 0.85em; cursor: pointer; transition: all 0.2s;
+}
+.mbti-btn .letter { font-size: 1.4em; font-weight: 800; display: block; }
+.mbti-btn .desc { font-size: 0.72em; margin-top: 2px; }
+.mbti-btn.selected { border-color: var(--cyan); background: rgba(34,211,238,0.1); color: var(--cyan); }
+.mbti-result { text-align: center; padding: 10px; color: var(--cyan); font-weight: 700; font-size: 1.1em; }
+
+/* ====== Game Screen ====== */
+#screen-game { padding-top: 12px; }
+.game-topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px; padding: 10px 14px; border-radius: 12px;
+  background: var(--card); border: 1px solid var(--border);
+}
+.game-topbar .phase { font-weight: 700; font-size: 0.95em; }
+.game-topbar .phase .age { color: var(--purple); }
+.game-topbar .menu-btn { background: none; border: none; color: var(--text-dim); font-size: 1.2em; cursor: pointer; }
+
+.stat-bar { display: flex; gap: 6px; margin-bottom: 14px; }
+.stat-pill {
+  flex: 1; text-align: center; padding: 8px 4px; border-radius: 10px;
+  background: var(--card); border: 1px solid var(--border);
+}
+.stat-pill .sp-label { font-size: 0.65em; color: var(--text-dim); }
+.stat-pill .sp-val { font-size: 1.1em; font-weight: 700; }
+.stat-pill .sp-val.up { color: var(--green); }
+.stat-pill .sp-val.down { color: var(--red); }
+
+.scenario-card {
+  padding: 24px 20px; border-radius: 16px;
+  background: var(--card); border: 1px solid var(--border);
+  margin-bottom: 16px; animation: slideIn 0.5s ease;
+}
+.scenario-card .scene-img { font-size: 2.5em; text-align: center; margin-bottom: 12px; }
+.scenario-card .scene-phase {
+  text-align: center; color: var(--purple); font-size: 0.8em;
+  font-weight: 600; margin-bottom: 8px; letter-spacing: 1px;
+}
+.scenario-card .scene-text {
+  font-size: 0.95em; line-height: 1.8; color: var(--text);
+  margin-bottom: 4px;
+}
+
+.feedback-box {
+  padding: 14px 16px; border-radius: 12px; margin-bottom: 14px;
+  background: rgba(167,139,250,0.06); border-left: 3px solid var(--purple);
+  font-size: 0.88em; line-height: 1.6; color: var(--text);
+  animation: slideIn 0.4s ease;
+}
+
+.choices { display: flex; flex-direction: column; gap: 10px; }
+.choice-btn {
+  padding: 16px 18px; text-align: left; border-radius: 14px;
+  background: var(--card); border: 2px solid var(--border);
+  color: var(--text); font-size: 0.95em; cursor: pointer;
+  transition: all 0.25s; line-height: 1.5;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.choice-btn:hover { border-color: var(--purple); background: var(--card-hover); transform: translateX(4px); }
+.choice-btn:active { transform: scale(0.98); }
+.choice-btn .choice-num {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(167,139,250,0.15); color: var(--purple);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8em; font-weight: 700; flex-shrink: 0;
+}
+.choice-btn .choice-text { flex: 1; }
+
+.loading-overlay {
+  text-align: center; padding: 40px;
+}
+.loading-overlay .spinner {
+  width: 48px; height: 48px; border: 3px solid var(--border);
+  border-top-color: var(--purple); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-overlay .loading-text { color: var(--text-dim); font-size: 0.9em; }
+
+/* ====== History Drawer ====== */
+.history-drawer {
+  position: fixed; top: 0; right: -100%; width: 85%; max-width: 400px;
+  height: 100%; background: var(--bg-0); border-left: 1px solid var(--border);
+  z-index: 200; transition: right 0.3s ease; overflow-y: auto; padding: 16px;
+}
+.history-drawer.open { right: 0; }
+.history-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6); z-index: 199; display: none;
+}
+.history-overlay.show { display: block; }
+.history-item {
+  padding: 14px; border-radius: 12px; background: var(--card);
+  margin-bottom: 10px; border-left: 3px solid var(--blue);
+}
+.history-item .hi-phase { color: var(--purple); font-size: 0.8em; font-weight: 600; margin-bottom: 4px; }
+.history-item .hi-scene { font-size: 0.85em; color: var(--text-dim); margin-bottom: 6px; line-height: 1.4; }
+.history-item .hi-choice {
+  font-size: 0.85em; padding: 6px 10px; border-radius: 8px;
+  background: rgba(167,139,250,0.08); color: var(--purple);
+}
+.drawer-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
+.drawer-header h3 { font-size: 1.1em; }
+.drawer-close { background: none; border: none; color: var(--text-dim); font-size: 1.4em; cursor: pointer; }
+
+/* ====== Ending Screen ====== */
+#screen-ending { text-align: center; padding-top: 6vh; }
+.ending-score {
+  font-size: 5em; font-weight: 900;
+  background: linear-gradient(135deg, var(--gold), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+.ending-title { font-size: 1.6em; font-weight: 700; margin-bottom: 8px; }
+.ending-summary {
+  color: var(--text); font-size: 0.92em; line-height: 1.7;
+  margin-bottom: 24px; padding: 16px 20px; border-radius: 14px;
+  background: var(--card); border: 1px solid var(--border);
+  text-align: left;
+}
+.ending-timeline {
+  margin-bottom: 24px; text-align: left;
+}
+.ending-timeline h3 { font-size: 1em; margin-bottom: 12px; }
+.timeline-item {
+  padding: 10px 14px; border-radius: 10px; background: var(--card);
+  margin-bottom: 6px; border-left: 3px solid var(--purple);
+  font-size: 0.85em; line-height: 1.5;
+}
+.timeline-item .tl-phase { color: var(--purple); font-weight: 600; font-size: 0.8em; }
+.ending-advice {
+  padding: 16px 20px; border-radius: 14px; margin-bottom: 24px;
+  background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.15);
+  text-align: left; font-size: 0.9em; line-height: 1.7; color: var(--text);
+}
+.ending-advice .advice-label { color: var(--green); font-weight: 700; margin-bottom: 4px; }
+
+/* ====== Common ====== */
+.fade-out { animation: fadeOut 0.3s ease forwards; }
+@keyframes fadeOut { to { opacity: 0; } }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ====== Title Screen ====== -->
+<div id="screen-title" class="screen active">
+  <div class="logo">未择之路</div>
+  <p class="tagline">人生推演模拟器 · 每次选择都将改变命运</p>
+  <button class="btn-primary" onclick="startGame()">开启人生</button>
+  <div class="tips">
+    创建角色 → 经历人生各阶段<br>
+    每个阶段都有抉择，不同选择导向不同故事线<br>
+    最终获得你的人生评价报告
+  </div>
+</div>
+
+<!-- ====== Character Creation Screen ====== -->
+<div id="screen-create" class="screen">
+  <div class="section-header">
+    <h2>角色创建</h2>
+    <p>你的背景和性格将影响人生轨迹</p>
+  </div>
+  <div class="form-group">
+    <label class="form-label">姓名</label>
+    <input class="form-input" id="char-name" placeholder="输入你的名字" maxlength="8">
+  </div>
+  <div class="form-group">
+    <label class="form-label">性别</label>
+    <div class="option-grid">
+      <div class="option-btn" data-field="gender" data-val="male" onclick="selectOption(this)">男</div>
+      <div class="option-btn" data-field="gender" data-val="female" onclick="selectOption(this)">女</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">家庭背景</label>
+    <div class="option-grid">
+      <div class="option-btn" data-field="bg" data-val="rich" onclick="selectOption(this)">富裕家庭</div>
+      <div class="option-btn" data-field="bg" data-val="mid" onclick="selectOption(this)">中产家庭</div>
+      <div class="option-btn" data-field="bg" data-val="work" onclick="selectOption(this)">工薪家庭</div>
+      <div class="option-btn" data-field="bg" data-val="poor" onclick="selectOption(this)">贫困家庭</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">性格倾向 (MBTI)</label>
+    <div class="mbti-grid" id="mbti-grid"></div>
+    <div class="mbti-result" id="mbti-result" style="display:none"></div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">特长技能</label>
+    <div class="option-grid cols-3">
+      <div class="option-btn" data-field="skill" data-val="study" onclick="selectOption(this)">学习</div>
+      <div class="option-btn" data-field="skill" data-val="sport" onclick="selectOption(this)">运动</div>
+      <div class="option-btn" data-field="skill" data-val="art" onclick="selectOption(this)">艺术</div>
+      <div class="option-btn" data-field="skill" data-val="tech" onclick="selectOption(this)">技术</div>
+      <div class="option-btn" data-field="skill" data-val="social" onclick="selectOption(this)">社交</div>
+      <div class="option-btn" data-field="skill" data-val="biz" onclick="selectOption(this)">商业</div>
+    </div>
+  </div>
+  <button class="btn-primary" style="width:100%; margin-top:8px" onclick="confirmCharacter()">开始推演</button>
+</div>
+
+<!-- ====== Game Screen ====== -->
+<div id="screen-game" class="screen">
+  <div class="game-topbar">
+    <div class="phase"><span id="game-phase">幼年</span> · <span class="age" id="game-age">0</span>岁</div>
+    <button class="menu-btn" onclick="toggleHistory()">☰</button>
+  </div>
+  <div class="stat-bar" id="stat-bar"></div>
+  <div id="game-content"></div>
+</div>
+
+<!-- ====== Ending Screen ====== -->
+<div id="screen-ending" class="screen">
+  <div class="ending-score" id="ending-score">--</div>
+  <h2 class="ending-title" id="ending-title">人生推演完成</h2>
+  <div class="ending-summary" id="ending-summary"></div>
+  <div class="ending-timeline" id="ending-timeline"></div>
+  <div class="ending-advice" id="ending-advice"></div>
+  <button class="btn-primary" onclick="location.reload()">再推演一次</button>
+</div>
+
+</div>
+
+<!-- History Drawer -->
+<div class="history-overlay" id="history-overlay" onclick="toggleHistory()"></div>
+<div class="history-drawer" id="history-drawer">
+  <div class="drawer-header">
+    <h3>人生履历</h3>
+    <button class="drawer-close" onclick="toggleHistory()">✕</button>
+  </div>
+  <div id="history-list"></div>
+</div>
+
+<script>
+// ============================================================
+// 游戏状态
+// ============================================================
+let state = null;
+
+function initState() {
+  state = {
+    name: '',
+    gender: '',
+    bg: '',
+    mbti: '',
+    skill: '',
+    // Attributes
+    intel: 5, charm: 5, health: 5, happy: 50, money: 0, social: 5,
+    // Path flags
+    flags: {},
+    // Progress
+    stageIdx: 0,
+    currentScenario: null,
+    history: [],
+    // Meta
+    alive: true,
+  };
+}
+
+// ============================================================
+// 场景数据
+// 每个场景: { id, stage, phase, age, emoji, text, require(flag), choices: [{text, effects, set, next}] }
+// ============================================================
+const SCENARIOS = [
+  // ====== 阶段1: 出生与幼年 (0-6岁) ======
+  {
+    id: 'birth', stage: '幼年', phase: '出生', age: 0, emoji: '👶',
+    text: '你来到了这个世界。你的家庭{bg_text}，父母对你充满了期望。第一声啼哭响彻产房，你的故事就此开始。',
+    bgText: { rich:'条件优渥', mid:'小康温馨', work:'普通踏实', poor:'拮据困顿' },
+    choices: [
+      { text: '天生爱哭，嗓门洪亮', effects:{health:1, charm:-1}, set:{baby:'loud'}, next:'kid1' },
+      { text: '安静乖巧，不哭不闹', effects:{charm:1, health:-1}, set:{baby:'quiet'}, next:'kid1' },
+      { text: '活泼好动，精力旺盛', effects:{health:2}, set:{baby:'active'}, next:'kid1' },
+    ]
+  },
+  {
+    id: 'kid1', stage: '幼年', phase: '幼年', age: 3, emoji: '🧒',
+    text: '三岁了，你开始上幼儿园。老师说你{kid_trait}，和其他小朋友相处得{kid_social}。',
+    kidTrait: { loud:'嗓门大、爱闹腾', quiet:'文静懂事、不惹事', active:'精力充沛、跑个不停' },
+    kidSocial: { loud:'偶尔会抢玩具', quiet:'但不太合群', active:'是孩子王' },
+    choices: [
+      { text: '主动和小朋友分享玩具', effects:{social:2, charm:1}, set:{kid:'share'}, next:'kid2' },
+      { text: '独自玩积木，沉浸自己的世界', effects:{intel:2, social:-1}, set:{kid:'solo'}, next:'kid2' },
+      { text: '带头玩游戏，当小领袖', effects:{charm:2, social:1}, set:{kid:'leader'}, next:'kid2' },
+    ]
+  },
+  {
+    id: 'kid2', stage: '幼年', phase: '幼年', age: 5, emoji: '🎨',
+    text: '五岁了，父母考虑给你报兴趣班。你的家庭{bg_extra}。',
+    bgExtra: { rich:'不差钱，什么都想让你学', mid:'挑了个性价比高的', work:'精打细算选了一个', poor:'勉强凑出一个班的钱' },
+    choices: [
+      { text: '学钢琴/绘画等艺术类', effects:{charm:2, intel:1}, set:{talent:'art'}, next:'primary' },
+      { text: '学跆拳道/游泳等运动类', effects:{health:2, charm:1}, set:{talent:'sport'}, next:'primary' },
+      { text: '学少儿编程/数学等益智类', effects:{intel:3}, set:{talent:'study'}, next:'primary' },
+      { text: '什么都不学，自由玩耍', effects:{happy:3, social:1}, set:{talent:'free'}, next:'primary' },
+    ]
+  },
+
+  // ====== 阶段2: 小学 (7-12岁) ======
+  {
+    id: 'primary', stage: '小学', phase: '小学一年级', age: 7, emoji: '🎒',
+    text: '你背上新书包，踏入小学校园。红领巾在胸前飘扬，你对这个新世界充满{primary_feeling}。',
+    primaryFeeling: { share:'期待和兴奋', solo:'紧张和不安', leader:'好奇和跃跃欲试' },
+    choices: [
+      { text: '上课认真听讲，积极举手发言', effects:{intel:2, happy:-1}, set:{study:'diligent'}, next:'primary2' },
+      { text: '和同桌聊天，交朋友为主', effects:{social:2, charm:1, intel:-1}, set:{study:'social'}, next:'primary2' },
+      { text: '趴在桌上睡觉，对学习没兴趣', effects:{happy:1, intel:-2}, set:{study:'lazy'}, next:'primary2' },
+    ]
+  },
+  {
+    id: 'primary2', stage: '小学', phase: '小学四年级', age: 10, emoji: '📚',
+    text: '四年级了，班主任对你的评价是：{p2_eval}。班上有个{p2_event}。',
+    p2Eval: { diligent:'成绩优异，是老师的得意门生', social:'人缘好，但成绩一般', lazy:'需要多督促，成绩堪忧' },
+    p2Event: { diligent:'数学竞赛的选拔机会', social:'班级元旦晚会要出节目', lazy:'沉迷手机游戏的苗头' },
+    choices: [
+      { text: '抓住机会，全力以赴', effects:{intel:2, happy:-2}, set:{p2:'effort'}, next:'primary3' },
+      { text: '量力而行，保持平衡', effects:{intel:1, happy:1}, set:{p2:'balance'}, next:'primary3' },
+      { text: '放弃，去做更有趣的事', effects:{happy:3, intel:-1}, set:{p2:'quit'}, next:'primary3' },
+    ]
+  },
+  {
+    id: 'primary3', stage: '小学', phase: '小学毕业', age: 12, emoji: '🎓',
+    text: '小学毕业了。回顾这六年，你{p3_summary}。即将升入初中，面临新的挑战。',
+    p3Summary: { effort:'凭借努力取得了不错的成绩', balance:'平稳度过了小学时光', quit:'虽然开心但学业落下不少' },
+    choices: [
+      { text: '立志在初中继续努力', effects:{intel:1, happy:1}, set:{will:'strong'}, next:'junior1' },
+      { text: '有些迷茫，走一步看一步', effects:{happy:-1}, set:{will:'lost'}, next:'junior1' },
+      { text: '不想读书了，想玩', effects:{happy:2, intel:-1}, set:{will:'rebel'}, next:'junior1' },
+    ]
+  },
+
+  // ====== 阶段3: 初中 (13-15岁) ======
+  {
+    id: 'junior1', stage: '初中', phase: '初一', age: 13, emoji: '🏫',
+    text: '初中生活开始了。课业压力突然变大，你发现{ j1_issue}。同时，你注意到班上有个好看的同学。',
+    j1Issue: { strong:'课程难度还能应付', lost:'有点跟不上节奏', rebel:'完全不想学了' },
+    choices: [
+      { text: '认真学习，暂时不考虑感情', effects:{intel:2, social:-1, happy:-1}, set:{teen:'study'}, next:'junior2' },
+      { text: '偷偷注意那个同学，写情书', effects:{charm:1, happy:2, intel:-1}, set:{teen:'crush'}, next:'junior2' },
+      { text: '和哥们/闺蜜混在一起，混日子', effects:{social:2, happy:1, intel:-2}, set:{teen:'hang'}, next:'junior2' },
+    ]
+  },
+  {
+    id: 'junior2', stage: '初中', phase: '初二', age: 14, emoji: '⚡',
+    text: '初二是关键的一年。{j2_situation}青春期让你情绪波动很大。',
+    j2Situation: { study:'你保持着好成绩，但压力让你焦虑', crush:'你和那个同学有了互动，心跳加速', hang:'你被带去网吧，开始接触游戏' },
+    choices: [
+      { text: '坚持自己的路，不被外界干扰', effects:{intel:1, happy:-1, charm:1}, set:{j2:'firm'}, next:'junior3' },
+      { text: '放纵一次，试试新鲜事物', effects:{happy:3, intel:-2, health:-1}, set:{j2:'wild'}, next:'junior3' },
+      { text: '找一个信任的人倾诉烦恼', effects:{social:1, happy:2}, set:{j2:'talk'}, next:'junior3' },
+    ]
+  },
+  {
+    id: 'junior3', stage: '初中', phase: '中考', age: 15, emoji: '📝',
+    text: '中考来了。{j3_situation}这是人生的第一个分水岭。',
+    j3Situation: { firm:'你状态不错，信心满满', wild:'你有些后悔之前太放纵', talk:'你调整好了心态，准备应战' },
+    choices: [
+      { text: '超常发挥，冲击重点高中', effects:{intel:2, happy:2}, set:{hs:'top', score:85}, next:'high1' },
+      { text: '正常发挥，考上普通高中', effects:{intel:1, happy:1}, set:{hs:'normal', score:70}, next:'high1' },
+      { text: '发挥失常，只能上职高', effects:{happy:-3, intel:-1}, set:{hs:'voc', score:50}, next:'high1' },
+    ]
+  },
+
+  // ====== 阶段4: 高中 (16-18岁) ======
+  {
+    id: 'high1', stage: '高中', phase: '高一', age: 16, emoji: '📘',
+    text: '{hs_text}新环境、新同学，你开始了高中生活。',
+    hsText: { top:'你考上了重点高中，周围都是学霸，竞争激烈。', normal:'你在普通高中就读，节奏比较舒适。', voc:'你在职高选了专业方向，学一技之长。' },
+    choices: [
+      { text: '加入学校社团/学生会', effects:{social:2, charm:1, intel:-1}, set:{h1:'club'}, next:'high2' },
+      { text: '专注学业，冲刺高考', effects:{intel:3, social:-1, happy:-2}, set:{h1:'study'}, next:'high2' },
+      { text: '发展个人爱好/副业', effects:{happy:2, charm:1, intel:-1}, set:{h1:'hobby'}, next:'high2' },
+      { text: '谈恋爱，享受青春', effects:{happy:3, charm:1, intel:-2, social:1}, set:{h1:'love'}, next:'high2' },
+    ]
+  },
+  {
+    id: 'high2', stage: '高中', phase: '高二', age: 17, emoji: '🔥',
+    text: '高二了，{h2_event}。你开始思考未来的方向。',
+    h2Event: { club:'你在社团当上了干部，很忙但充实', study:'你的成绩稳步上升，目标明确', hobby:'你的爱好有了小成就，开始有收入', love:'你和Ta感情稳定，但学业压力来了' },
+    choices: [
+      { text: '确立目标：考好大学，改变命运', effects:{intel:2, happy:-1}, set:{goal:'college'}, next:'high3' },
+      { text: '目标：学技术/艺术，走特长路线', effects:{charm:1, intel:1}, set:{goal:'special'}, next:'high3' },
+      { text: '目标：早点赚钱，不一定要上大学', effects:{money:2000, happy:1, intel:-1}, set:{goal:'work'}, next:'high3' },
+      { text: '没什么目标，走一步看一步', effects:{happy:1}, set:{goal:'none'}, next:'high3' },
+    ]
+  },
+  {
+    id: 'high3', stage: '高中', phase: '高考', age: 18, emoji: '🎯',
+    text: '高考来了！{h3_text}这是改变命运的时刻。',
+    h3Text: { college:'你准备充分，走进考场胸有成竹', special:'你走了特长/艺考路线，文化课压力小一些', work:'你已经找好了工作，高考只是走个过场', none:'你没什么准备，硬着头皮上了考场' },
+    choices: [
+      { text: '全力以赴，不留遗憾', effects:{intel:2, happy:1}, set:{gaokao:'best'}, next:'uni1' },
+      { text: '正常发挥就好', effects:{intel:1}, set:{gaokao:'normal'}, next:'uni1' },
+      { text: '考砸了也无所谓，另有打算', effects:{happy:1, intel:-1}, set:{gaokao:'giveup'}, next:'uni1' },
+    ]
+  },
+
+  // ====== 阶段5: 大学/初入社会 (19-22岁) ======
+  {
+    id: 'uni1', stage: '大学', phase: '大一', age: 19, emoji: '🎓',
+    text: '{uni_text}大学是一个全新的世界，自由、精彩、充满可能。',
+    uniText: { best:'你以优异成绩考入重点大学！', normal:'你考上了普通本科大学。', giveup:'你没考上大学，直接进入社会打工。' },
+    choices: [
+      { text: '加入学生会/社团，拓展人脉', effects:{social:3, charm:1, happy:1}, set:{uni:'social'}, next:'uni2' },
+      { text: '泡图书馆，追求学术', effects:{intel:3, social:-1}, set:{uni:'academic'}, next:'uni2' },
+      { text: '找兼职/实习，提前接触社会', effects:{money:5000, social:1, intel:1, happy:-1}, set:{uni:'work'}, next:'uni2' },
+      { text: '尽情享受大学生活', effects:{happy:4, charm:1, money:-2000}, set:{uni:'fun'}, next:'uni2' },
+    ]
+  },
+  {
+    id: 'uni2', stage: '大学', phase: '大三', age: 21, emoji: '💡',
+    text: '大三了，{uni2_text}你开始思考毕业后的路。',
+    uni2Text: { social:'你是社交达人，认识了很多朋友', academic:'你的学术能力得到导师认可', work:'你已经有了一些工作经验', fun:'你过得很开心，但时光飞逝' },
+    choices: [
+      { text: '考研/出国深造', effects:{intel:2, money:-5000, happy:-1}, set:{grad:'study'}, next:'young1' },
+      { text: '找工作，进入职场', effects:{money:10000, social:1, happy:1}, set:{grad:'job'}, next:'young1' },
+      { text: '创业，做自己的事业', effects:{money:-10000, happy:2, charm:1}, set:{grad:'startup'}, next:'young1' },
+      { text: 'gap一年，想清楚再说', effects:{happy:3, money:-3000}, set:{grad:'gap'}, next:'young1' },
+    ]
+  },
+
+  // ====== 阶段6: 青年 (23-30岁) ======
+  {
+    id: 'young1', stage: '青年', phase: '25岁', age: 25, emoji: '💼',
+    text: '{y1_text}你正式踏入社会，开始了独立的生活。',
+    y1Text: { study:'你研究生毕业，拿着漂亮的简历找工作', job:'你在公司站稳了脚跟，开始攒钱', startup:'你的创业项目有了一些起色', gap:'你休息够了，开始认真找工作' },
+    choices: [
+      { text: '拼命工作，追求升职加薪', effects:{money:30000, intel:1, happy:-2, health:-1}, set:{career:'hustle'}, next:'young2' },
+      { text: '工作之余发展副业/投资', effects:{money:15000, happy:1, intel:1}, set:{career:'side'}, next:'young2' },
+      { text: '注重生活品质，工作只是谋生', effects:{happy:3, money:8000, charm:1}, set:{career:'chill'}, next:'young2' },
+    ]
+  },
+  {
+    id: 'young2', stage: '青年', phase: '28岁', age: 28, emoji: '❤️',
+    text: '28岁了。{y2_text}父母开始催婚，你也需要思考感情问题。',
+    y2Text: { hustle:'你事业有成但没时间谈恋爱', side:'你收入不错，生活也还算丰富', chill:'你享受生活，感情上有了一些邂逅' },
+    choices: [
+      { text: '认真找对象，准备结婚', effects:{happy:3, social:1, money:-20000}, set:{love:'marry'}, next:'young3' },
+      { text: '先搞事业，感情随缘', effects:{money:20000, intel:1, happy:-1}, set:{love:'single'}, next:'young3' },
+      { text: '保持自由，享受恋爱', effects:{happy:3, charm:2, money:-5000}, set:{love:'free'}, next:'young3' },
+    ]
+  },
+  {
+    id: 'young3', stage: '青年', phase: '30岁', age: 30, emoji: '🏠',
+    text: '三十而立。{y3_text}人生进入新阶段，你需要做关键决定。',
+    y3Text: { marry:'你结婚了，考虑买房安定下来', single:'你事业不错，但感情还是空白', free:'你活得潇洒，但身边人都在安定' },
+    choices: [
+      { text: '买房安定，扎根一座城市', effects:{money:-80000, happy:2, social:1}, set:{thirty:'settle'}, next:'mid1' },
+      { text: '保持灵活，不急着买房', effects:{money:20000, happy:1}, set:{thirty:'flexible'}, next:'mid1' },
+      { text: '换城市/出国，寻求新机会', effects:{money:-10000, charm:1, intel:1, social:-2}, set:{thirty:'move'}, next:'mid1' },
+    ]
+  },
+
+  // ====== 阶段7: 中年 (31-55岁) ======
+  {
+    id: 'mid1', stage: '中年', phase: '35岁', age: 35, emoji: '📊',
+    text: '35岁。{m1_text}职场上，你面临一个重要抉择。',
+    m1Text: { settle:'你生活安定，但工作遇到了瓶颈', flexible:'你自由自在，但开始焦虑未来', move:'你在新环境站稳了脚，发展不错' },
+    choices: [
+      { text: '跳槽到大公司，追求更高平台', effects:{money:40000, intel:1, happy:-1, health:-1}, set:{mid1:'jump'}, next:'mid2' },
+      { text: '在现有岗位深耕，求稳', effects:{money:20000, happy:1, social:1}, set:{mid1:'stay'}, next:'mid2' },
+      { text: '自己创业当老板', effects:{money:-30000, happy:2, charm:1}, set:{mid1:'boss'}, next:'mid2' },
+      { text: '考公务员/体制内，图安稳', effects:{money:10000, happy:2, intel:-1}, set:{mid1:'civil'}, next:'mid2' },
+    ]
+  },
+  {
+    id: 'mid2', stage: '中年', phase: '40岁', age: 40, emoji: '⚖️',
+    text: '不惑之年。{m2_text}上有老下有小，肩上的担子很重。',
+    m2Text: { jump:'你在新公司做到了中层，收入可观但很累', stay:'你稳定发展，生活有规律', boss:'你的事业有了起色，开始盈利', civil:'你进了体制，虽然平淡但安稳' },
+    choices: [
+      { text: '继续拼搏，为了家人不松懈', effects:{money:50000, health:-2, happy:-2}, set:{mid2:'push'}, next:'mid3' },
+      { text: '放慢节奏，多陪家人', effects:{money:10000, happy:3, health:1, social:1}, set:{mid2:'family'}, next:'mid3' },
+      { text: '开始注重健康和自我提升', effects:{health:2, intel:1, money:-5000, happy:1}, set:{mid2:'health'}, next:'mid3' },
+    ]
+  },
+  {
+    id: 'mid3', stage: '中年', phase: '50岁', age: 50, emoji: '🏔️',
+    text: '知天命之年。{m3_text}你开始回顾过去，思考余生。',
+    m3Text: { push:'你事业有成但身体亮了红灯', family:'你家庭幸福，虽然不算大富大贵', health:'你身体硬朗，精神状态好' },
+    choices: [
+      { text: '规划退休，享受生活', effects:{happy:3, money:30000, health:1}, set:{elder:'retire'}, next:'old1' },
+      { text: '继续工作，发挥余热', effects:{money:40000, happy:1, health:-1}, set:{elder:'work'}, next:'old1' },
+      { text: '回馈社会，做公益/传承经验', effects:{happy:3, charm:2, social:2}, set:{elder:'give'}, next:'old1' },
+    ]
+  },
+
+  // ====== 阶段8: 老年 (56-80+岁) ======
+  {
+    id: 'old1', stage: '老年', phase: '60岁', age: 60, emoji: '🌅',
+    text: '花甲之年。{o1_text}人生进入下半场。',
+    o1Text: { retire:'你退休了，开始享受悠闲时光', work:'你还在工作，但脚步放慢了', give:'你受人尊敬，被尊称为老师傅' },
+    choices: [
+      { text: '培养兴趣爱好，丰富退休生活', effects:{happy:3, health:1, charm:1}, set:{old:'hobby'}, next:'old2' },
+      { text: '含饴弄孙，享受天伦之乐', effects:{happy:4, social:1}, set:{old:'family'}, next:'old2' },
+      { text: '和老伴/朋友一起旅行', effects:{happy:3, money:-20000, health:-1}, set:{old:'travel'}, next:'old2' },
+    ]
+  },
+  {
+    id: 'old2', stage: '老年', phase: '70岁', age: 70, emoji: '🌿',
+    text: '古稀之年。{o2_text}身体不如从前，但心态很重要。',
+    o2Text: { hobby:'你的爱好让你的晚年很充实', family:'儿孙满堂，你很满足', travel:'你见了很多风景，没有遗憾' },
+    choices: [
+      { text: '坚持锻炼，保持身心健康', effects:{health:2, happy:1}, set:{old2:'fit'}, next:'old3' },
+      { text: '写回忆录，记录人生', effects:{happy:2, charm:1}, set:{old2:'write'}, next:'old3' },
+      { text: '安安静静，随遇而安', effects:{happy:1}, set:{old2:'calm'}, next:'old3' },
+    ]
+  },
+  {
+    id: 'old3', stage: '晚年', phase: '晚年', age: 80, emoji: '🍂',
+    text: '耄耋之年。回望一生，你{final_reflection}。夕阳无限好，只是近黄昏。',
+    finalReflection: { fit:'身体硬朗，是难得的福气', write:'留下了回忆，没有白活', calm:'平静从容，无愧此生' },
+    choices: [
+      { text: '坦然面对人生终点', effects:{happy:2}, set:{end:'peace'}, next:'ENDING' },
+      { text: '还有未完成的心愿想实现', effects:{happy:1, charm:1}, set:{end:'wish'}, next:'ENDING' },
+    ]
+  },
+];
+
+// ============================================================
+// 结局计算
+// ============================================================
+function calculateEnding() {
+  const s = state;
+  let score = 50;
+  score += s.intel * 2;
+  score += s.charm * 2;
+  score += s.health * 2;
+  score += s.social * 1;
+  score += Math.floor(s.happy / 5);
+  score += Math.min(20, s.money / 10000);
+  score = Math.max(0, Math.min(100, score));
+
+  let title, summary, advice;
+
+  if (score >= 85) {
+    title = '传奇人生';
+    summary = `${s.name}，你的人生堪称传奇。从${getBGText()}出发，你凭借智慧和勇气，走出了一条令人惊叹的人生之路。你的故事值得被书写。`;
+    advice = '你已经做到了大多数人梦寐以求的一切。如果还有遗憾，那大概只是遗憾时间不够多。';
+  } else if (score >= 70) {
+    title = '精彩人生';
+    summary = `${s.name}，你的人生精彩纷呈。从${getBGText()}起步，你经历过高光时刻，也有过低谷，但你始终没有放弃。这一生，值了。`;
+    advice = '你的人生已经很精彩了。如果想更上一层楼，可以多关注身心健康和人际关系，这些比金钱更长久。';
+  } else if (score >= 55) {
+    title = '平凡而真实';
+    summary = `${s.name}，你的人生平凡但真实。你没有大富大贵，但也没有虚度光阴。每一步都是你自己选的，这就够了。`;
+    advice = '平凡不是失败。如果想要改变，现在开始也不晚——学习一项新技能、培养一个爱好、或者多陪陪家人。';
+  } else if (score >= 35) {
+    title = '坎坷人生';
+    summary = `${s.name}，你的人生充满了坎坷和遗憾。有些选择事后看来并不明智，但谁又能预知未来呢？至少你走完了全程。`;
+    advice = '人生的遗憾无法弥补，但可以避免重蹈覆辙。多学习、多思考、多社交——这些是你改变命运的杠杆。';
+  } else {
+    title = '失意人生';
+    summary = `${s.name}，你的人生充满了失意和无奈。也许从一开始就不够好，也许某个关键选择改变了一切。但人生没有如果。`;
+    advice = '如果你还年轻，现在改变还来得及。选一个方向，专注投入三年，你的人生会截然不同。';
+  }
+
+  return { score, title, summary, advice };
+}
+
+function getBGText() {
+  return { rich:'富裕家庭', mid:'中产家庭', work:'工薪家庭', poor:'贫困家庭' }[state.bg] || '普通家庭';
+}
+
+// ============================================================
+// 屏幕切换
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ============================================================
+// 角色创建
+// ============================================================
+const MBTI_PAIRS = [
+  { letters: ['E','I'], desc: { E:'外向', I:'内向' } },
+  { letters: ['S','N'], desc: { S:'实感', N:'直觉' } },
+  { letters: ['T','F'], desc: { T:'思考', F:'情感' } },
+  { letters: ['J','P'], desc: { J:'判断', P:'感知' } },
+];
+const MBTI_NAMES = {
+  INTJ:'建筑师',INTP:'逻辑学家',ENTJ:'指挥官',ENTP:'辩论家',
+  INFJ:'提倡者',INFP:'调停者',ENFJ:'主人公',ENFP:'竞选者',
+  ISTJ:'物流师',ISFJ:'守卫者',ESTJ:'总经理',ESTP:'执政官',
+  ISTP:'鉴赏家',ISFP:'探险家',ESTP:'企业家',ESFP:'表演者',
+};
+
+function startGame() {
+  initState();
+  renderMBTI();
+  showScreen('screen-create');
+}
+
+function renderMBTI() {
+  const grid = document.getElementById('mbti-grid');
+  grid.innerHTML = MBTI_PAIRS.map(pair => `
+    <div class="mbti-pair" data-pair="${pair.letters[0]}${pair.letters[1]}">
+      ${pair.letters.map(l => `
+        <div class="mbti-btn" data-letter="${l}" onclick="selectMBTI(this, '${pair.letters[0]}${pair.letters[1]}')">
+          <span class="letter">${l}</span>
+          <span class="desc">${pair.desc[l]}</span>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+let mbtiSelection = {};
+
+function selectMBTI(btn, pair) {
+  const pairEl = btn.parentElement;
+  pairEl.querySelectorAll('.mbti-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  mbtiSelection[pair] = btn.dataset.letter;
+  
+  const pairs = ['EI','SN','TF','JP'];
+  const complete = pairs.every(p => mbtiSelection[p]);
+  const result = document.getElementById('mbti-result');
+  if (complete) {
+    const type = mbtiSelection['EI'] + mbtiSelection['SN'] + mbtiSelection['TF'] + mbtiSelection['JP'];
+    state.mbti = type;
+    result.textContent = `${type} · ${MBTI_NAMES[type] || '独特人格'}`;
+    result.style.display = 'block';
+  }
+}
+
+function selectOption(el) {
+  const field = el.dataset.field;
+  const val = el.dataset.val;
+  state[field] = val;
+  el.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function confirmCharacter() {
+  const name = document.getElementById('char-name').value.trim();
+  if (!name) { alert('请输入姓名'); return; }
+  if (!state.gender) { alert('请选择性别'); return; }
+  if (!state.bg) { alert('请选择家庭背景'); return; }
+  if (!state.mbti) { alert('请完成性格测试'); return; }
+  if (!state.skill) { alert('请选择特长'); return; }
+  
+  state.name = name;
+  // Apply background effects
+  const bgEffects = { rich:{money:50000,charm:1}, mid:{money:15000}, work:{money:3000}, poor:{money:0,happy:-5} };
+  const eff = bgEffects[state.bg] || {};
+  for (const [k,v] of Object.entries(eff)) { state[k] += v; }
+  // Apply skill effects
+  const skillEffects = { study:{intel:2}, sport:{health:2}, art:{charm:2}, tech:{intel:1}, social:{social:2}, biz:{money:2000} };
+  const seff = skillEffects[state.skill] || {};
+  for (const [k,v] of Object.entries(seff)) { state[k] += v; }
+  
+  showScreen('screen-game');
+  loadScenario('birth');
+}
+
+// ============================================================
+// 场景加载与渲染
+// ============================================================
+function getScenario(id) {
+  return SCENARIOS.find(s => s.id === id);
+}
+
+function formatText(text, scenario) {
+  // Replace {flag_key} placeholders based on state flags
+  return text.replace(/\{(\w+)\}/g, (match, key) => {
+    // Check if it's a bg_text type placeholder
+    if (key === 'bg_text') return scenario.bgText ? (scenario.bgText[state.bg] || '') : '';
+    // Check for dynamic text fields
+    const fieldKey = key;
+    if (scenario[fieldKey + 'Text']) return scenario[fieldKey + 'Text'][state.flags[fieldKey]] || '';
+    if (scenario[fieldKey]) {
+      const flagVal = state.flags[key];
+      if (typeof scenario[fieldKey] === 'object' && flagVal) {
+        return scenario[fieldKey][flagVal] || '';
+      }
+      if (typeof scenario[fieldKey] === 'string') return scenario[fieldKey];
+    }
+    return match;
+  });
+}
+
+function loadScenario(id) {
+  if (id === 'ENDING') {
+    showEnding();
+    return;
+  }
+  
+  const scenario = getScenario(id);
+  if (!scenario) { showEnding(); return; }
+  
+  state.currentScenario = scenario;
+  state.stageIdx++;
+  
+  renderScenario(scenario);
+}
+
+function renderScenario(scenario) {
+  // Update topbar
+  document.getElementById('game-phase').textContent = scenario.phase;
+  document.getElementById('game-age').textContent = scenario.age;
+  
+  // Update stat bar
+  updateStatBar();
+  
+  // Format and render scenario
+  const text = formatText(scenario.text, scenario);
+  const content = document.getElementById('game-content');
+  
+  content.innerHTML = `
+    <div class="scenario-card">
+      <div class="scene-img">${scenario.emoji}</div>
+      <div class="scene-phase">${scenario.stage} · ${scenario.phase}</div>
+      <div class="scene-text">${text}</div>
+    </div>
+    <div class="choices" id="choices-container">
+      ${scenario.choices.map((c, i) => `
+        <button class="choice-btn" onclick="makeChoice(${i})">
+          <span class="choice-num">${i+1}</span>
+          <span class="choice-text">${c.text}</span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+function updateStatBar() {
+  const bar = document.getElementById('stat-bar');
+  const stats = [
+    { label:'智力', val:state.intel, color:'var(--blue)' },
+    { label:'魅力', val:state.charm, color:'var(--pink)' },
+    { label:'体质', val:state.health, color:'var(--green)' },
+    { label:'社交', val:state.social, color:'var(--cyan)' },
+    { label:'心情', val:state.happy, color: state.happy>=50?'var(--green)':state.happy>=20?'var(--orange)':'var(--red)' },
+    { label:'金钱', val:state.money>=10000?(state.money/10000).toFixed(0)+'万':state.money, color:'var(--gold)' },
+  ];
+  bar.innerHTML = stats.map(s => `
+    <div class="stat-pill">
+      <div class="sp-label">${s.label}</div>
+      <div class="sp-val" style="color:${s.color}">${s.val}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// 选择处理
+// ============================================================
+function makeChoice(idx) {
+  const scenario = state.currentScenario;
+  const choice = scenario.choices[idx];
+  
+  // Record in history
+  const sceneText = formatText(scenario.text, scenario);
+  state.history.push({
+    phase: `${scenario.stage} · ${scenario.phase} (${scenario.age}岁)`,
+    scene: sceneText.substring(0, 80) + '...',
+    choice: choice.text,
+  });
+  
+  // Apply effects
+  const oldStats = { intel:state.intel, charm:state.charm, health:state.health, happy:state.happy, money:state.money, social:state.social };
+  
+  if (choice.effects) {
+    for (const [k, v] of Object.entries(choice.effects)) {
+      if (state.hasOwnProperty(k)) state[k] += v;
+    }
+  }
+  
+  // Set flags
+  if (choice.set) {
+    for (const [k, v] of Object.entries(choice.set)) {
+      state.flags[k] = v;
+    }
+  }
+  
+  // Show loading then next scenario
+  showLoading(oldStats, choice);
+}
+
+function showLoading(oldStats, choice) {
+  const content = document.getElementById('game-content');
+  
+  // Show feedback if there are stat changes
+  let feedbackText = '';
+  if (choice.effects) {
+    const names = { intel:'智力', charm:'魅力', health:'体质', happy:'心情', money:'金钱', social:'社交' };
+    const changes = [];
+    for (const [k, v] of Object.entries(choice.effects)) {
+      if (names[k]) {
+        const sign = v > 0 ? '+' : '';
+        changes.push(`${names[k]} ${sign}${v}`);
+      }
+    }
+    if (changes.length > 0) feedbackText = `你选择了"${choice.text}"。${changes.join('，')}。`;
+    else feedbackText = `你选择了"${choice.text}"。`;
+  } else {
+    feedbackText = `你选择了"${choice.text}"。`;
+  }
+  
+  content.innerHTML = `
+    <div class="feedback-box">${feedbackText}</div>
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <div class="loading-text">命运的齿轮正在转动...</div>
+    </div>
+  `;
+  
+  // Update stat bar with changes highlighted
+  updateStatBar();
+  
+  // Load next scenario after delay
+  setTimeout(() => {
+    const nextId = choice.next;
+    loadScenario(nextId);
+  }, 1200);
+}
+
+// ============================================================
+// 历史记录
+// ============================================================
+function toggleHistory() {
+  const drawer = document.getElementById('history-drawer');
+  const overlay = document.getElementById('history-overlay');
+  if (drawer.classList.contains('open')) {
+    drawer.classList.remove('open');
+    overlay.classList.remove('show');
+  } else {
+    renderHistory();
+    drawer.classList.add('open');
+    overlay.classList.add('show');
+  }
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if (state.history.length === 0) {
+    list.innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:20px;">还没有人生履历</p>';
+    return;
+  }
+  list.innerHTML = state.history.map(h => `
+    <div class="history-item">
+      <div class="hi-phase">${h.phase}</div>
+      <div class="hi-scene">${h.scene}</div>
+      <div class="hi-choice">→ ${h.choice}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// 结局
+// ============================================================
+function showEnding() {
+  const ending = calculateEnding();
+  
+  document.getElementById('ending-score').textContent = ending.score;
+  document.getElementById('ending-title').textContent = ending.title;
+  document.getElementById('ending-summary').textContent = ending.summary;
+  
+  // Timeline
+  const tl = document.getElementById('ending-timeline');
+  tl.innerHTML = `
+    <h3>📋 人生履历</h3>
+    ${state.history.map(h => `
+      <div class="timeline-item">
+        <span class="tl-phase">${h.phase}</span><br>
+        ${h.choice}
+      </div>
+    `).join('')}
+  `;
+  
+  // Advice
+  document.getElementById('ending-advice').innerHTML = `
+    <div class="advice-label">💡 人生建议</div>
+    ${ending.advice}
+  `;
+  
+  showScreen('screen-ending');
+}
+
+// ============================================================
+// 初始化
+// ============================================================
+showScreen('screen-title');
+</script>
+</body>
+</html>
