@@ -775,31 +775,43 @@ a { color: inherit; }
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--glass-border-subtle);
 }
-.detail-meta .cat-tag { font-size: 11px; padding: 4px 10px; }
+.detail-meta .cat-tag { font-size: 12px; padding: 4px 10px; }
 .detail-date { font-size: 12px; color: var(--text-tertiary); margin-left: auto; }
 
 .detail-title {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  line-height: 1.3;
+  line-height: 1.35;
   margin: 0;
   color: var(--text-primary);
 }
 
 .detail-summary {
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: 15px;
+  line-height: 1.85;
   color: var(--text-secondary);
   margin: 0;
-  padding: 16px;
+  padding: 20px;
   background: var(--glass-bg-strong);
   border-radius: var(--radius-md);
 }
+.detail-summary p {
+  margin: 0 0 12px;
+  padding: 0;
+}
+.detail-summary p:last-child { margin-bottom: 0; }
+.detail-summary .summary-sentence {
+  display: block;
+  margin-bottom: 10px;
+}
+.detail-summary .summary-sentence:last-child { margin-bottom: 0; }
 
-.detail-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-.detail-tags .tag { font-size: 11px; padding: 3px 8px; }
+.detail-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.detail-tags .tag { font-size: 12px; padding: 4px 10px; }
 
 .detail-actions {
   display: flex;
@@ -1893,6 +1905,36 @@ function $$(sel, root) { return [...(root || document).querySelectorAll(sel)]; }
 function escapeHtml(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
+
+/**
+ * Split a long summary string into readable paragraphs.
+ * Strategy: split by 。 to get sentences, then group 2-3 sentences per paragraph.
+ * Returns an HTML string of <p> tags.
+ */
+function formatSummary(raw) {
+  if (!raw) return '';
+  const text = escapeHtml(raw);
+  // Split by Chinese/English sentence terminators
+  const sentences = text.split(/(?<=[。！？；])/).map(s => s.trim()).filter(s => s.length > 0);
+  if (sentences.length <= 1) return text;
+
+  // Group sentences into paragraphs (2-3 sentences each)
+  const paragraphs = [];
+  let current = [];
+  for (const s of sentences) {
+    current.push(s);
+    // Heuristic: start a new paragraph after sentences ending with patterns like "。" when we have 2+ sentences
+    // Also break after semicolons if the next sentence starts a new topic
+    if (current.length >= 2 && s.endsWith('。')) {
+      paragraphs.push(current.join(''));
+      current = [];
+    }
+  }
+  // Don't forget remaining sentences
+  if (current.length > 0) paragraphs.push(current.join(''));
+
+  return paragraphs.map(p => `<p>${p}</p>`).join('');
+}
 function fmtDate(d) {
   if (!d) return '';
   const date = new Date(d);
@@ -2318,7 +2360,7 @@ function renderDetail() {
         <span class="detail-date">${fmtDate(item.publishedAt)} · ${relDate(item.publishedAt)}</span>
       </div>
       <h2 class="detail-title">${escapeHtml(item.title)}</h2>
-      <div class="detail-summary">${escapeHtml(item.summary)}</div>
+      <div class="detail-summary">${formatSummary(item.summary)}</div>
       ${item.tags && item.tags.length ? `<div class="detail-tags">${item.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
       <div class="detail-source">
         来源: ${escapeHtml(item.source || '未知')}
