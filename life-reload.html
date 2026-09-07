@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>人生重开模拟器 · 增强版</title>
+<style>
+:root {
+  --bg-0: #0a0a14;
+  --bg-1: #12121f;
+  --bg-2: #1a1a2e;
+  --card: rgba(255,255,255,0.04);
+  --card-hover: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.08);
+  --text: #e0e0e8;
+  --text-dim: #8888a0;
+  --gold: #ffc857;
+  --purple: #a78bfa;
+  --blue: #60a5fa;
+  --green: #4ade80;
+  --red: #f87171;
+  --orange: #fb923c;
+  --pink: #f472b6;
+  --radius: 16px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { height:100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg-0);
+  color: var(--text);
+  overflow-y: auto;
+  -webkit-font-smoothing: antialiased;
+}
+#app { min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:20px; }
+
+.screen { display:none; width:100%; max-width:640px; animation: fadeIn .5s ease; }
+.screen.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+@keyframes slideIn { from{opacity:0;transform:translateX(20px);} to{opacity:1;transform:translateX(0);} }
+@keyframes glow { 0%,100%{box-shadow:0 0 20px rgba(167,139,250,0.15);} 50%{box-shadow:0 0 30px rgba(167,139,250,0.35);} }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  backdrop-filter: blur(12px);
+  transition: all .3s ease;
+}
+
+/* --- Title Screen --- */
+#screen-title { text-align:center; padding-top:8vh; }
+#screen-title h1 {
+  font-size: 2.8em; font-weight: 800;
+  background: linear-gradient(135deg, var(--gold), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 12px; letter-spacing: 2px;
+}
+#screen-title .subtitle { color: var(--text-dim); font-size:1.05em; margin-bottom:40px; }
+.btn-start {
+  display:inline-block; padding:16px 48px;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  color:#fff; font-size:1.2em; font-weight:700;
+  border:none; border-radius: 12px; cursor:pointer;
+  transition: all .3s; animation: glow 2s ease infinite;
+}
+.btn-start:hover { transform: scale(1.05); }
+.btn-start:active { transform: scale(0.98); }
+.title-hint { color:var(--text-dim); font-size:.85em; margin-top:24px; }
+
+/* --- Talent Screen --- */
+.section-title {
+  text-align:center; font-size:1.5em; font-weight:700; margin-bottom:6px;
+}
+.section-desc { text-align:center; color:var(--text-dim); font-size:.9em; margin-bottom:24px; }
+.talent-pool { display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+.talent-item {
+  display:flex; align-items:center; gap:14px; padding:16px;
+  border-radius:12px; cursor:pointer; transition: all .25s;
+  border:2px solid var(--border); background: var(--card);
+}
+.talent-item:hover { background: var(--card-hover); border-color: var(--purple); }
+.talent-item.selected { border-color: var(--gold); background: rgba(255,200,87,0.08); }
+.talent-item.disabled { opacity:0.35; pointer-events:none; }
+.talent-icon { font-size:1.8em; width:44px; text-align:center; flex-shrink:0; }
+.talent-info { flex:1; }
+.talent-name { font-weight:700; font-size:1.05em; margin-bottom:2px; }
+.talent-desc { color:var(--text-dim); font-size:.85em; line-height:1.4; }
+.talent-check { font-size:1.4em; color:var(--gold); width:28px; text-align:center; }
+
+.talent-count {
+  text-align:center; margin-bottom:20px;
+  font-size:1.1em; font-weight:600;
+}
+.talent-count span { color:var(--gold); font-size:1.3em; }
+
+/* --- Attribute Screen --- */
+.attr-points {
+  text-align:center; margin-bottom:24px; padding:12px 20px;
+  background: rgba(255,200,87,0.06); border:1px solid rgba(255,200,87,0.2);
+  border-radius:12px;
+}
+.attr-points .num { font-size:2em; font-weight:800; color:var(--gold); }
+.attr-points .label { color:var(--text-dim); font-size:.85em; }
+
+.attr-row {
+  display:flex; align-items:center; gap:16px; margin-bottom:16px;
+  padding:16px; border-radius:12px; background: var(--card);
+  border:1px solid var(--border);
+}
+.attr-icon { font-size:2em; width:48px; text-align:center; flex-shrink:0; }
+.attr-mid { flex:1; }
+.attr-name { font-weight:700; margin-bottom:4px; }
+.attr-bar {
+  height:8px; background: rgba(255,255,255,0.06); border-radius:4px; overflow:hidden;
+}
+.attr-bar-fill {
+  height:100%; border-radius:4px; transition: width .3s;
+}
+.attr-val { font-size:1.6em; font-weight:800; width:48px; text-align:center; }
+.attr-btns { display:flex; gap:8px; }
+.attr-btn {
+  width:36px; height:36px; border:1px solid var(--border);
+  background: var(--card); color:var(--text); border-radius:8px;
+  font-size:1.2em; cursor:pointer; transition: all .2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.attr-btn:hover { background: var(--purple); }
+.attr-btn:disabled { opacity:0.3; cursor:not-allowed; }
+
+/* --- Life Screen --- */
+#screen-life { padding-top:10px; }
+.life-header {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:16px; padding:12px 16px; border-radius:12px;
+  background: var(--card); border:1px solid var(--border);
+}
+.life-age { font-size:1.3em; font-weight:700; }
+.life-age .year { color:var(--purple); }
+.life-stage { color:var(--text-dim); font-size:.85em; }
+
+.stat-panel {
+  display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-bottom:16px;
+}
+.stat-box {
+  text-align:center; padding:10px 4px; border-radius:10px;
+  background: var(--card); border:1px solid var(--border);
+}
+.stat-box .stat-label { font-size:.75em; color:var(--text-dim); margin-bottom:2px; }
+.stat-box .stat-value { font-size:1.3em; font-weight:700; }
+.stat-box .stat-value.up { color: var(--green); }
+.stat-box .stat-value.down { color: var(--red); }
+
+.life-log {
+  max-height: 340px; overflow-y:auto; margin-bottom:16px; padding:8px;
+  border-radius:12px; background: var(--card); border:1px solid var(--border);
+}
+.life-log::-webkit-scrollbar { width:4px; }
+.life-log::-webkit-scrollbar-thumb { background: var(--border); border-radius:2px; }
+.log-entry {
+  padding:12px 14px; margin-bottom:8px; border-radius:10px;
+  background: rgba(255,255,255,0.02); animation: slideIn .4s ease;
+  border-left: 3px solid var(--purple);
+}
+.log-entry .log-age { color:var(--gold); font-weight:700; font-size:.85em; margin-bottom:2px; }
+.log-entry .log-text { font-size:.92em; line-height:1.5; }
+.log-entry.positive { border-left-color: var(--green); }
+.log-entry.negative { border-left-color: var(--red); }
+.log-entry.neutral { border-left-color: var(--blue); }
+
+.life-controls { display:flex; gap:12px; }
+.btn-next {
+  flex:1; padding:14px; border:none; border-radius:12px; cursor:pointer;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  color:#fff; font-size:1em; font-weight:600; transition: all .25s;
+}
+.btn-next:hover { opacity:0.9; }
+.btn-auto {
+  padding:14px 20px; border:1px solid var(--border); border-radius:12px;
+  background: var(--card); color:var(--text); font-size:1em; cursor:pointer;
+  transition: all .25s;
+}
+.btn-auto.active { background: var(--green); color:#000; }
+
+/* --- Ending Screen --- */
+#screen-ending { text-align:center; padding-top:5vh; }
+.ending-grade {
+  font-size:5em; font-weight:900; margin-bottom:8px;
+  background: linear-gradient(135deg, var(--gold), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.ending-title { font-size:1.8em; font-weight:700; margin-bottom:8px; }
+.ending-desc { color:var(--text-dim); font-size:1em; margin-bottom:32px; line-height:1.6; }
+.ending-stats {
+  display:grid; grid-template-columns: repeat(2,1fr); gap:10px; margin-bottom:24px;
+}
+.ending-stat {
+  display:flex; justify-content:space-between; padding:12px 16px;
+  border-radius:10px; background: var(--card); border:1px solid var(--border);
+}
+.ending-stat .es-label { color:var(--text-dim); }
+.ending-stat .es-value { font-weight:700; }
+.ending-achievements { margin-bottom:24px; }
+.ending-achievements h3 { margin-bottom:12px; font-size:1.1em; }
+.ach-item {
+  display:inline-block; padding:6px 14px; margin:4px;
+  border-radius:20px; font-size:.85em;
+  background: rgba(255,200,87,0.1); border:1px solid rgba(255,200,87,0.3);
+  color: var(--gold);
+}
+
+/* --- Common --- */
+.btn-secondary {
+  padding:12px 32px; border:1px solid var(--border); border-radius:10px;
+  background: var(--card); color:var(--text); font-size:.95em; cursor:pointer;
+  transition: all .25s;
+}
+.btn-secondary:hover { background: var(--card-hover); }
+.action-row { display:flex; gap:12px; justify-content:center; }
+
+.event-popup {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center;
+  z-index:100; animation: fadeIn .3s ease;
+}
+.event-card {
+  max-width:420px; width:90%; padding:28px; border-radius:16px;
+  background: var(--bg-2); border:1px solid var(--border);
+  text-align:center; animation: slideIn .4s ease;
+}
+.event-card h3 { font-size:1.2em; margin-bottom:12px; color:var(--gold); }
+.event-card p { font-size:.95em; line-height:1.6; margin-bottom:16px; color:var(--text); }
+.event-effects { margin-bottom:16px; }
+.event-effect {
+  display:inline-block; padding:4px 10px; margin:3px; border-radius:6px;
+  font-size:.8em;
+}
+.effect-pos { background: rgba(74,222,128,0.15); color: var(--green); }
+.effect-neg { background: rgba(248,113,113,0.15); color: var(--red); }
+
+@media (max-width: 480px) {
+  #screen-title h1 { font-size:2.2em; }
+  .stat-panel { grid-template-columns: repeat(3,1fr); }
+  .attr-row { flex-wrap:wrap; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ====== 标题界面 ====== -->
+<div id="screen-title" class="screen active">
+  <h1>人生重开模拟器</h1>
+  <p class="subtitle">增强版 · 你的命运由你书写</p>
+  <button class="btn-start" onclick="startGame()">立即重开</button>
+  <p class="title-hint">抽选天赋 → 分配属性 → 体验随机人生</p>
+</div>
+
+<!-- ====== 天赋选择界面 ====== -->
+<div id="screen-talent" class="screen">
+  <h2 class="section-title">选择天赋</h2>
+  <p class="section-desc">从以下天赋中选择 3 个，它们将影响你的一生</p>
+  <div class="talent-pool" id="talent-pool"></div>
+  <div class="talent-count">已选 <span id="talent-selected">0</span> / 3</div>
+  <div class="action-row">
+    <button class="btn-next" id="btn-confirm-talent" onclick="confirmTalents()" disabled>确认天赋</button>
+    <button class="btn-secondary" onclick="rerollTalents()">重新抽取</button>
+  </div>
+</div>
+
+<!-- ====== 属性分配界面 ====== -->
+<div id="screen-attr" class="screen">
+  <h2 class="section-title">分配属性</h2>
+  <p class="section-desc">将 20 点属性分配到以下四项基础属性中</p>
+  <div class="attr-points">
+    <div class="num" id="remaining-points">20</div>
+    <div class="label">剩余属性点</div>
+  </div>
+  <div id="attr-container"></div>
+  <div class="action-row" style="margin-top:24px">
+    <button class="btn-next" id="btn-confirm-attr" onclick="confirmAttributes()">开始人生</button>
+  </div>
+</div>
+
+<!-- ====== 人生模拟界面 ====== -->
+<div id="screen-life" class="screen">
+  <div class="life-header">
+    <div class="life-age"><span id="life-age-num">0</span> <span class="year">岁</span></div>
+    <div class="life-stage" id="life-stage-name">幼年</div>
+  </div>
+  <div class="stat-panel" id="stat-panel"></div>
+  <div class="life-log" id="life-log"></div>
+  <div class="life-controls">
+    <button class="btn-next" id="btn-next-year" onclick="nextYear()">继续 ▶</button>
+    <button class="btn-auto" id="btn-auto" onclick="toggleAuto()">自动</button>
+  </div>
+</div>
+
+<!-- ====== 结局界面 ====== -->
+<div id="screen-ending" class="screen">
+  <div class="ending-grade" id="ending-grade">B</div>
+  <h2 class="ending-title" id="ending-title">平凡的一生</h2>
+  <p class="ending-desc" id="ending-desc"></p>
+  <div class="ending-stats" id="ending-stats"></div>
+  <div class="ending-achievements" id="ending-achievements"></div>
+  <div class="action-row">
+    <button class="btn-start" onclick="location.reload()">再开一局</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ============================================================
+// 游戏数据：天赋
+// ============================================================
+const ALL_TALENTS = [
+  { id:'t1', name:'天生丽质', icon:'💎', desc:'颜值+5，开局自带魅力光环', effects:{charm:5} },
+  { id:'t2', name:'聪慧过人', icon:'🧠', desc:'智力+5，学什么都比别人快', effects:{intelligence:5} },
+  { id:'t3', name:'体魄强健', icon:'💪', desc:'体质+5，不容易生病', effects:{health:5} },
+  { id:'t4', name:'金枝玉叶', icon:'👑', desc:'家境+5，出身优渥', effects:{wealth:5} },
+  { id:'t5', name:'幸运之子', icon:'🍀', desc:'正面事件概率大幅提升', effects:{luck:1} },
+  { id:'t6', name:'万里挑一', icon:'⭐', desc:'全属性+2', effects:{charm:2,intelligence:2,health:2,wealth:2} },
+  { id:'t7', name:'天才少女', icon:'📚', desc:'智力+8，但体质-3', effects:{intelligence:8,health:-3} },
+  { id:'t8', name:'美人胚子', icon:'🌸', desc:'颜值+8，但智力-2', effects:{charm:8,intelligence:-2} },
+  { id:'t9', name:'含着金钥匙', icon:'🗝️', desc:'家境+8，但颜值-2', effects:{wealth:8,charm:-2} },
+  { id:'t10', name:'生命力旺盛', icon:'🔥', desc:'体质+8，但家境-3', effects:{health:8,wealth:-3} },
+  { id:'t11', name:'天生抑郁', icon:'🌧️', desc:'快乐初始-30，人生更坎坷', effects:{happiness:-30} },
+  { id:'t12', name:'乐观主义', icon:'☀️', desc:'快乐初始+30，抗压能力强', effects:{happiness:30} },
+  { id:'t13', name:'好运连连', icon:'💰', desc:'初始金钱+50000', effects:{money:50000} },
+  { id:'t14', name:'社交达人', icon:'🤝', desc:'人际事件概率提升，社交更顺利', effects:{social:1} },
+  { id:'t15', name:'学霸基因', icon:'🎓', desc:'学业事件成功率大幅提升', effects:{academic:1} },
+  { id:'t16', name:'命途多舛', icon:'⚡', desc:'负面事件+10%，但正面效果+20%', effects:{misfortune:1} },
+  { id:'t17', name:'长寿基因', icon:'🌿', desc:'寿命+20年，更容易活到高龄', effects:{longevity:1} },
+  { id:'t18', name:'天选之人', icon:'🌟', desc:'随机一项属性+10', effects:{random10:1} },
+];
+
+// ============================================================
+// 游戏数据：人生事件
+// 格式: { stage, minAge, maxAge, weight, condition, title, text, effects, log, type }
+// ============================================================
+const EVENTS = [
+  // ====== 幼年 (0-6) ======
+  { stage:'幼年', minAge:0, maxAge:0, weight:100, title:'你出生了', text:'你来到了这个世界，开始了一段新的人生旅程。', effects:{happiness:5}, log:'你出生了，在父母的期盼中来到这个世界。', type:'neutral' },
+  { stage:'幼年', minAge:1, maxAge:3, weight:50, condition:s=>s.charm>=5, title:'人见人爱', text:'你长得白白胖胖，邻居都抢着抱你。', effects:{happiness:5}, log:'邻居们都说你是个可爱的孩子，抢着抱你。', type:'positive' },
+  { stage:'幼年', minAge:1, maxAge:3, weight:30, condition:s=>s.wealth<=2, title:'家境贫寒', text:'家里经济拮据，父母为了生计奔波操劳。', effects:{happiness:-3}, log:'家境贫寒，父母为了生计奔波操劳。', type:'negative' },
+  { stage:'幼年', minAge:2, maxAge:4, weight:40, condition:s=>s.health>=5, title:'健康宝宝', text:'你很少生病，身体发育很好。', effects:{happiness:3}, log:'你身体素质很好，很少生病。', type:'positive' },
+  { stage:'幼年', minAge:2, maxAge:4, weight:30, condition:s=>s.health<=2, title:'体弱多病', text:'你经常生病，父母常带你去医院。', effects:{happiness:-5}, log:'你体弱多病，父母常带你去医院。', type:'negative' },
+  { stage:'幼年', minAge:3, maxAge:6, weight:40, condition:s=>s.intelligence>=5, title:'早慧儿童', text:'你表现出超常的智力，会背唐诗了。', effects:{intelligence:1}, log:'你表现出超常的智力，三岁就会背唐诗了。', type:'positive' },
+  { stage:'幼年', minAge:3, maxAge:6, weight:30, title:'幼儿园生活', text:'你开始上幼儿园，认识了第一批小伙伴。', effects:{happiness:4}, log:'你上了幼儿园，认识了一些小伙伴。', type:'neutral' },
+  { stage:'幼年', minAge:4, maxAge:6, weight:25, condition:s=>s.wealth>=5, title:'才艺启蒙', text:'父母送你去学钢琴/绘画/舞蹈等才艺班。', effects:{intelligence:2,charm:1}, log:'父母送你去学了才艺班。', type:'positive' },
+  { stage:'幼年', minAge:4, maxAge:6, weight:20, condition:s=>s.charm>=7, title:'童星邀约', text:'有星探看中你的外貌，邀请你拍广告。', effects:{money:2000,charm:1}, log:'你被星探看中，拍了一个小广告赚了点钱。', type:'positive' },
+  { stage:'幼年', minAge:5, maxAge:6, weight:25, title:'初入小学', text:'你即将踏入小学校园，开始求学之路。', effects:{happiness:3}, log:'你即将上小学了，对校园生活充满期待。', type:'neutral' },
+
+  // ====== 小学 (7-12) ======
+  { stage:'小学', minAge:7, maxAge:7, weight:100, title:'入学', text:'你正式成为一名小学生，戴上红领巾。', effects:{happiness:5}, log:'你正式入学了，成为了一名小学生。', type:'neutral' },
+  { stage:'小学', minAge:7, maxAge:10, weight:35, condition:s=>s.intelligence>=6, title:'成绩优异', text:'你的成绩名列前茅，老师经常表扬你。', effects:{happiness:5,intelligence:1}, log:'你的成绩优异，受到老师表扬。', type:'positive' },
+  { stage:'小学', minAge:7, maxAge:10, weight:30, condition:s=>s.intelligence<=3, title:'学习困难', text:'你的成绩不太理想，学习很吃力。', effects:{happiness:-4}, log:'你的成绩不太理想，学习很吃力。', type:'negative' },
+  { stage:'小学', minAge:8, maxAge:11, weight:25, condition:s=>s.charm>=6, title:'班级红人', text:'你因为长相好看成为班里的风云人物。', effects:{happiness:4,charm:1}, log:'你因为外貌出众成为班里的风云人物。', type:'positive' },
+  { stage:'小学', minAge:8, maxAge:11, weight:25, condition:s=>s.health>=5, title:'运动健将', text:'你在运动会上大放异彩，为班级争光。', effects:{happiness:5,health:1}, log:'你在学校运动会上大放异彩。', type:'positive' },
+  { stage:'小学', minAge:9, maxAge:12, weight:20, title:'交到好朋友', text:'你交到了一个无话不谈的好朋友。', effects:{happiness:6}, log:'你交到了一个好朋友。', type:'positive' },
+  { stage:'小学', minAge:9, maxAge:12, weight:15, condition:s=>s.charm<=3, title:'被嘲笑', text:'同学嘲笑你的外貌，你很难过。', effects:{happiness:-6}, log:'同学嘲笑你的外貌，你很难过。', type:'negative' },
+  { stage:'小学', minAge:10, maxAge:12, weight:20, condition:s=>s.wealth<=3, title:'买不起文具', text:'同学都有新款文具盒，而你只能用旧的。', effects:{happiness:-3}, log:'你买不起新文具，有些自卑。', type:'negative' },
+  { stage:'小学', minAge:10, maxAge:12, weight:15, condition:s=>s.wealth>=6, title:'零花钱充裕', text:'你的零花钱很充裕，经常请同学吃东西。', effects:{happiness:4}, log:'你的零花钱充裕，经常请客。', type:'positive' },
+  { stage:'小学', minAge:11, maxAge:12, weight:15, title:'暗恋', text:'你对班上一个同学产生了朦胧的好感。', effects:{happiness:3}, log:'你对班上一个同学产生了朦胧的好感。', type:'neutral' },
+  { stage:'小学', minAge:11, maxAge:12, weight:20, condition:s=>s.intelligence>=7, title:'竞赛获奖', text:'你参加了数学竞赛并获得了名次。', effects:{intelligence:1,happiness:5}, log:'你参加数学竞赛并获奖了。', type:'positive' },
+
+  // ====== 初中 (13-15) ======
+  { stage:'初中', minAge:13, maxAge:13, weight:100, title:'升入初中', text:'你升入初中，开始了新的学习阶段。', effects:{happiness:3}, log:'你升入初中了。', type:'neutral' },
+  { stage:'初中', minAge:13, maxAge:15, weight:30, condition:s=>s.intelligence>=7, title:'学霸之路', text:'你的成绩在年级名列前茅，被称为学霸。', effects:{happiness:5,intelligence:1}, log:'你的成绩在年级名列前茅。', type:'positive' },
+  { stage:'初中', minAge:13, maxAge:15, weight:25, condition:s=>s.intelligence<=3, title:'沉迷游戏', text:'你沉迷网络游戏，成绩一落千丈。', effects:{happiness:-4,intelligence:-1}, log:'你沉迷网络游戏，成绩下滑。', type:'negative' },
+  { stage:'初中', minAge:14, maxAge:15, weight:20, condition:s=>s.charm>=7, title:'收到情书', text:'你收到了一封情书，心跳加速。', effects:{happiness:5}, log:'你收到了一封情书。', type:'positive' },
+  { stage:'初中', minAge:14, maxAge:15, weight:15, condition:s=>s.charm<=2, title:'自卑', text:'你因为外貌感到自卑，不敢与人交流。', effects:{happiness:-5,charm:-1}, log:'你因为外貌自卑，变得内向。', type:'negative' },
+  { stage:'初中', minAge:14, maxAge:15, weight:20, condition:s=>s.health>=6, title:'体育特长', text:'你加入了校运动队，成为体育特长生。', effects:{health:1,happiness:4}, log:'你加入了校运动队。', type:'positive' },
+  { stage:'初中', minAge:14, maxAge:15, weight:15, title:'叛逆期', text:'你进入了叛逆期，和父母大吵一架。', effects:{happiness:-3}, log:'你进入叛逆期，和父母大吵一架。', type:'negative' },
+  { stage:'初中', minAge:15, maxAge:15, weight:25, condition:s=>s.intelligence>=6, title:'中考冲刺', text:'你努力备战中考，成绩稳步提升。', effects:{intelligence:1,happiness:2}, log:'你努力备战中考。', type:'positive' },
+  { stage:'初中', minAge:15, maxAge:15, weight:20, condition:s=>s.intelligence<=3, title:'中考失利', text:'你中考发挥失常，只考上了一所普通高中。', effects:{happiness:-5}, log:'你中考发挥失常。', type:'negative' },
+  { stage:'初中', minAge:15, maxAge:15, weight:15, condition:s=>s.wealth>=7, title:'出国留学', text:'父母送你出国读高中。', effects:{intelligence:2,charm:2,happiness:5}, log:'你出国读高中了。', type:'positive' },
+
+  // ====== 高中 (16-18) ======
+  { stage:'高中', minAge:16, maxAge:16, weight:100, title:'升入高中', text:'你正式踏入高中校园。', effects:{happiness:3}, log:'你升入高中了。', type:'neutral' },
+  { stage:'高中', minAge:16, maxAge:17, weight:25, condition:s=>s.intelligence>=7, title:'尖子班', text:'你被分进了学校的尖子班。', effects:{intelligence:1,happiness:3}, log:'你被分进了尖子班。', type:'positive' },
+  { stage:'高中', minAge:16, maxAge:17, weight:20, condition:s=>s.charm>=7, title:'校园恋爱', text:'你和暗恋的对象开始交往了。', effects:{happiness:8}, log:'你开始了一段校园恋爱。', type:'positive' },
+  { stage:'高中', minAge:16, maxAge:17, weight:15, condition:s=>s.charm<=3, title:'表白被拒', text:'你向喜欢的人表白，被拒绝了。', effects:{happiness:-7}, log:'你表白被拒绝了。', type:'negative' },
+  { stage:'高中', minAge:17, maxAge:17, weight:20, condition:s=>s.health<=3, title:'身体垮了', text:'高强度学习让你的身体出了问题。', effects:{health:-2,happiness:-4}, log:'高强度学习让你的身体出了问题。', type:'negative' },
+  { stage:'高中', minAge:17, maxAge:17, weight:15, condition:s=>s.wealth<=2, title:'打工补贴', text:'你利用课余时间打工补贴家用。', effects:{money:3000,happiness:-2}, log:'你利用课余打工补贴家用。', type:'neutral' },
+  { stage:'高中', minAge:18, maxAge:18, weight:100, title:'高考', text:'高考来临，这是改变命运的转折点。', effects:{}, log:'高考来临了。', type:'neutral' },
+  { stage:'高中', minAge:18, maxAge:18, weight:60, condition:s=>s.intelligence>=8, title:'金榜题名', text:'你以优异成绩考入顶尖985大学！', effects:{intelligence:2,happiness:10}, log:'你以优异成绩考入985大学！', type:'positive' },
+  { stage:'高中', minAge:18, maxAge:18, weight:40, condition:s=>s.intelligence>=5&&s.intelligence<8, title:'考入一本', text:'你考入了一所不错的一本大学。', effects:{happiness:6}, log:'你考入了一本大学。', type:'positive' },
+  { stage:'高中', minAge:18, maxAge:18, weight:30, condition:s=>s.intelligence<5, title:'高考落榜', text:'你的高考成绩不理想，只上了大专。', effects:{happiness:-6}, log:'你高考成绩不理想，上了大专。', type:'negative' },
+  { stage:'高中', minAge:18, maxAge:18, weight:15, condition:s=>s.charm>=8&&s.intelligence<5, title:'艺考逆袭', text:'你凭借出众外貌通过艺考进入名校。', effects:{happiness:8,charm:1}, log:'你通过艺考进入了名校。', type:'positive' },
+
+  // ====== 大学 (19-22) ======
+  { stage:'大学', minAge:19, maxAge:20, weight:30, condition:s=>s.charm>=6, title:'校园恋情', text:'你在大学里遇到了心动的人，开始了一段甜蜜的恋情。', effects:{happiness:8}, log:'你在大学里开始了一段恋情。', type:'positive' },
+  { stage:'大学', minAge:19, maxAge:21, weight:25, condition:s=>s.intelligence>=7, title:'学术新星', text:'你的学术能力得到教授赏识，参与科研项目。', effects:{intelligence:2,happiness:4}, log:'你参与教授的科研项目。', type:'positive' },
+  { stage:'大学', minAge:19, maxAge:21, weight:20, condition:s=>s.charm>=5, title:'学生会干部', text:'你加入了学生会，锻炼了社交能力。', effects:{charm:1,happiness:3}, log:'你加入了学生会。', type:'positive' },
+  { stage:'大学', minAge:20, maxAge:22, weight:20, title:'兼职实习', text:'你找到了一份实习工作，开始积累社会经验。', effects:{money:8000,happiness:2}, log:'你找到了实习工作。', type:'neutral' },
+  { stage:'大学', minAge:20, maxAge:22, weight:15, condition:s=>s.health<=3, title:'熬夜猝死边缘', text:'你经常熬夜打游戏/追剧，身体亮起了红灯。', effects:{health:-2,happiness:-3}, log:'你经常熬夜，身体亮红灯。', type:'negative' },
+  { stage:'大学', minAge:21, maxAge:22, weight:20, condition:s=>s.intelligence>=8, title:'保研/考研', text:'你成功保研/考研上岸，继续深造。', effects:{intelligence:2,happiness:6}, log:'你保研/考研成功。', type:'positive' },
+  { stage:'大学', minAge:21, maxAge:22, weight:15, condition:s=>s.wealth<=3, title:'经济压力', text:'你为学费和生活费发愁，日子拮据。', effects:{happiness:-4}, log:'你为学费和生活费发愁。', type:'negative' },
+  { stage:'大学', minAge:22, maxAge:22, weight:30, condition:s=>s.intelligence>=7, title:'校招Offer', text:'你在校园招聘中拿到了知名企业的Offer。', effects:{money:20000,happiness:6}, log:'你拿到了名企Offer。', type:'positive' },
+  { stage:'大学', minAge:22, maxAge:22, weight:25, condition:s=>s.intelligence<5, title:'求职困难', text:'你投了很多简历，但没有收到满意的回复。', effects:{happiness:-5}, log:'你求职困难。', type:'negative' },
+  { stage:'大学', minAge:22, maxAge:22, weight:15, condition:s=>s.charm>=8, title:'网红出道', text:'你因为高颜值在社交媒体上走红。', effects:{money:50000,charm:2,happiness:6}, log:'你在社交媒体上走红了。', type:'positive' },
+
+  // ====== 青年 (23-35) ======
+  { stage:'青年', minAge:23, maxAge:25, weight:30, condition:s=>s.intelligence>=7, title:'职场新星', text:'你在工作中表现出色，获得了晋升。', effects:{money:30000,happiness:5}, log:'你在工作中获得了晋升。', type:'positive' },
+  { stage:'青年', minAge:23, maxAge:25, weight:25, condition:s=>s.intelligence<=4, title:'频繁跳槽', text:'你对工作不满意，频繁跳槽。', effects:{money:-5000,happiness:-4}, log:'你频繁跳槽。', type:'negative' },
+  { stage:'青年', minAge:24, maxAge:28, weight:20, condition:s=>s.charm>=6, title:'邂逅爱情', text:'你遇到了一个让你心动的人。', effects:{happiness:8}, log:'你遇到了心动的人。', type:'positive' },
+  { stage:'青年', minAge:25, maxAge:30, weight:25, condition:s=>s.charm>=5&&s.wealth>=4, title:'步入婚姻', text:'你结婚了，举办了一场温馨的婚礼。', effects:{happiness:10}, log:'你结婚了。', type:'positive' },
+  { stage:'青年', minAge:25, maxAge:30, weight:15, condition:s=>s.charm<=3, title:'相亲失败', text:'你多次相亲都以失败告终。', effects:{happiness:-5}, log:'你多次相亲失败。', type:'negative' },
+  { stage:'青年', minAge:26, maxAge:32, weight:20, condition:s=>s.married, title:'为人父母', text:'你迎来了自己的孩子，身份升级为父母。', effects:{happiness:10}, log:'你迎来了自己的孩子。', type:'positive' },
+  { stage:'青年', minAge:27, maxAge:33, weight:25, condition:s=>s.intelligence>=8, title:'创业起步', text:'你辞职创业，开始了自己的事业。', effects:{money:-20000,happiness:3}, log:'你辞职创业了。', type:'neutral' },
+  { stage:'青年', minAge:28, maxAge:35, weight:20, condition:s=>s.intelligence>=6, title:'事业有成', text:'你的事业蒸蒸日上，收入稳步增长。', effects:{money:50000,happiness:5}, log:'你的事业蒸蒸日上。', type:'positive' },
+  { stage:'青年', minAge:28, maxAge:35, weight:15, condition:s=>s.health<=3, title:'过劳住院', text:'你因为过度劳累住院了。', effects:{health:-2,money:-10000,happiness:-6}, log:'你因为过劳住院了。', type:'negative' },
+  { stage:'青年', minAge:30, maxAge:35, weight:15, condition:s=>s.wealth>=7, title:'买房置业', text:'你买了人生第一套房子。', effects:{money:-80000,happiness:8}, log:'你买了第一套房子。', type:'positive' },
+  { stage:'青年', minAge:30, maxAge:35, weight:20, condition:s=>s.wealth<=3, title:'房贷压力', text:'你背上了沉重的房贷。', effects:{happiness:-4}, log:'你背上了沉重的房贷。', type:'negative' },
+  { stage:'青年', minAge:32, maxAge:35, weight:10, condition:s=>s.charm>=8, title:'出轨风波', text:'你抵挡不住诱惑，婚姻出现了危机。', effects:{happiness:-10}, log:'你的婚姻出现了危机。', type:'negative' },
+
+  // ====== 中年 (36-55) ======
+  { stage:'中年', minAge:36, maxAge:40, weight:25, condition:s=>s.intelligence>=7, title:'升职加薪', text:'你被提拔为管理层，收入大增。', effects:{money:80000,happiness:6}, log:'你被提拔为管理层。', type:'positive' },
+  { stage:'中年', minAge:36, maxAge:40, weight:20, condition:s=>s.intelligence<=4, title:'中年失业', text:'你被公司裁员，面临中年就业困境。', effects:{money:-30000,happiness:-8}, log:'你被公司裁员了。', type:'negative' },
+  { stage:'中年', minAge:38, maxAge:45, weight:15, title:'中年危机', text:'你陷入了中年危机，开始质疑人生的意义。', effects:{happiness:-5}, log:'你陷入了中年危机。', type:'negative' },
+  { stage:'中年', minAge:38, maxAge:45, weight:15, condition:s=>s.wealth>=7, title:'投资获利', text:'你的投资获得了丰厚回报。', effects:{money:100000,happiness:5}, log:'你的投资获利了。', type:'positive' },
+  { stage:'中年', minAge:38, maxAge:45, weight:12, condition:s=>s.wealth<=3, title:'投资亏损', text:'你的投资血本无归。', effects:{money:-50000,happiness:-6}, log:'你的投资亏损严重。', type:'negative' },
+  { stage:'中年', minAge:40, maxAge:50, weight:20, condition:s=>s.health<=4, title:'健康警报', text:'体检结果显示多项指标异常。', effects:{health:-2,happiness:-4}, log:'你的体检结果不太理想。', type:'negative' },
+  { stage:'中年', minAge:40, maxAge:50, weight:15, condition:s=>s.health>=6, title:'坚持运动', text:'你坚持运动健身，身体素质优于同龄人。', effects:{health:1,happiness:3}, log:'你坚持运动健身。', type:'positive' },
+  { stage:'中年', minAge:42, maxAge:50, weight:15, condition:s=>s.charm>=7, title:'婚外情', text:'你面临婚外情的诱惑。', effects:{happiness:-5}, log:'你面临婚外情的诱惑。', type:'negative' },
+  { stage:'中年', minAge:45, maxAge:55, weight:12, condition:s=>s.intelligence>=8, title:'行业专家', text:'你成为行业内的知名专家。', effects:{money:60000,happiness:5,charm:1}, log:'你成为行业知名专家。', type:'positive' },
+  { stage:'中年', minAge:45, maxAge:55, weight:12, title:'父母离世', text:'你的父亲/母亲因病离世。', effects:{happiness:-12}, log:'你的父母离开了你。', type:'negative' },
+  { stage:'中年', minAge:48, maxAge:55, weight:15, condition:s=>s.wealth>=6, title:'财务自由', text:'你实现了财务自由，开始享受生活。', effects:{happiness:10}, log:'你实现了财务自由。', type:'positive' },
+  { stage:'中年', minAge:50, maxAge:55, weight:10, condition:s=>s.intelligence>=6, title:'出版自传', text:'你出版了自传，分享人生经验。', effects:{money:30000,charm:2,happiness:4}, log:'你出版了自传。', type:'positive' },
+
+  // ====== 老年 (56-80) ======
+  { stage:'老年', minAge:56, maxAge:65, weight:25, title:'退休生活', text:'你正式退休，开始享受悠闲的退休生活。', effects:{happiness:5}, log:'你退休了。', type:'neutral' },
+  { stage:'老年', minAge:56, maxAge:65, weight:15, condition:s=>s.health>=5, title:'广场舞达人', text:'你成为社区广场舞队伍的领舞。', effects:{health:1,charm:1,happiness:4}, log:'你成了广场舞领舞。', type:'positive' },
+  { stage:'老年', minAge:58, maxAge:70, weight:18, condition:s=>s.wealth>=5, title:'含饴弄孙', text:'你含饴弄孙，享受天伦之乐。', effects:{happiness:6}, log:'你含饴弄孙，享受天伦之乐。', type:'positive' },
+  { stage:'老年', minAge:58, maxAge:70, weight:15, condition:s=>s.health<=3, title:'慢性病', text:'你被诊断出慢性病，需要长期服药。', effects:{health:-2,money:-20000,happiness:-4}, log:'你被诊断出慢性病。', type:'negative' },
+  { stage:'老年', minAge:60, maxAge:70, weight:12, condition:s=>s.wealth>=6, title:'周游世界', text:'你和老伴一起周游世界。', effects:{money:-50000,happiness:8}, log:'你和老伴周游世界。', type:'positive' },
+  { stage:'老年', minAge:62, maxAge:72, weight:10, condition:s=>s.intelligence>=7, title:'老年大学', text:'你上老年大学，学习书法/绘画/摄影。', effects:{intelligence:1,happiness:4}, log:'你上了老年大学。', type:'positive' },
+  { stage:'老年', minAge:65, maxAge:75, weight:15, condition:s=>s.health<=4, title:'住院治疗', text:'你因为身体原因住院治疗。', effects:{health:-1,money:-30000,happiness:-5}, log:'你住院治疗了。', type:'negative' },
+  { stage:'老年', minAge:68, maxAge:80, weight:12, title:'老伴先走', text:'你的老伴先你一步离开了。', effects:{happiness:-15}, log:'你的老伴离开了你。', type:'negative' },
+  { stage:'老年', minAge:70, maxAge:80, weight:10, condition:s=>s.wealth>=5, title:'捐资助学', text:'你捐资帮助贫困学生上学。', effects:{happiness:8,charm:1}, log:'你捐资助学了。', type:'positive' },
+  { stage:'老年', minAge:75, maxAge:90, weight:15, condition:s=>s.health<=2, title:'行动不便', text:'你的身体越来越虚弱，行动不便。', effects:{happiness:-5}, log:'你行动不便了。', type:'negative' },
+
+  // ====== 晚年 (81+) ======
+  { stage:'晚年', minAge:81, maxAge:120, weight:20, condition:s=>s.health>=4, title:'安享晚年', text:'你身体硬朗，安享晚年。', effects:{happiness:3}, log:'你身体硬朗，安享晚年。', type:'positive' },
+  { stage:'晚年', minAge:81, maxAge:120, weight:30, condition:s=>s.health<=2, title:'卧床不起', text:'你卧床不起，需要人照顾。', effects:{happiness:-8}, log:'你卧床不起了。', type:'negative' },
+  { stage:'晚年', minAge:85, maxAge:120, weight:25, condition:s=>s.intelligence>=7, title:'回忆录', text:'你写了回忆录，记录精彩一生。', effects:{happiness:5}, log:'你写了回忆录。', type:'positive' },
+  { stage:'晚年', minAge:88, maxAge:120, weight:20, title:'儿孙满堂', text:'你儿孙满堂，一家人其乐融融。', effects:{happiness:8}, log:'你儿孙满堂。', type:'positive' },
+];
+
+// ============================================================
+// 游戏数据：结局
+// ============================================================
+const ENDINGS = [
+  { grade:'S', title:'传奇人生', desc:'你的人生堪称传奇，后人将永远铭记你的名字。', condition:s=>s.charm>=15&&s.intelligence>=15&&s.health>=12&&s.wealth>=10&&s.happiness>=80 },
+  { grade:'S', title:'人生赢家', desc:'事业、爱情、财富、健康，你全都有了。', condition:s=>s.money>=500000&&s.happiness>=70&&s.charm>=10&&s.intelligence>=10 },
+  { grade:'A', title:'精彩人生', desc:'你的人生精彩纷呈，无怨无悔。', condition:s=>s.happiness>=60&&s.charm>=8&&s.intelligence>=8 },
+  { grade:'A', title:'功成名就', desc:'你在事业上取得了巨大成功。', condition:s=>s.money>=200000&&s.intelligence>=8&&s.happiness>=50 },
+  { grade:'B', title:'平凡而幸福', desc:'虽然没有大富大贵，但你过得很幸福。', condition:s=>s.happiness>=50 },
+  { grade:'B', title:'安稳一生', desc:'你的人生平平稳稳，虽无波澜但也安宁。', condition:s=>s.happiness>=30 },
+  { grade:'C', title:'坎坷人生', desc:'你的人生充满坎坷，但你挺过来了。', condition:s=>s.happiness>=10 },
+  { grade:'C', title:'庸碌一生', desc:'你的人生平淡无奇。', condition:s=>s.happiness>=0 },
+  { grade:'D', title:'失意人生', desc:'你的人生充满遗憾和失意。', condition:s=>s.happiness>=-20 },
+  { grade:'F', title:'悲惨一生', desc:'你的人生充满了苦难和不幸。', condition:s=>true },
+];
+
+// ============================================================
+// 游戏数据：成就
+// ============================================================
+const ACHIEVEMENTS = [
+  { id:'a1', name:'天赋异禀', desc:'三属性同时达到10以上', check:s=>s.charm>=10&&s.intelligence>=10&&s.health>=10 },
+  { id:'a2', name:'学霸', desc:'智力达到15以上', check:s=>s.intelligence>=15 },
+  { id:'a3', name:'倾城倾国', desc:'颜值达到15以上', check:s=>s.charm>=15 },
+  { id:'a4', name:'铁人', desc:'体质达到15以上', check:s=>s.health>=15 },
+  { id:'a5', name:'富甲一方', desc:'金钱达到100万', check:s=>s.money>=1000000 },
+  { id:'a6', name:'人生赢家', desc:'快乐值达到80以上', check:s=>s.happiness>=80 },
+  { id:'a7', name:'长命百岁', desc:'活到100岁以上', check:s=>s.age>=100 },
+  { id:'a8', name:'英年早逝', desc:'35岁前死亡', check:s=>s.age<35&&s.alive===false },
+  { id:'a9', name:'咸鱼翻身', desc:'家境1以下但最终评级A以上', check:(s,g)=>s.baseWealth<=1&&(g==='S'||g==='A') },
+  { id:'a10', name:'万人迷', desc:'经历过3次以上恋爱事件', check:s=>s.romanceCount>=3 },
+  { id:'a11', name:'财运亨通', desc:'金钱达到50万', check:s=>s.money>=500000 },
+  { id:'a12', name:'坚韧不拔', desc:'快乐值低于-20但活到了60岁', check:s=>s.minHappiness<=-20&&s.age>=60 },
+];
+
+// ============================================================
+// 游戏状态
+// ============================================================
+let state = null;
+
+function initState() {
+  state = {
+    age: 0,
+    alive: true,
+    charm: 0,
+    intelligence: 0,
+    health: 0,
+    wealth: 0,
+    happiness: 50,
+    money: 0,
+    luck: 0,
+    social: 0,
+    academic: 0,
+    misfortune: 0,
+    longevity: 0,
+    talents: [],
+    married: false,
+    romanceCount: 0,
+    career: null,
+    history: [],
+    achievements: [],
+    baseWealth: 0,
+    minHappiness: 50,
+    maxAge: 75,
+    autoMode: false,
+    autoTimer: null,
+  };
+}
+
+function getStageName(age) {
+  if (age <= 6) return '幼年';
+  if (age <= 12) return '小学';
+  if (age <= 15) return '初中';
+  if (age <= 18) return '高中';
+  if (age <= 22) return '大学';
+  if (age <= 35) return '青年';
+  if (age <= 55) return '中年';
+  if (age <= 80) return '老年';
+  return '晚年';
+}
+
+// ============================================================
+// 屏幕切换
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ============================================================
+// 开始游戏
+// ============================================================
+function startGame() {
+  initState();
+  showScreen('screen-talent');
+  renderTalents();
+}
+
+// ============================================================
+// 天赋选择
+// ============================================================
+let currentTalentPool = [];
+let selectedTalents = [];
+
+function renderTalents() {
+  // 从全部天赋中随机抽取10个
+  const shuffled = [...ALL_TALENTS].sort(() => Math.random() - 0.5);
+  currentTalentPool = shuffled.slice(0, 10);
+  selectedTalents = [];
+  
+  const pool = document.getElementById('talent-pool');
+  pool.innerHTML = currentTalentPool.map(t => `
+    <div class="talent-item" data-id="${t.id}" onclick="toggleTalent('${t.id}')">
+      <div class="talent-icon">${t.icon}</div>
+      <div class="talent-info">
+        <div class="talent-name">${t.name}</div>
+        <div class="talent-desc">${t.desc}</div>
+      </div>
+      <div class="talent-check" id="check-${t.id}"></div>
+    </div>
+  `).join('');
+  
+  updateTalentUI();
+}
+
+function toggleTalent(id) {
+  const idx = selectedTalents.indexOf(id);
+  if (idx >= 0) {
+    selectedTalents.splice(idx, 1);
+  } else {
+    if (selectedTalents.length >= 3) return;
+    selectedTalents.push(id);
+  }
+  updateTalentUI();
+}
+
+function updateTalentUI() {
+  currentTalentPool.forEach(t => {
+    const item = document.querySelector(`[data-id="${t.id}"]`);
+    const check = document.getElementById(`check-${t.id}`);
+    if (selectedTalents.includes(t.id)) {
+      item.classList.add('selected');
+      check.textContent = '✓';
+    } else {
+      item.classList.remove('selected');
+      check.textContent = '';
+      item.classList.toggle('disabled', selectedTalents.length >= 3);
+    }
+  });
+  document.getElementById('talent-selected').textContent = selectedTalents.length;
+  document.getElementById('btn-confirm-talent').disabled = selectedTalents.length !== 3;
+}
+
+function rerollTalents() {
+  renderTalents();
+}
+
+function confirmTalents() {
+  selectedTalents.forEach(id => {
+    const t = ALL_TALENTS.find(x => x.id === id);
+    state.talents.push(t);
+    // Apply effects
+    if (t.effects.charm) state.charm += t.effects.charm;
+    if (t.effects.intelligence) state.intelligence += t.effects.intelligence;
+    if (t.effects.health) state.health += t.effects.health;
+    if (t.effects.wealth) state.wealth += t.effects.wealth;
+    if (t.effects.happiness) state.happiness += t.effects.happiness;
+    if (t.effects.money) state.money += t.effects.money;
+    if (t.effects.luck) state.luck += t.effects.luck;
+    if (t.effects.social) state.social += t.effects.social;
+    if (t.effects.academic) state.academic += t.effects.academic;
+    if (t.effects.misfortune) state.misfortune += t.effects.misfortune;
+    if (t.effects.longevity) state.longevity += t.effects.longevity;
+    if (t.effects.random10) {
+      const attrs = ['charm','intelligence','health','wealth'];
+      const pick = attrs[Math.floor(Math.random()*4)];
+      state[pick] += 10;
+    }
+  });
+  state.baseWealth = state.wealth;
+  showScreen('screen-attr');
+  renderAttributes();
+}
+
+// ============================================================
+// 属性分配
+// ============================================================
+let remainingPoints = 20;
+const ATTR_LIST = [
+  { key:'charm', name:'颜值', icon:'💎', color:'#f472b6' },
+  { key:'intelligence', name:'智力', icon:'🧠', color:'#60a5fa' },
+  { key:'health', name:'体质', icon:'💪', color:'#4ade80' },
+  { key:'wealth', name:'家境', icon:'👑', color:'#ffc857' },
+];
+
+function renderAttributes() {
+  remainingPoints = 20;
+  const container = document.getElementById('attr-container');
+  container.innerHTML = ATTR_LIST.map(a => `
+    <div class="attr-row">
+      <div class="attr-icon">${a.icon}</div>
+      <div class="attr-mid">
+        <div class="attr-name" style="color:${a.color}">${a.name}</div>
+        <div class="attr-bar">
+          <div class="attr-bar-fill" id="bar-${a.key}" style="width:${state[a.key]*3}%;background:${a.color}"></div>
+        </div>
+      </div>
+      <div class="attr-val" id="val-${a.key}" style="color:${a.color}">${state[a.key]}</div>
+      <div class="attr-btns">
+        <button class="attr-btn" onclick="adjustAttr('${a.key}',-1)" id="btn-minus-${a.key}">−</button>
+        <button class="attr-btn" onclick="adjustAttr('${a.key}',1)" id="btn-plus-${a.key}">+</button>
+      </div>
+    </div>
+  `).join('');
+  updateAttrUI();
+}
+
+function adjustAttr(key, delta) {
+  if (delta > 0 && remainingPoints <= 0) return;
+  if (delta < 0 && state[key] <= 0) return;
+  state[key] += delta;
+  remainingPoints -= delta;
+  updateAttrUI();
+}
+
+function updateAttrUI() {
+  document.getElementById('remaining-points').textContent = remainingPoints;
+  ATTR_LIST.forEach(a => {
+    document.getElementById(`val-${a.key}`).textContent = state[a.key];
+    document.getElementById(`bar-${a.key}`).style.width = Math.min(state[a.key]*3, 100) + '%';
+    document.getElementById(`btn-minus-${a.key}`).disabled = state[a.key] <= 0;
+    document.getElementById(`btn-plus-${a.key}`).disabled = remainingPoints <= 0;
+  });
+  document.getElementById('btn-confirm-attr').disabled = remainingPoints > 0;
+}
+
+function confirmAttributes() {
+  // Calculate initial money from wealth
+  state.money += state.wealth * 3000;
+  // Apply longevity talent
+  if (state.longevity) state.maxAge += 20;
+  // Ensure happiness doesn't go below 0 at start
+  state.happiness = Math.max(0, state.happiness);
+  
+  showScreen('screen-life');
+  renderLifeScreen();
+  // Auto trigger birth event
+  nextYear();
+}
+
+// ============================================================
+// 人生模拟
+// ============================================================
+function renderLifeScreen() {
+  updateLifeDisplay();
+  document.getElementById('life-log').innerHTML = '';
+}
+
+function updateLifeDisplay() {
+  document.getElementById('life-age-num').textContent = state.age;
+  document.getElementById('life-stage-name').textContent = getStageName(state.age);
+  
+  const panel = document.getElementById('stat-panel');
+  panel.innerHTML = `
+    <div class="stat-box"><div class="stat-label">快乐</div><div class="stat-value" style="color:${state.happiness>=50?'var(--green)':state.happiness>=20?'var(--orange)':'var(--red)'}">${state.happiness}</div></div>
+    <div class="stat-box"><div class="stat-label">金钱</div><div class="stat-value" style="color:var(--gold)">${formatMoney(state.money)}</div></div>
+    <div class="stat-box"><div class="stat-label">状态</div><div class="stat-value" style="font-size:.9em;color:${state.alive?'var(--green)':'var(--red)'}">${state.alive?'在世':'已故'}</div></div>
+  `;
+}
+
+function formatMoney(n) {
+  if (n >= 10000) return (n/10000).toFixed(1) + '万';
+  if (n < 0) return '-' + formatMoney(-n);
+  return n.toString();
+}
+
+function getAvailableEvents() {
+  return EVENTS.filter(e => {
+    if (state.age < e.minAge || state.age > e.maxAge) return false;
+    if (e.condition && !e.condition(state)) return false;
+    return true;
+  });
+}
+
+function triggerEvent() {
+  const events = getAvailableEvents();
+  if (events.length === 0) {
+    return null;
+  }
+  
+  // Weighted random selection
+  const totalWeight = events.reduce((sum, e) => sum + (e.weight || 10), 0);
+  let roll = Math.random() * totalWeight;
+  for (const e of events) {
+    roll -= (e.weight || 10);
+    if (roll <= 0) return e;
+  }
+  return events[0];
+}
+
+function applyEffects(effects) {
+  const changes = [];
+  for (const [key, val] of Object.entries(effects)) {
+    if (key === 'money') {
+      state.money += val;
+      changes.push({ key, val });
+    } else if (state.hasOwnProperty(key)) {
+      state[key] += val;
+      changes.push({ key, val });
+    }
+  }
+  if (state.happiness < state.minHappiness) state.minHappiness = state.happiness;
+  return changes;
+}
+
+function formatChanges(changes) {
+  const names = { charm:'颜值', intelligence:'智力', health:'体质', wealth:'家境', happiness:'快乐', money:'金钱' };
+  return changes.map(c => {
+    const name = names[c.key] || c.key;
+    const sign = c.val > 0 ? '+' : '';
+    const cls = c.val > 0 ? 'effect-pos' : 'effect-neg';
+    return `<span class="event-effect ${cls}">${name} ${sign}${c.val}</span>`;
+  }).join('');
+}
+
+function addLogEntry(event, changes) {
+  const log = document.getElementById('life-log');
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${event.type || 'neutral'}`;
+  entry.innerHTML = `
+    <div class="log-age">${state.age}岁 · ${getStageName(state.age)}</div>
+    <div class="log-text">${event.log || event.text}</div>
+  `;
+  log.appendChild(entry);
+  log.scrollTop = log.scrollHeight;
+  
+  state.history.push({ age: state.age, text: event.log || event.text, type: event.type });
+}
+
+function checkDeath() {
+  // Natural death check
+  if (state.age >= state.maxAge) {
+    state.alive = false;
+    return true;
+  }
+  // Health-based death
+  if (state.health <= 0 && Math.random() < 0.3) {
+    state.alive = false;
+    return true;
+  }
+  // Happiness-based death
+  if (state.happiness <= -30 && Math.random() < 0.15) {
+    state.alive = false;
+    return true;
+  }
+  // Old age increasing death chance
+  if (state.age > 70) {
+    const deathChance = (state.age - 70) * 0.02;
+    const healthBonus = state.health <= 2 ? 0.05 : 0;
+    if (Math.random() < deathChance + healthBonus) {
+      state.alive = false;
+      return true;
+    }
+  }
+  return false;
+}
+
+function nextYear() {
+  if (!state.alive) {
+    showEnding();
+    return;
+  }
+  
+  // Trigger event
+  const event = triggerEvent();
+  if (event) {
+    // Track romance
+    if (event.title && (event.title.includes('恋爱') || event.title.includes('情书') || event.title.includes('恋情') || event.title.includes('邂逅'))) {
+      state.romanceCount++;
+    }
+    // Track marriage
+    if (event.title && (event.title.includes('结婚') || event.title.includes('婚姻'))) {
+      state.married = true;
+    }
+    
+    const changes = applyEffects(event.effects || {});
+    addLogEntry(event, changes);
+    
+    // Show popup for significant events
+    if (changes.length > 0) {
+      showEventPopup(event, changes);
+    }
+  }
+  
+  // Age up
+  state.age++;
+  
+  // Natural aging effects
+  if (state.age > 50) {
+    state.health -= 1;
+    if (state.age % 10 === 0) state.happiness -= 2;
+  }
+  if (state.age > 70) {
+    state.health -= 1;
+  }
+  
+  // Check death
+  if (checkDeath()) {
+    document.getElementById('btn-next-year').textContent = '查看结局 ▶';
+    document.getElementById('btn-next-year').onclick = showEnding;
+    document.getElementById('btn-auto').style.display = 'none';
+    addLogEntry({ age:state.age, log:'你的人生走到了终点。', type:'neutral', text:'你的人生走到了终点。' }, {});
+    updateLifeDisplay();
+    return;
+  }
+  
+  updateLifeDisplay();
+  
+  // Check achievements
+  checkAchievements();
+  
+  // Auto mode
+  if (state.autoMode && state.alive) {
+    state.autoTimer = setTimeout(nextYear, 800);
+  }
+}
+
+function toggleAuto() {
+  state.autoMode = !state.autoMode;
+  const btn = document.getElementById('btn-auto');
+  if (state.autoMode) {
+    btn.classList.add('active');
+    btn.textContent = '停止';
+    nextYear();
+  } else {
+    btn.classList.remove('active');
+    btn.textContent = '自动';
+    if (state.autoTimer) clearTimeout(state.autoTimer);
+  }
+}
+
+function showEventPopup(event, changes) {
+  // Only show popup for non-trivial events
+  if (event.type === 'neutral' && changes.length === 0) return;
+  
+  // Remove existing popups in auto mode to prevent stacking
+  if (state.autoMode) {
+    document.querySelectorAll('.event-popup').forEach(p => p.remove());
+  }
+  
+  const popup = document.createElement('div');
+  popup.className = 'event-popup';
+  popup.innerHTML = `
+    <div class="event-card">
+      <h3>${event.title}</h3>
+      <p>${event.text}</p>
+      <div class="event-effects">${formatChanges(changes)}</div>
+      <button class="btn-secondary" onclick="this.closest('.event-popup').remove()">继续</button>
+    </div>
+  `;
+  document.body.appendChild(popup);
+  
+  // Auto-close after 2 seconds in auto mode
+  if (state.autoMode) {
+    setTimeout(() => popup.remove(), 1500);
+  }
+}
+
+// ============================================================
+// 成就检查
+// ============================================================
+function checkAchievements() {
+  ACHIEVEMENTS.forEach(a => {
+    if (state.achievements.includes(a.id)) return;
+    if (a.check(state)) {
+      state.achievements.push(a.id);
+    }
+  });
+}
+
+// ============================================================
+// 结局
+// ============================================================
+function showEnding() {
+  checkAchievements();
+  
+  // Determine ending
+  let grade = 'F';
+  for (const e of ENDINGS) {
+    if (e.condition(state)) {
+      grade = e.grade;
+      document.getElementById('ending-title').textContent = e.title;
+      document.getElementById('ending-desc').textContent = e.desc;
+      break;
+    }
+  }
+  document.getElementById('ending-grade').textContent = grade;
+  
+  // Check special achievements that need grade
+  ACHIEVEMENTS.forEach(a => {
+    if (state.achievements.includes(a.id)) return;
+    if (a.check(state, grade)) {
+      state.achievements.push(a.id);
+    }
+  });
+  
+  // Stats
+  const stats = document.getElementById('ending-stats');
+  stats.innerHTML = `
+    <div class="ending-stat"><span class="es-label">享年</span><span class="es-value">${state.age}岁</span></div>
+    <div class="ending-stat"><span class="es-label">最终快乐</span><span class="es-value">${state.happiness}</span></div>
+    <div class="ending-stat"><span class="es-label">最终财富</span><span class="es-value">${formatMoney(state.money)}</span></div>
+    <div class="ending-stat"><span class="es-label">颜值</span><span class="es-value">${state.charm}</span></div>
+    <div class="ending-stat"><span class="es-label">智力</span><span class="es-value">${state.intelligence}</span></div>
+    <div class="ending-stat"><span class="es-label">体质</span><span class="es-value">${state.health}</span></div>
+    <div class="ending-stat"><span class="es-label">家境</span><span class="es-value">${state.wealth}</span></div>
+    <div class="ending-stat"><span class="es-label">人生事件</span><span class="es-value">${state.history.length}件</span></div>
+  `;
+  
+  // Achievements
+  const achDiv = document.getElementById('ending-achievements');
+  if (state.achievements.length > 0) {
+    const names = state.achievements.map(id => ACHIEVEMENTS.find(a => a.id === id));
+    achDiv.innerHTML = `<h3>🏆 获得成就 (${names.length})</h3>` + 
+      names.map(a => `<span class="ach-item">${a.icon||''} ${a.name}</span>`).join('');
+  } else {
+    achDiv.innerHTML = `<h3>🏆 获得成就</h3><p style="color:var(--text-dim)">本次人生未获得成就</p>`;
+  }
+  
+  showScreen('screen-ending');
+}
+
+// ============================================================
+// 初始化
+// ============================================================
+showScreen('screen-title');
+</script>
+</body>
+</html>
