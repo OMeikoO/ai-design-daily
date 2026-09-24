@@ -980,6 +980,32 @@ const EVENTS = [
              { text:'继续找', effects:{mood:-1}, timeAdvanceWeeks:12 }] },
 ];
 
+// ---------- 心境提示池（按阶段 × 心境档位，场景化白描，替代固定句） ----------
+// low: mood<=3  mid: 4-6  high: >=7
+// 让心境提示与玩家当前年龄/处境联动，而非"最近总提不起劲"这种突兀通用句
+const MOOD_HINTS = {
+  S1:{ low:['你哭得比别家孩子凶，夜里尤甚。','你不太肯笑，奶嘴塞了好几次都吐出来。'],
+       mid:[], high:['你一逗就笑，笑声像气泡。'] },
+  S2:{ low:['你不太爱跟邻居小孩玩，总往妈妈身后躲。','你吃饭挑食，一顿能吃半小时。'],
+       mid:[], high:['你见谁都笑，走哪儿都拉着大人的手。'] },
+  S3:{ low:['你最近不爱说话，回家就钻进房间。','作业本上写的字越来越小。'],
+       mid:[], high:['你放学路上总哼歌，调子跑了也不管。'] },
+  S4:{ low:['你上课走神，盯着窗外能看一节课。','你跟谁都没好气，话也少了。'],
+       mid:[], high:['你最近话多了，跟同桌能聊一整节自习。'] },
+  S5:{ low:['你半夜醒着，盯着天花板上的水渍。','你做题做不进去，笔尖在纸上戳洞。'],
+       mid:[], high:['你做题时哼歌，同桌嫌你吵。'] },
+  S6:{ low:['你窝在宿舍不出门，外卖盒摞了一摞。','你朋友圈刷到半夜，一条没发。'],
+       mid:[], high:['你参加社团很积极，嗓子喊哑了也高兴。'] },
+  S7:{ low:['你下班回来不想说话，外卖盒堆了三天。','你周末不出门，窗帘拉到看不见天。'],
+       mid:[], high:['你对什么都有点劲，下了班还去跑了步。'] },
+  S8:{ low:['你最近常发呆，洗澡能洗半小时不动。','你半夜醒着，盯着孩子的房门出神。'],
+       mid:[], high:['你难得有兴致，周末带全家去逛了公园。'] },
+  S9:{ low:['你常坐阳台发呆，一坐一上午。','你对什么都提不起兴趣，电视开着不看。'],
+       mid:[], high:['你最近愿意出门了，跟老同学约了顿早茶。'] },
+  S10:{ low:['你常一整天不说一句话。','你胃口差了，护工做的饭吃两口就放下。'],
+        mid:[], high:['你今天精神好，让护工推你去花园坐了会儿。'] },
+};
+
 // ---------- 兜底旁白池（按阶段，感官化白描，每段8-10条不重复） ----------
 const AMBIENT = {
   S1:[
@@ -1270,6 +1296,7 @@ class AIProvider{
   async ambient(state){ throw new Error('not impl'); }      // 兜底旁白节点
   async dynamicNode(state){ throw new Error('not impl'); }  // 当无固定事件时生成节点
   async transition(state){ throw new Error('not impl'); }    // 衔接上一选择的过渡旁白
+  async choiceAftermath(state, choice, delta){ throw new Error('not impl'); }  // 选择后补全承接旁白
   async retrospective(state){ throw new Error('not impl'); }
   async endingNarrative(state){ throw new Error('not impl'); }
 }
@@ -1341,6 +1368,39 @@ class RuleProvider extends AIProvider{
     } while (this._usedTransitions[stage].includes(idx) && tried.size < pool.length);
     this._usedTransitions[stage].push(idx);
     return { transition: pool[idx], source:'rule' };
+  }
+  // 选择后补全承接旁白：当选择没有自带 narration 时，依据选择文本+属性变化+阶段生成一句承接旁白
+  async choiceAftermath(state, choice, delta){
+    const stage = state.currentStage;
+    const ageY = Math.floor(state.ageWeeks/52);
+    const ct = (choice?.text)||'';
+    // 根据属性变化方向选语气：有正面变化→释然，有负面→沉重，无变化→平淡
+    const vals = Object.values(delta||{});
+    const hasUp = vals.some(v=>v>0);
+    const hasDown = vals.some(v=>v<0);
+    const mood = hasDown ? 'down' : (hasUp ? 'up' : 'flat');
+    // 模板：按阶段×语气拼接，引用选择关键词
+    const T = {
+      // 婴幼/学龄前：用身体感知代替心理描写
+      S1:{ up:'你咯咯笑了，口水淌到下巴上。', down:'你哭了一阵，又昏睡过去。', flat:'你眨了眨眼，没说话。' },
+      S2:{ up:'你蹦蹦跳跳地跑开了，鞋带开了都不管。', down:'你撅着嘴，半天没出声。', flat:'你歪着头想了想，没想明白。' },
+      S3:{ up:'你咧嘴笑了，露出缺了半颗的门牙。', down:'你低着头，鞋尖踢着地。', flat:'你没接话，继续写作业。' },
+      S4:{ up:'你心里松了口气，下课铃正好响了。', down:'你回到座位，把头埋进胳膊里。', flat:'你嗯了一声，没再说话。' },
+      S5:{ up:'你长出一口气，像卸了块石头。', down:'你盯着卷子发呆，笔没动。', flat:'你点了点头，又低头做题。' },
+      S6:{ up:'你回宿舍路上哼了首歌，调子跑了也不管。', down:'你躺在床上盯着上铺的床板，半天没翻身。', flat:'你回了句"行吧"，挂了电话。' },
+      S7:{ up:'你下楼买了罐啤酒，站在街角喝完，难得觉得轻。', down:'你关了手机，在出租屋坐到天黑。', flat:'你回了句"知道了"，没再说。' },
+      S8:{ up:'你难得早下班，绕路给孩子买了个蛋糕。', down:'你在车里坐了十分钟才上楼。', flat:'你应了一声，继续看手机。' },
+      S9:{ up:'你今天愿意出门，去公园坐了一下午。', down:'你关了灯，在沙发上坐到半夜。', flat:'你嗯了声，没接话。' },
+      S10:{ up:'你今天精神好，让护工推你去花园转了圈。', down:'你闭上眼，半天没睁。', flat:'你点了点头，又眯上了眼。' },
+    };
+    const pool = (T[stage]||T.S10);
+    let text = pool[mood] || pool.flat;
+    // 若选择文本带关键词，尝试把关键词融入（如"道歉""辞职""结婚"）
+    if (ct && Math.random()<0.4){
+      const kw = ct.replace(/[，。！？\s]/g,'').slice(0,4);
+      text = text.replace(/。$/, `——你想起刚才"${kw}"那两个字。`);
+    }
+    return { narration: text, source:'rule' };
   }
   async retrospective(state){
     // 复用 data.js 的回望逻辑（flag 驱动），规则兜底
@@ -1459,6 +1519,22 @@ class LLMProvider extends AIProvider{
       if (!o.transition) throw new Error('bad-json');
       return { transition:String(o.transition).slice(0,50), source:'llm' };
     }catch(e){ return this.rule.transition(state); }
+  }
+  // LLM 模式：选择后依据选择文本+属性变化动态生成承接旁白
+  async choiceAftermath(state, choice, delta){
+    if (!this._available()) return this.rule.choiceAftermath(state, choice, delta);
+    try{
+      const deltaStr = Object.entries(delta||{}).map(([k,v])=>`${k}${v>0?'+':''}${v}`).join('、')||'无';
+      const user =
+        `玩家${Math.floor(state.ageWeeks/52)}岁（${(STAGES.find(s=>s.code===state.currentStage)||{}).name||''}）刚做了选择："${choice?.text||'（无）'}"。\n`+
+        `属性变化：${deltaStr}。\n`+
+        `写一句承接这个选择的旁白（≤40字，第二人称"你"，克制白描，写身体动作或环境细节，不喊口号，不总结人生）。\n`+
+        `只返回JSON：{"narration":"..."}。`;
+      const txt = await this._chat(this._systemPrompt(), user);
+      const o = JSON.parse(stripFence(txt));
+      if (!o.narration) throw new Error('bad-json');
+      return { narration:String(o.narration).slice(0,60), source:'llm' };
+    }catch(e){ return this.rule.choiceAftermath(state, choice, delta); }
   }
 
   async endingNarrative(state){
@@ -1833,8 +1909,25 @@ function updateAttrs(state, flashKeys){
       <span class="val">${k==='mood' ? moodWord(v) : v}</span>`;
     g.appendChild(div);
   }
-  // 心境提示
-  $('moodHint').textContent = state.attrs.mood<=3 ? '最近总提不起劲。' : (state.attrs.mood>=9 ? '心里轻快。' : '');
+  // 心境提示：从 MOOD_HINTS 池按阶段×档位取场景化提示，去重
+  const stage = state.currentStage || 'S10';
+  const m = state.attrs.mood;
+  const tier = m<=3 ? 'low' : (m>=7 ? 'high' : 'mid');
+  const pool = (MOOD_HINTS[stage]||MOOD_HINTS.S10)[tier]||[];
+  let hint = '';
+  if (pool.length){
+    if (!updateAttrs._used) updateAttrs._used = {};
+    const key = stage+tier;
+    if (!updateAttrs._used[key]) updateAttrs._used[key] = [];
+    let idx;
+    const tried = new Set();
+    do { idx = Math.floor(Math.random()*pool.length); tried.add(idx); }
+    while (updateAttrs._used[key].includes(idx) && tried.size < pool.length);
+    updateAttrs._used[key].push(idx);
+    if (updateAttrs._used[key].length >= pool.length) updateAttrs._used[key] = [];
+    hint = pool[idx];
+  }
+  $('moodHint').textContent = hint;
   // 天赋
   const tr = $('talentsRow'); tr.innerHTML='';
   for (const tid of state.talents){
@@ -2179,8 +2272,21 @@ function handleChoice(idx){
   if (choice.narration){
     renderNode(stageEl, { id:currentNode.id+'_r', stage:state.currentStage, narration:choice.narration, choices:[], timeAdvanceWeeks:0, source:'rule' },
       state, { onChoice:()=>{ save(state); nextTurn(); } });
-    // 把这次推进放回到继续时（applyChoice 已推进时间）
     return;
+  }
+  // 选择没有自带 narration → 由 AI 补全一句承接旁白，避免"选完直接跳到下一场景"的断裂感
+  // LLM 模式会依据选择文本+属性变化动态生成；规则模式按阶段×语气模板拼接
+  if (choice.nextEvent){
+    // 有强联动后续事件，先展示一句 AI 生成的承接旁白，再进入后续事件
+    const ai = current();
+    try {
+      const ret = await ai.choiceAftermath(state, choice, delta);
+      if (ret && ret.narration){
+        renderNode(stageEl, { id:currentNode.id+'_af', stage:state.currentStage, narration:ret.narration, source:ret.source, choices:[], timeAdvanceWeeks:0 },
+          state, { onChoice:()=>{ save(state); nextTurn(); } });
+        return;
+      }
+    } catch {}
   }
   // nextNode 跳转
   if (choice.nextNode){

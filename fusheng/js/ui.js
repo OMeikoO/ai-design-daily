@@ -1,7 +1,7 @@
 // 浮生 · UI 层
 // 渲染开局分配 / 游戏节点 / 结局 / 属性条 / 时间轴。回调交给 main.js 编排引擎。
 
-import { TALENTS, STAGES } from './data.js';
+import { TALENTS, STAGES, MOOD_HINTS } from './data.js';
 import { stageName } from './engine.js';
 
 const $ = (id)=>document.getElementById(id);
@@ -30,8 +30,25 @@ export function updateAttrs(state, flashKeys){
       <span class="val">${k==='mood' ? moodWord(v) : v}</span>`;
     g.appendChild(div);
   }
-  // 心境提示
-  $('moodHint').textContent = state.attrs.mood<=3 ? '最近总提不起劲。' : (state.attrs.mood>=9 ? '心里轻快。' : '');
+  // 心境提示：从 MOOD_HINTS 池按阶段×档位取场景化提示，去重
+  const stage = state.currentStage || 'S10';
+  const m = state.attrs.mood;
+  const tier = m<=3 ? 'low' : (m>=7 ? 'high' : 'mid');
+  const pool = (MOOD_HINTS[stage]||MOOD_HINTS.S10)[tier]||[];
+  let hint = '';
+  if (pool.length){
+    if (!updateAttrs._used) updateAttrs._used = {};
+    const key = stage+tier;
+    if (!updateAttrs._used[key]) updateAttrs._used[key] = [];
+    let idx;
+    const tried = new Set();
+    do { idx = Math.floor(Math.random()*pool.length); tried.add(idx); }
+    while (updateAttrs._used[key].includes(idx) && tried.size < pool.length);
+    updateAttrs._used[key].push(idx);
+    if (updateAttrs._used[key].length >= pool.length) updateAttrs._used[key] = [];
+    hint = pool[idx];
+  }
+  $('moodHint').textContent = hint;
   // 天赋
   const tr = $('talentsRow'); tr.innerHTML='';
   for (const tid of state.talents){

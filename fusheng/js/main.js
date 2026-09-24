@@ -143,8 +143,21 @@ function handleChoice(idx){
   if (choice.narration){
     ui.renderNode(stageEl, { id:currentNode.id+'_r', stage:state.currentStage, narration:choice.narration, choices:[], timeAdvanceWeeks:0, source:'rule' },
       state, { onChoice:()=>{ engine.save(state); nextTurn(); } });
-    // 把这次推进放回到继续时（applyChoice 已推进时间）
     return;
+  }
+  // 选择没有自带 narration → 由 AI 补全一句承接旁白，避免"选完直接跳到下一场景"的断裂感
+  // LLM 模式会依据选择文本+属性变化动态生成；规则模式按阶段×语气模板拼接
+  if (choice.nextEvent){
+    // 有强联动后续事件，先展示一句 AI 生成的承接旁白，再进入后续事件
+    const ai = currentAI();
+    try {
+      const ret = await ai.choiceAftermath(state, choice, delta);
+      if (ret && ret.narration){
+        ui.renderNode(stageEl, { id:currentNode.id+'_af', stage:state.currentStage, narration:ret.narration, source:ret.source, choices:[], timeAdvanceWeeks:0 },
+          state, { onChoice:()=>{ engine.save(state); nextTurn(); } });
+        return;
+      }
+    } catch {}
   }
   // nextNode 跳转
   if (choice.nextNode){

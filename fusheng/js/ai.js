@@ -5,7 +5,7 @@
 // 架构：AIProvider 接口 + RuleProvider（规则兜底）+ LLMProvider（可插拔大模型）。
 // 引擎通过 ai.current() 取当前 provider；未配置或失败时自动回退 RuleProvider。
 
-import { EVENTS, AMBIENT, TRANSITIONS, STAGES, ENDING_TEMPLATES, GRADES } from './data.js';
+import { EVENTS, AMBIENT, TRANSITIONS, STAGES, ENDING_TEMPLATES, GRADES, MOOD_HINTS } from './data.js';
 
 // ---------------- 意图分析：把玩家当前状态压缩成“叙事意图” ----------------
 // 这是“更智能化”的核心：不靠模板命中，而是先读懂“玩家这一刻是什么处境”。
@@ -66,6 +66,7 @@ class AIProvider{
   async ambient(state){ throw new Error('not impl'); }      // 兜底旁白节点
   async dynamicNode(state){ throw new Error('not impl'); }  // 当无固定事件时生成节点
   async transition(state){ throw new Error('not impl'); }    // 衔接上一选择的过渡旁白
+  async choiceAftermath(state, choice, delta){ throw new Error('not impl'); }  // 选择后补全承接旁白
   async retrospective(state){ throw new Error('not impl'); }
   async endingNarrative(state){ throw new Error('not impl'); }
 }
@@ -137,6 +138,39 @@ class RuleProvider extends AIProvider{
     } while (this._usedTransitions[stage].includes(idx) && tried.size < pool.length);
     this._usedTransitions[stage].push(idx);
     return { transition: pool[idx], source:'rule' };
+  }
+  // 选择后补全承接旁白：当选择没有自带 narration 时，依据选择文本+属性变化+阶段生成一句承接旁白
+  async choiceAftermath(state, choice, delta){
+    const stage = state.currentStage;
+    const ageY = Math.floor(state.ageWeeks/52);
+    const ct = (choice?.text)||'';
+    // 根据属性变化方向选语气：有正面变化→释然，有负面→沉重，无变化→平淡
+    const vals = Object.values(delta||{});
+    const hasUp = vals.some(v=>v>0);
+    const hasDown = vals.some(v=>v<0);
+    const mood = hasDown ? 'down' : (hasUp ? 'up' : 'flat');
+    // 模板：按阶段×语气拼接，引用选择关键词
+    const T = {
+      // 婴幼/学龄前：用身体感知代替心理描写
+      S1:{ up:'你咯咯笑了，口水淌到下巴上。', down:'你哭了一阵，又昏睡过去。', flat:'你眨了眨眼，没说话。' },
+      S2:{ up:'你蹦蹦跳跳地跑开了，鞋带开了都不管。', down:'你撅着嘴，半天没出声。', flat:'你歪着头想了想，没想明白。' },
+      S3:{ up:'你咧嘴笑了，露出缺了半颗的门牙。', down:'你低着头，鞋尖踢着地。', flat:'你没接话，继续写作业。' },
+      S4:{ up:'你心里松了口气，下课铃正好响了。', down:'你回到座位，把头埋进胳膊里。', flat:'你嗯了一声，没再说话。' },
+      S5:{ up:'你长出一口气，像卸了块石头。', down:'你盯着卷子发呆，笔没动。', flat:'你点了点头，又低头做题。' },
+      S6:{ up:'你回宿舍路上哼了首歌，调子跑了也不管。', down:'你躺在床上盯着上铺的床板，半天没翻身。', flat:'你回了句"行吧"，挂了电话。' },
+      S7:{ up:'你下楼买了罐啤酒，站在街角喝完，难得觉得轻。', down:'你关了手机，在出租屋坐到天黑。', flat:'你回了句"知道了"，没再说。' },
+      S8:{ up:'你难得早下班，绕路给孩子买了个蛋糕。', down:'你在车里坐了十分钟才上楼。', flat:'你应了一声，继续看手机。' },
+      S9:{ up:'你今天愿意出门，去公园坐了一下午。', down:'你关了灯，在沙发上坐到半夜。', flat:'你嗯了声，没接话。' },
+      S10:{ up:'你今天精神好，让护工推你去花园转了圈。', down:'你闭上眼，半天没睁。', flat:'你点了点头，又眯上了眼。' },
+    };
+    const pool = (T[stage]||T.S10);
+    let text = pool[mood] || pool.flat;
+    // 若选择文本带关键词，尝试把关键词融入（如"道歉""辞职""结婚"）
+    if (ct && Math.random()<0.4){
+      const kw = ct.replace(/[，。！？\s]/g,'').slice(0,4);
+      text = text.replace(/。$/, `——你想起刚才"${kw}"那两个字。`);
+    }
+    return { narration: text, source:'rule' };
   }
   async retrospective(state){
     // 复用 data.js 的回望逻辑（flag 驱动），规则兜底
@@ -255,6 +289,22 @@ class LLMProvider extends AIProvider{
       if (!o.transition) throw new Error('bad-json');
       return { transition:String(o.transition).slice(0,50), source:'llm' };
     }catch(e){ return this.rule.transition(state); }
+  }
+  // LLM 模式：选择后依据选择文本+属性变化动态生成承接旁白
+  async choiceAftermath(state, choice, delta){
+    if (!this._available()) return this.rule.choiceAftermath(state, choice, delta);
+    try{
+      const deltaStr = Object.entries(delta||{}).map(([k,v])=>`${k}${v>0?'+':''}${v}`).join('、')||'无';
+      const user =
+        `玩家${Math.floor(state.ageWeeks/52)}岁（${(STAGES.find(s=>s.code===state.currentStage)||{}).name||''}）刚做了选择："${choice?.text||'（无）'}"。\n`+
+        `属性变化：${deltaStr}。\n`+
+        `写一句承接这个选择的旁白（≤40字，第二人称"你"，克制白描，写身体动作或环境细节，不喊口号，不总结人生）。\n`+
+        `只返回JSON：{"narration":"..."}。`;
+      const txt = await this._chat(this._systemPrompt(), user);
+      const o = JSON.parse(stripFence(txt));
+      if (!o.narration) throw new Error('bad-json');
+      return { narration:String(o.narration).slice(0,60), source:'llm' };
+    }catch(e){ return this.rule.choiceAftermath(state, choice, delta); }
   }
 
   async endingNarrative(state){
