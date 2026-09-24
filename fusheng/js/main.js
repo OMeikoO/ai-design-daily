@@ -7,6 +7,7 @@ import { MAX_AGE_WEEKS } from './data.js';
 const stageEl = document.getElementById('stage');
 let state = null;
 let currentNode = null;
+let fastForward = false; // 快进过场：自动跳过纯旁白节点，直达下一个有选择的事件
 
 // ---------------- 启动 ----------------
 boot();
@@ -83,6 +84,11 @@ async function nextTurn(){
 
   currentNode = { ...node, transition };
   ui.renderNode(stageEl, currentNode, state, { onChoice: handleChoice });
+
+  // 快进过场：若是纯旁白节点（无选择），短暂展示后自动继续，直达下一个有选择的事件
+  if (fastForward && (!currentNode.choices || !currentNode.choices.length) && currentNode.kind !== 'mainBranch'){
+    setTimeout(()=>{ if (currentNode && (!currentNode.choices || !currentNode.choices.length)) handleChoice(-1); }, 900);
+  }
 }
 
 async function playRetrospective(text){
@@ -161,6 +167,15 @@ function bindMenu(){
       const a=b.dataset.act;
       if(a==='timeline'){ ui.renderTimeline(state?state.history:[]); document.getElementById('timelineOverlay').hidden=false; }
       else if(a==='attrs'){ const p=document.getElementById('attrsPanel'); p.hidden=!p.hidden; }
+      else if(a==='fastforward'){
+        fastForward = !fastForward;
+        b.textContent = `快进过场：${fastForward?'开':'关'}`;
+        flash(fastForward?'已开启快进，纯旁白将自动跳过':'已关闭快进');
+        if (fastForward && currentNode && (!currentNode.choices || !currentNode.choices.length)){
+          // 当前正停在纯旁白节点，立即继续
+          handleChoice(-1);
+        }
+      }
       else if(a==='save'){ if(state){ engine.save(state); flash('已保存'); } }
       else if(a==='restart'){ if(confirm('重新投胎？当前一生会丢失。')){ engine.clearSave(); location.reload(); } }
       else if(a==='aiConfig'){ openAIConfig(); }
