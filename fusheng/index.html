@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>浮生 · 一周文字人生</title>
+<meta name="description" content="以周为节奏、用克制旁白还原普通人一生的文字模拟。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<div id="app">
+  <!-- 顶部状态条 -->
+  <header class="topbar" id="topbar" hidden>
+    <div class="topbar-left">
+      <span class="age-tag" id="ageTag">0 岁</span>
+      <span class="stage-tag" id="stageTag">婴幼</span>
+    </div>
+    <div class="topbar-right">
+      <button class="ghost-btn" id="menuBtn" title="菜单">≡</button>
+    </div>
+  </header>
+
+  <!-- 旁白与选项主区 -->
+  <main class="stage" id="stage">
+    <!-- 开局屏 / 游戏屏 / 结局屏 由 ui.js 注入 -->
+  </main>
+
+  <!-- 属性面板（可折叠） -->
+  <section class="attrs-panel" id="attrsPanel" hidden>
+    <div class="attrs-grid" id="attrsGrid"></div>
+    <div class="mood-hint" id="moodHint"></div>
+    <div class="talents-row" id="talentsRow"></div>
+  </section>
+
+  <!-- 菜单浮层 -->
+  <div class="overlay" id="menuOverlay" hidden>
+    <div class="sheet">
+      <h3>浮生</h3>
+      <button class="menu-item" data-act="timeline">一生时间轴</button>
+      <button class="menu-item" data-act="attrs">显示 / 隐藏属性</button>
+      <button class="menu-item" data-act="save">保存进度</button>
+      <button class="menu-item" data-act="restart">重新投胎</button>
+      <button class="menu-item" data-act="aiConfig">AI 接入设置</button>
+      <button class="menu-item close" data-act="close">合上</button>
+    </div>
+  </div>
+
+  <!-- 时间轴浮层 -->
+  <div class="overlay" id="timelineOverlay" hidden>
+    <div class="sheet wide">
+      <h3>一生时间轴</h3>
+      <div class="timeline" id="timelineList"></div>
+      <button class="menu-item close" data-act="closeTimeline">合上</button>
+    </div>
+  </div>
+
+  <!-- AI 接入浮层 -->
+  <div class="overlay" id="aiOverlay" hidden>
+    <div class="sheet">
+      <h3>AI 接入设置</h3>
+      <p class="ai-tip">引擎默认走规则文案。接入大模型后，旁白、选项与结局将由 AI 依据玩家意图与一生轨迹动态生成，而非固定模板触发。</p>
+      <label class="field">
+        <span>API 地址</span>
+        <input type="text" id="aiEndpoint" placeholder="https://your-llm/chat/completions" />
+      </label>
+      <label class="field">
+        <span>API Key</span>
+        <input type="password" id="aiKey" placeholder="sk-..." />
+      </label>
+      <label class="field">
+        <span>模型名</span>
+        <input type="text" id="aiModel" placeholder="gpt-4o-mini / glm-4-flash ..." />
+      </label>
+      <label class="field row">
+        <input type="checkbox" id="aiEnabled" />
+        <span>启用 AI 内容生成（兜底走规则）</span>
+      </label>
+      <div class="ai-actions">
+        <button class="solid-btn" id="aiSaveBtn">保存设置</button>
+        <button class="menu-item close" data-act="closeAi">合上</button>
+      </div>
+      <p class="ai-status" id="aiStatus"></p>
+    </div>
+  </div>
+
+  <!-- AI 正在思考提示 -->
+  <div class="thinking" id="thinking" hidden>
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <em id="thinkingText">正在为你这一刻落笔</em>
+  </div>
+</div>
+
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>
