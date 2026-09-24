@@ -68,6 +68,7 @@ export function newRun(birthYear, attrs, talentIds){
     _triggered: [],          // 已触发的 once 事件 id
     _eraFired: [],           // 已触发的时代事件 id
     _familyBonusYear: -1,    // 城中村 18 岁起每 5 年家境+1 跟踪
+    lastChoiceText: null,    // 上一次选择文本（供下一节点过渡旁白衔接）
   };
   // 应用天赋
   for (const tid of talentIds){
@@ -194,6 +195,8 @@ export function applyChoice(state, node, choiceIndex){
   // 心境均值统计
   state._moodSum += state.attrs.mood; state._moodCount += 1;
   state.ageWeeks += adv;
+  // 记录上次选择文本，供下一节点过渡旁白衔接
+  state.lastChoiceText = choice.text;
   return choice;
 }
 // 纯旁白节点推进：前期大步快进不受 12 周硬限（clampAmbientWeeks 上限 60）

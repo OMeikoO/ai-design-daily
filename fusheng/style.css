@@ -242,6 +242,35 @@ body{
 /* 空行留白（呼吸） */
 .gap{height:18px;}
 
+/* 属性变化浮动提示 */
+.delta-toast{
+  position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
+  background:var(--paper); border:1px solid var(--seal-soft); border-radius:3px;
+  padding:10px 18px; font-family:var(--sans); font-size:13px; color:var(--ink);
+  box-shadow:var(--shadow); z-index:25; display:flex; gap:16px;
+  animation:deltaIn .3s ease;
+}
+.delta-toast[hidden]{display:none;}
+.delta-toast .d-item{display:flex; align-items:center; gap:3px; white-space:nowrap;}
+.delta-toast .d-item.up{color:var(--seal);}
+.delta-toast .d-item.down{color:var(--ink-faint);}
+.delta-toast .d-item.flat{color:var(--ink-faint);}
+@keyframes deltaIn{from{opacity:0; transform:translateX(-50%) translateY(8px);} to{opacity:1; transform:translateX(-50%) translateY(0);}}
+.delta-toast.fade{animation:deltaOut .4s ease forwards;}
+@keyframes deltaOut{to{opacity:0; transform:translateX(-50%) translateY(-8px);}}
+
+/* 过渡旁白（衔接上一选择） */
+.narration.transition{
+  font-size:14.5px; color:var(--ink-faint); font-style:italic;
+  margin:0 0 10px; padding-left:10px; border-left:2px solid var(--line);
+  min-height:0;
+}
+.narration.transition.in{opacity:.9; transform:none;}
+
+/* 属性变化时数值高亮 */
+.attr.flash .val{color:var(--seal); transition:color .3s;}
+.attr.flash .bar > i{background:var(--seal);}
+
 /* 响应式 */
 @media (max-width:560px){
   .stage{padding:14px 18px 26px;}

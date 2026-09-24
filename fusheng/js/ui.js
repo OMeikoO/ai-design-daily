@@ -17,13 +17,14 @@ export function hideTopbar(){ $('topbar').hidden=true; }
 
 // ---------------- 属性面板 ----------------
 const ATTR_LABEL = { charm:'颜值', intel:'智力', health:'体质', family:'家境', mood:'心境' };
-export function updateAttrs(state){
+export function updateAttrs(state, flashKeys){
   $('attrsPanel').hidden=false;
   const g = $('attrsGrid'); g.innerHTML='';
   for (const k of ['charm','intel','health','family','mood']){
     const v = state.attrs[k];
     const div = document.createElement('div');
-    div.className = 'attr'+(k==='mood'?' mood':'');
+    const flash = flashKeys && flashKeys.includes(k);
+    div.className = 'attr'+(k==='mood'?' mood':'')+(flash?' flash':'');
     div.innerHTML = `<span class="lbl">${ATTR_LABEL[k]}</span>
       <div class="bar"><i style="width:${Math.min(100,v*10)}%"></i></div>
       <span class="val">${k==='mood' ? moodWord(v) : v}</span>`;
@@ -39,6 +40,23 @@ export function updateAttrs(state){
   }
 }
 function moodWord(v){ return v<=2?'阴':v<=4?'阴':v<=6?'晴':v<=8?'晴':'晴'; }
+
+// ---------------- 属性变化浮动提示 ----------------
+export function showDelta(delta){
+  const t = $('deltaToast');
+  if (!t) return;
+  const keys = Object.keys(delta);
+  if (!keys.length){ t.hidden = true; return; }
+  t.innerHTML = keys.map(k=>{
+    const v = delta[k];
+    const cls = v>0?'up':(v<0?'down':'flat');
+    return `<span class="d-item ${cls}">${ATTR_LABEL[k]} ${v>0?'+':''}${v}</span>`;
+  }).join('');
+  t.hidden = false;
+  t.classList.remove('fade');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>{ t.classList.add('fade'); setTimeout(()=>{ t.hidden = true; t.classList.remove('fade'); }, 400); }, 2800);
+}
 
 // ---------------- 开局屏 ----------------
 export function renderStart(container, cb){
@@ -124,6 +142,13 @@ export function renderStart(container, cb){
 // ---------------- 游戏节点 ----------------
 export function renderNode(container, node, state, cb){
   container.innerHTML='';
+
+  // 过渡旁白：衔接上一选择，作为前置衔接语（斜体灰，左侧细线）
+  if(node.transition){
+    const tr = document.createElement('p'); tr.className='narration transition';
+    container.appendChild(tr);
+    requestAnimationFrame(()=>{ tr.innerHTML = markEm(node.transition); requestAnimationFrame(()=>tr.classList.add('in')); });
+  }
 
   const n = document.createElement('p'); n.className='narration';
   // AI 来源标记

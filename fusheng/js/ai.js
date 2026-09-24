@@ -5,7 +5,7 @@
 // 架构：AIProvider 接口 + RuleProvider（规则兜底）+ LLMProvider（可插拔大模型）。
 // 引擎通过 ai.current() 取当前 provider；未配置或失败时自动回退 RuleProvider。
 
-import { EVENTS, AMBIENT, STAGES, ENDING_TEMPLATES, GRADES } from './data.js';
+import { EVENTS, AMBIENT, TRANSITIONS, STAGES, ENDING_TEMPLATES, GRADES } from './data.js';
 
 // ---------------- 意图分析：把玩家当前状态压缩成“叙事意图” ----------------
 // 这是“更智能化”的核心：不靠模板命中，而是先读懂“玩家这一刻是什么处境”。
@@ -65,6 +65,7 @@ class AIProvider{
   get name(){ return 'base'; }
   async ambient(state){ throw new Error('not impl'); }      // 兜底旁白节点
   async dynamicNode(state){ throw new Error('not impl'); }  // 当无固定事件时生成节点
+  async transition(state){ throw new Error('not impl'); }    // 衔接上一选择的过渡旁白
   async retrospective(state){ throw new Error('not impl'); }
   async endingNarrative(state){ throw new Error('not impl'); }
 }
@@ -113,6 +114,19 @@ class RuleProvider extends AIProvider{
     else if (stage==='S7'||stage==='S8'||stage==='S9') w = 6 + Math.floor(Math.random()*7);
     else if (stage==='S10') w = 8 + Math.floor(Math.random()*9);
     return { narration, choices: [], timeAdvanceWeeks: w, source:'rule', intent };
+  }
+  async transition(state){
+    // 衔接上一选择 → 引出下一场景。规则模式从 TRANSITIONS 池取一段。
+    // 避免短期重复：记录上次过渡，重试 3 次。
+    const stage = state.currentStage;
+    const pool = TRANSITIONS[stage]||TRANSITIONS.S10;
+    const last = this._lastTransition;
+    let text = last;
+    for (let t=0; t<3 && text===last && pool.length>1; t++){
+      text = pool[Math.floor(Math.random()*pool.length)];
+    }
+    this._lastTransition = text;
+    return { transition: text, source:'rule' };
   }
   async retrospective(state){
     // 复用 data.js 的回望逻辑（flag 驱动），规则兜底
@@ -216,6 +230,21 @@ class LLMProvider extends AIProvider{
       if (!o.narration) throw new Error('bad-json');
       return { narration:o.narration, source:'llm' };
     }catch(e){ return this.rule.retrospective(state); }
+  }
+  async transition(state){
+    if (!this._available()) return this.rule.transition(state);
+    try{
+      const intent = analyzeIntent(state);
+      const user =
+        `玩家刚才做了一个选择："${state.lastChoiceText||'（无）'}"。现在 ${Math.floor(state.ageWeeks/52)} 岁（${(STAGES.find(s=>s.code===state.currentStage)||{}).name||''}）。\n`+
+        `意图：${intent.tags.join('、')||'寻常'}。\n`+
+        `写一句承接这个选择、引出接下来场景的过渡旁白（≤30字，第二人称"你"，克制白描，不剧透未来）。\n`+
+        `只返回JSON：{"transition":"..."}。`;
+      const txt = await this._chat(this._systemPrompt(), user);
+      const o = JSON.parse(stripFence(txt));
+      if (!o.transition) throw new Error('bad-json');
+      return { transition:String(o.transition).slice(0,50), source:'llm' };
+    }catch(e){ return this.rule.transition(state); }
   }
 
   async endingNarrative(state){

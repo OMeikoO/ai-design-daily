@@ -70,8 +70,19 @@ async function nextTurn(){
     } catch { ui.showThinking(false); }
   }
 
-  currentNode = node;
-  ui.renderNode(stageEl, node, state, { onChoice: handleChoice });
+  // 过渡旁白：衔接上一选择 → 引出本节点场景，避免"选完直接跳到无关场景"的僵硬
+  let transition = '';
+  if (state.lastChoiceText && node.kind !== 'mainBranch' && node.source !== 'era'){
+    const ai = currentAI();
+    try {
+      const ret = await ai.transition(state);
+      if (ret && ret.transition) transition = ret.transition;
+    } catch { /* 兜底：无过渡，不阻塞 */ }
+    state.lastChoiceText = null; // 用完清空，避免连续触发
+  }
+
+  currentNode = { ...node, transition };
+  ui.renderNode(stageEl, currentNode, state, { onChoice: handleChoice });
 }
 
 async function playRetrospective(text){
@@ -100,8 +111,20 @@ function handleChoice(idx){
     engine.save(state);
     return nextTurn();
   }
+  const beforeAttrs = { ...state.attrs };
   const choice = engine.applyChoice(state, currentNode, idx);
   if (!choice){ return; } // 锁定项忽略
+
+  // 计算属性变化，立即展示浮动提示 + 属性条高亮，让玩家看见选择的代价与回报
+  const delta = {};
+  for (const k in beforeAttrs){
+    if (state.attrs[k] !== beforeAttrs[k]) delta[k] = state.attrs[k] - beforeAttrs[k];
+  }
+  if (Object.keys(delta).length){
+    ui.showDelta(delta);
+    ui.updateAttrs(state, Object.keys(delta));
+  }
+
   // 选项内嵌的“选后旁白”
   if (choice.narration){
     ui.renderNode(stageEl, { id:currentNode.id+'_r', stage:state.currentStage, narration:choice.narration, choices:[], timeAdvanceWeeks:0, source:'rule' },

@@ -253,6 +253,35 @@ body{
 /* 空行留白（呼吸） */
 .gap{height:18px;}
 
+/* 属性变化浮动提示 */
+.delta-toast{
+  position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
+  background:var(--paper); border:1px solid var(--seal-soft); border-radius:3px;
+  padding:10px 18px; font-family:var(--sans); font-size:13px; color:var(--ink);
+  box-shadow:var(--shadow); z-index:25; display:flex; gap:16px;
+  animation:deltaIn .3s ease;
+}
+.delta-toast[hidden]{display:none;}
+.delta-toast .d-item{display:flex; align-items:center; gap:3px; white-space:nowrap;}
+.delta-toast .d-item.up{color:var(--seal);}
+.delta-toast .d-item.down{color:var(--ink-faint);}
+.delta-toast .d-item.flat{color:var(--ink-faint);}
+@keyframes deltaIn{from{opacity:0; transform:translateX(-50%) translateY(8px);} to{opacity:1; transform:translateX(-50%) translateY(0);}}
+.delta-toast.fade{animation:deltaOut .4s ease forwards;}
+@keyframes deltaOut{to{opacity:0; transform:translateX(-50%) translateY(-8px);}}
+
+/* 过渡旁白（衔接上一选择） */
+.narration.transition{
+  font-size:14.5px; color:var(--ink-faint); font-style:italic;
+  margin:0 0 10px; padding-left:10px; border-left:2px solid var(--line);
+  min-height:0;
+}
+.narration.transition.in{opacity:.9; transform:none;}
+
+/* 属性变化时数值高亮 */
+.attr.flash .val{color:var(--seal); transition:color .3s;}
+.attr.flash .bar > i{background:var(--seal);}
+
 /* 响应式 */
 @media (max-width:560px){
   .stage{padding:14px 18px 26px;}
@@ -348,6 +377,9 @@ body{
     <span class="dot"></span><span class="dot"></span><span class="dot"></span>
     <em id="thinkingText">正在为你这一刻落笔</em>
   </div>
+
+  <!-- 选择后属性变化浮动提示 -->
+  <div class="delta-toast" id="deltaToast" hidden></div>
 </div>
 
 <script>
@@ -955,6 +987,62 @@ const AMBIENT = {
   ],
 };
 
+// ---------- 过渡旁白池（衔接上一选择 → 引出下一场景，按阶段分档） ----------
+// 当玩家刚做完一个选择，下一节点渲染前会从对应阶段池中选一段作为前置衔接语，
+// 让两个场景之间有承接，避免"选完直接跳到无关场景"的僵硬感。
+const TRANSITIONS = {
+  S1:[
+    '那之后，日子还是那样过。', '你没记住那件事，可它在你身上留下了什么。',
+    '几天后，你忘了。可它没忘你。', '那件事像颗种子，埋进了你看不见的地方。',
+    '生活没因此停。奶粉还是得冲，尿布还是得换。',
+  ],
+  S2:[
+    '那件事过去没多久，你就忘了。', '后来你常想起那天，想不明白为什么。',
+    '日子像水，那块小石头沉下去，水面又平了。', '你没跟任何人提过那件事。',
+    '那之后你好像长大了一点点，又好像没有。',
+  ],
+  S3:[
+    '那之后，你好像懂事了一点。', '那件事你记了很久，后来才慢慢淡。',
+    '日子还是上课下课，可你看人时的眼神变了。', '你没跟爸妈说，怕他们担心，也怕他们问。',
+    '那件事像根刺，不疼，可你知道它在那儿。',
+  ],
+  S4:[
+    '那之后的好几天，你都没睡好。', '你以为自己忘了，可一闭眼又是那画面。',
+    '青春期的孩子，记仇也记恩，都记得很深。', '那件事你写进了日记，又划掉了。',
+    '你以为那是大事，后来才知道，更大的还在后头。',
+  ],
+  S5:[
+    '那之后，你变了个人。', '你以为那是过不去的坎，后来也就过去了。',
+    '倒计时牌照样翻，没人知道你心里翻过什么。', '那件事你藏在心里，谁也没说。',
+    '日子卷着往前走，你来不及回头。',
+  ],
+  S6:[
+    '那之后，你似乎看清了一点自己。', '你以为自己长大了，后来才知道还差得远。',
+    '宿舍的灯照样熄，你照样睡不着，可心事不一样了。', '那件事你写进朋友圈，又删了。',
+    '你以为那是个句号，后来才明白只是逗号。',
+  ],
+  S7:[
+    '那之后，你把那件事搁下了，可它没搁下你。', '地铁里的人还是不说话，你也学会了不说话。',
+    '日子像水，那块石头沉下去，水面又平了。', '你以为扛过去就完了，后来才知道一直在扛。',
+    '那件事你跟谁都没提，怕一开口就泄了气。',
+  ],
+  S8:[
+    '那之后，你跟谁都没再提，可心里一直搁着。', '日子照常过，账单照常付，可你老了不止一岁。',
+    '你以为扛得住，后来才知道，扛不住也得扛。', '那件事你咽下去了，咽得嗓子发紧。',
+    '你以为那是坎，后来才知道，坎是一个接一个。',
+  ],
+  S9:[
+    '那之后，你常半夜醒来，盯着天花板。', '你以为熬过去就好了，后来才知道，一直都在熬。',
+    '日子慢下来了，慢得能听见钟走。', '那件事你跟老伙计提过一嘴，他没接，你也没再说。',
+    '你以为到这岁数就看开了，后来才知道，看不开也得装着看开。',
+  ],
+  S10:[
+    '那之后，你常想起那件事，想得发愣。', '日子慢得像水，那块石头早沉底了，可水还在流。',
+    '你以为自己忘了，可一闭眼又是那画面。', '那件事你跟谁都没说，怕一开口就收不住。',
+    '你以为这辈子快想明白了，后来才知道，一直没想明白。',
+  ],
+};
+
 // ---------- 结局 ----------
 const GRADES = [
   { id:'g1', name:'潦草', min:0,  desc:'一生仓促，许多事来不及。' },
@@ -1056,6 +1144,7 @@ class AIProvider{
   get name(){ return 'base'; }
   async ambient(state){ throw new Error('not impl'); }      // 兜底旁白节点
   async dynamicNode(state){ throw new Error('not impl'); }  // 当无固定事件时生成节点
+  async transition(state){ throw new Error('not impl'); }    // 衔接上一选择的过渡旁白
   async retrospective(state){ throw new Error('not impl'); }
   async endingNarrative(state){ throw new Error('not impl'); }
 }
@@ -1104,6 +1193,19 @@ class RuleProvider extends AIProvider{
     else if (stage==='S7'||stage==='S8'||stage==='S9') w = 6 + Math.floor(Math.random()*7);
     else if (stage==='S10') w = 8 + Math.floor(Math.random()*9);
     return { narration, choices: [], timeAdvanceWeeks: w, source:'rule', intent };
+  }
+  async transition(state){
+    // 衔接上一选择 → 引出下一场景。规则模式从 TRANSITIONS 池取一段。
+    // 避免短期重复：记录上次过渡，重试 3 次。
+    const stage = state.currentStage;
+    const pool = TRANSITIONS[stage]||TRANSITIONS.S10;
+    const last = this._lastTransition;
+    let text = last;
+    for (let t=0; t<3 && text===last && pool.length>1; t++){
+      text = pool[Math.floor(Math.random()*pool.length)];
+    }
+    this._lastTransition = text;
+    return { transition: text, source:'rule' };
   }
   async retrospective(state){
     // 复用 data.js 的回望逻辑（flag 驱动），规则兜底
@@ -1207,6 +1309,21 @@ class LLMProvider extends AIProvider{
       if (!o.narration) throw new Error('bad-json');
       return { narration:o.narration, source:'llm' };
     }catch(e){ return this.rule.retrospective(state); }
+  }
+  async transition(state){
+    if (!this._available()) return this.rule.transition(state);
+    try{
+      const intent = analyzeIntent(state);
+      const user =
+        `玩家刚才做了一个选择："${state.lastChoiceText||'（无）'}"。现在 ${Math.floor(state.ageWeeks/52)} 岁（${(STAGES.find(s=>s.code===state.currentStage)||{}).name||''}）。\n`+
+        `意图：${intent.tags.join('、')||'寻常'}。\n`+
+        `写一句承接这个选择、引出接下来场景的过渡旁白（≤30字，第二人称"你"，克制白描，不剧透未来）。\n`+
+        `只返回JSON：{"transition":"..."}。`;
+      const txt = await this._chat(this._systemPrompt(), user);
+      const o = JSON.parse(stripFence(txt));
+      if (!o.transition) throw new Error('bad-json');
+      return { transition:String(o.transition).slice(0,50), source:'llm' };
+    }catch(e){ return this.rule.transition(state); }
   }
 
   async endingNarrative(state){
@@ -1345,6 +1462,7 @@ function newRun(birthYear, attrs, talentIds){
     _triggered: [],          // 已触发的 once 事件 id
     _eraFired: [],           // 已触发的时代事件 id
     _familyBonusYear: -1,    // 城中村 18 岁起每 5 年家境+1 跟踪
+    lastChoiceText: null,    // 上一次选择文本（供下一节点过渡旁白衔接）
   };
   // 应用天赋
   for (const tid of talentIds){
@@ -1471,6 +1589,8 @@ function applyChoice(state, node, choiceIndex){
   // 心境均值统计
   state._moodSum += state.attrs.mood; state._moodCount += 1;
   state.ageWeeks += adv;
+  // 记录上次选择文本，供下一节点过渡旁白衔接
+  state.lastChoiceText = choice.text;
   return choice;
 }
 // 纯旁白节点推进：前期大步快进不受 12 周硬限（clampAmbientWeeks 上限 60）
@@ -1544,13 +1664,14 @@ function hideTopbar(){ $('topbar').hidden=true; }
 
 // ---------------- 属性面板 ----------------
 const ATTR_LABEL = { charm:'颜值', intel:'智力', health:'体质', family:'家境', mood:'心境' };
-function updateAttrs(state){
+function updateAttrs(state, flashKeys){
   $('attrsPanel').hidden=false;
   const g = $('attrsGrid'); g.innerHTML='';
   for (const k of ['charm','intel','health','family','mood']){
     const v = state.attrs[k];
     const div = document.createElement('div');
-    div.className = 'attr'+(k==='mood'?' mood':'');
+    const flash = flashKeys && flashKeys.includes(k);
+    div.className = 'attr'+(k==='mood'?' mood':'')+(flash?' flash':'');
     div.innerHTML = `<span class="lbl">${ATTR_LABEL[k]}</span>
       <div class="bar"><i style="width:${Math.min(100,v*10)}%"></i></div>
       <span class="val">${k==='mood' ? moodWord(v) : v}</span>`;
@@ -1566,6 +1687,23 @@ function updateAttrs(state){
   }
 }
 function moodWord(v){ return v<=2?'阴':v<=4?'阴':v<=6?'晴':v<=8?'晴':'晴'; }
+
+// ---------------- 属性变化浮动提示 ----------------
+function showDelta(delta){
+  const t = $('deltaToast');
+  if (!t) return;
+  const keys = Object.keys(delta);
+  if (!keys.length){ t.hidden = true; return; }
+  t.innerHTML = keys.map(k=>{
+    const v = delta[k];
+    const cls = v>0?'up':(v<0?'down':'flat');
+    return `<span class="d-item ${cls}">${ATTR_LABEL[k]} ${v>0?'+':''}${v}</span>`;
+  }).join('');
+  t.hidden = false;
+  t.classList.remove('fade');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>{ t.classList.add('fade'); setTimeout(()=>{ t.hidden = true; t.classList.remove('fade'); }, 400); }, 2800);
+}
 
 // ---------------- 开局屏 ----------------
 function renderStart(container, cb){
@@ -1651,6 +1789,13 @@ function renderStart(container, cb){
 // ---------------- 游戏节点 ----------------
 function renderNode(container, node, state, cb){
   container.innerHTML='';
+
+  // 过渡旁白：衔接上一选择，作为前置衔接语（斜体灰，左侧细线）
+  if(node.transition){
+    const tr = document.createElement('p'); tr.className='narration transition';
+    container.appendChild(tr);
+    requestAnimationFrame(()=>{ tr.innerHTML = markEm(node.transition); requestAnimationFrame(()=>tr.classList.add('in')); });
+  }
 
   const n = document.createElement('p'); n.className='narration';
   // AI 来源标记
@@ -1805,8 +1950,19 @@ async function nextTurn(){
     } catch { showThinking(false); }
   }
 
-  currentNode = node;
-  renderNode(stageEl, node, state, { onChoice: handleChoice });
+  // 过渡旁白：衔接上一选择 → 引出本节点场景，避免"选完直接跳到无关场景"的僵硬
+  let transition = '';
+  if (state.lastChoiceText && node.kind !== 'mainBranch' && node.source !== 'era'){
+    const ai = current();
+    try {
+      const ret = await ai.transition(state);
+      if (ret && ret.transition) transition = ret.transition;
+    } catch { /* 兜底：无过渡，不阻塞 */ }
+    state.lastChoiceText = null; // 用完清空，避免连续触发
+  }
+
+  currentNode = { ...node, transition };
+  renderNode(stageEl, currentNode, state, { onChoice: handleChoice });
 }
 
 async function playRetrospective(text){
@@ -1835,8 +1991,20 @@ function handleChoice(idx){
     save(state);
     return nextTurn();
   }
+  const beforeAttrs = { ...state.attrs };
   const choice = applyChoice(state, currentNode, idx);
   if (!choice){ return; } // 锁定项忽略
+
+  // 计算属性变化，立即展示浮动提示 + 属性条高亮，让玩家看见选择的代价与回报
+  const delta = {};
+  for (const k in beforeAttrs){
+    if (state.attrs[k] !== beforeAttrs[k]) delta[k] = state.attrs[k] - beforeAttrs[k];
+  }
+  if (Object.keys(delta).length){
+    showDelta(delta);
+    updateAttrs(state, Object.keys(delta));
+  }
+
   // 选项内嵌的“选后旁白”
   if (choice.narration){
     renderNode(stageEl, { id:currentNode.id+'_r', stage:state.currentStage, narration:choice.narration, choices:[], timeAdvanceWeeks:0, source:'rule' },
