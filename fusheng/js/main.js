@@ -107,7 +107,7 @@ async function playRetrospective(text){
   });
 }
 
-function handleChoice(idx){
+async function handleChoice(idx){
   if (idx===-1){
     // 纯旁白继续：按阶段大步快进，制造"被生活推着走"的无力感，避免反复兜底
     let w = currentNode.timeAdvanceWeeks;
