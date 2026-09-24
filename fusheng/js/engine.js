@@ -47,9 +47,10 @@ function isExcluded(ev, state){
 }
 
 function stageOf(ageWeeks){
-  const y = ageWeeks/52;
+  // 用整数岁匹配 ageRange，避免 3岁29周(=3.558)落入 S1[0,3]/S2[4,6] 整数空隙被误判为 S10
+  const y = Math.floor(ageWeeks/52);
   for (const s of STAGES){ if (y>=s.ageRange[0] && y<=s.ageRange[1]) return s.code; }
-  return ageWeeks>STAGES[STAGES.length-1].ageRange[1] ? 'S10' : 'S1';
+  return ageWeeks/52 > STAGES[STAGES.length-1].ageRange[1] ? 'S10' : 'S1';
 }
 function stageName(code){ return (STAGES.find(s=>s.code===code)||{}).name||''; }
 
@@ -195,12 +196,13 @@ export function applyChoice(state, node, choiceIndex){
   state.ageWeeks += adv;
   return choice;
 }
-// 纯旁白节点推进
+// 纯旁白节点推进：前期大步快进不受 12 周硬限（clampAmbientWeeks 上限 60）
 export function applyAmbientAdvance(state, node, weeks){
   pushHistory(state, node, null);
   state._moodSum += state.attrs.mood; state._moodCount += 1;
-  state.ageWeeks += clampWeeks(weeks||2);
+  state.ageWeeks += clampAmbientWeeks(weeks||2);
 }
+function clampAmbientWeeks(n){ n=parseInt(n,10); if(isNaN(n)||n<0)return 2; if(n>60)return 60; return n; }
 
 function pushHistory(state, node, choice){
   state.history.push({

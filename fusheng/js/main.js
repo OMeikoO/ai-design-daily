@@ -43,14 +43,18 @@ async function nextTurn(){
   let node = engine.pickNext(state);
 
   if (node===null){
-    // 无固定事件 → AI 依据意图生成动态节点（核心：不靠固定模板）
+    // 无固定事件 → 走 AI 兜底
+    // 前期(S1-S3)优先纯旁白快进，制造"被生活推着走"的无力感并避免重复；
+    // 中后期(S4+)走 dynamicNode，由 AI 依据意图生成带选择的节点
     const ai = currentAI();
-    if (isAIActive()){ ui.showThinking(true, '正在为你这一刻落笔'); }
-    try { node = await ai.dynamicNode(state); }
+    const early = ['S1','S2','S3'].includes(state.currentStage);
+    if (isAIActive() && !early){ ui.showThinking(true, '正在为你这一刻落笔'); }
+    try {
+      node = early ? await ai.ambient(state) : await ai.dynamicNode(state);
+    }
     catch { node = await ai.ambient(state); }
     finally { ui.showThinking(false); }
-    // 给 AI 节点补上时间快进与推进信息
-    node = { ...node, stage: state.currentStage, kind:'dynamic', choices: node.choices||[], timeAdvanceWeeks: node.timeAdvanceWeeks ?? 2 };
+    node = { ...node, stage: state.currentStage, kind: early?'ambient':'dynamic', choices: node.choices||[], timeAdvanceWeeks: node.timeAdvanceWeeks ?? 2 };
   }
 
   // 暮年回望：到 S10 且未触发过回望节点，且本节点非回望本身
@@ -80,8 +84,19 @@ async function playRetrospective(text){
 
 function handleChoice(idx){
   if (idx===-1){
-    // 纯旁白继续
-    engine.applyAmbientAdvance(state, currentNode, currentNode.timeAdvanceWeeks||2);
+    // 纯旁白继续：按阶段大步快进，制造"被生活推着走"的无力感，避免反复兜底
+    let w = currentNode.timeAdvanceWeeks;
+    if (!w || w <= 2){
+      const st = state.currentStage;
+      if (st==='S1') w = 24 + Math.floor(Math.random()*16);      // 24-40 周（半年-1年）
+      else if (st==='S2') w = 16 + Math.floor(Math.random()*10); // 16-26 周
+      else if (st==='S3') w = 10 + Math.floor(Math.random()*8);  // 10-18 周
+      else if (st==='S4'||st==='S5'||st==='S6') w = 4 + Math.floor(Math.random()*5);  // 4-8 周
+      else if (st==='S7'||st==='S8'||st==='S9') w = 6 + Math.floor(Math.random()*7);   // 6-12 周
+      else if (st==='S10') w = 8 + Math.floor(Math.random()*9);                        // 8-16 周
+      else w = 2;
+    }
+    engine.applyAmbientAdvance(state, currentNode, w);
     engine.save(state);
     return nextTurn();
   }

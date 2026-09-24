@@ -42,20 +42,20 @@ function moodWord(v){ return v<=2?'阴':v<=4?'阴':v<=6?'晴':v<=8?'晴':'晴'; 
 
 // ---------------- 开局屏 ----------------
 export function renderStart(container, cb){
-  const birthYear = 1970 + Math.floor(Math.random()*41); // 1970-2010
+  const birthYear = 2000; // 千禧一代定制
   const alloc = { charm:4, intel:4, health:4, family:4, mood:4 }; // 共20点，每项最低1
   const picked = new Set();
 
   container.innerHTML = `
     <div class="start">
       <h1 class="title">浮生</h1>
-      <p class="sub">一周文字人生 · 0–75 岁</p>
+      <p class="sub">千禧一代 · 文字人生 · 0–75 岁</p>
       <p class="quote">“人这一辈子，说是长，其实也就那么几件事。”</p>
 
       <div class="alloc" id="allocWrap"></div>
       <p class="pool" id="poolTxt"></p>
 
-      <p class="sub" style="margin-top:14px">出身于 ${birthYear} 年 · 抽 3 个天赋</p>
+      <p class="sub" style="margin-top:14px">出身于 ${birthYear} 年 · 选 3 个天赋即可投胎</p>
       <div class="talent-pick" id="talentWrap"></div>
 
       <div class="start-actions">
@@ -98,7 +98,9 @@ export function renderStart(container, cb){
       }
       row.querySelector('.val').textContent=v;
     }
-    $('poolTxt').textContent = `可分配点数 ${20-usedPoints()}/20（每项 1–10，共 20 点）`;
+    $('poolTxt').textContent = usedPoints()===20
+      ? `已分配 ${usedPoints()}/20（每项 4，可用 +/- 调整分布，或直接选 3 天赋投胎）`
+      : `可分配 ${20-usedPoints()}/20（每项 1–10，共 20 点）`;
   }
   refreshAlloc();
 

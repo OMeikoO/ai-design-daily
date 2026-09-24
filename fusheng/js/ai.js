@@ -72,14 +72,33 @@ class AIProvider{
 // ---------------- 规则 Provider（基线，永远可用） ----------------
 class RuleProvider extends AIProvider{
   get name(){ return 'rule'; }
+  constructor(){ super(); this._lastAmbient = {}; } // stage -> 上次旁白，避免短期重复
+  _pickAmbient(stage){
+    const pool = AMBIENT[stage]||AMBIENT.S10;
+    const last = this._lastAmbient[stage];
+    let text = last;
+    for (let t=0; t<3 && text===last && pool.length>1; t++){
+      text = pool[Math.floor(Math.random()*pool.length)];
+    }
+    this._lastAmbient[stage] = text;
+    return text;
+  }
   async ambient(state){
-    const pool = AMBIENT[state.currentStage]||AMBIENT.S10;
-    return { narration: pool[Math.floor(Math.random()*pool.length)], choices: [], timeAdvanceWeeks: 2, source:'rule' };
+    // 按阶段大步快进（3:1 pacing），避免反复兜底导致重复
+    const stage = state.currentStage;
+    let weeks = 2;
+    if (stage==='S1') weeks = 24 + Math.floor(Math.random()*16);      // 24-40 周
+    else if (stage==='S2') weeks = 16 + Math.floor(Math.random()*10); // 16-26 周
+    else if (stage==='S3') weeks = 10 + Math.floor(Math.random()*8);  // 10-18 周
+    else if (stage==='S4'||stage==='S5'||stage==='S6') weeks = 4 + Math.floor(Math.random()*5);
+    else if (stage==='S7'||stage==='S8'||stage==='S9') weeks = 6 + Math.floor(Math.random()*7);
+    else if (stage==='S10') weeks = 8 + Math.floor(Math.random()*9);
+    return { narration: this._pickAmbient(stage), choices: [], timeAdvanceWeeks: weeks, source:'rule' };
   }
   async dynamicNode(state){
-    // 规则模式下，动态节点 = 一段旁白 + 0~2 个“装饰性/微影响”选择
+    // 规则模式：中后期无固定事件时，纯旁白 + 阶段快进过渡。
+    // 选择交给固定事件（每阶段10+个）与启用 AI 时的 LLM 生成，避免装饰性微选择把节奏拖垮。
     const intent = analyzeIntent(state);
-    const a = state.attrs;
     const lines = [];
     if (intent.tags.includes('low_spirit')) lines.push(intent.moods[0]?`最近总${intent.moods[0]}。`:'最近总提不起劲。');
     if (intent.tags.includes('debt_pressure')) lines.push('手机又弹了条还款提醒。你按掉没看。');
@@ -87,16 +106,13 @@ class RuleProvider extends AIProvider{
     if (intent.tags.includes('drifting')) lines.push('地铁又晚点了。人群沉默地挪动。');
     if (intent.tags.includes('frail')) lines.push('今天膝盖又有点疼。');
     if (intent.tags.includes('looking_back')) lines.push('阳光晒得人发困。你想起了很远的事。');
-    const narration = lines.length ? lines.join('') : (await this.ambient(state)).narration;
-    // 给一两个微选择，避免纯旁白
-    const choices = [];
-    if (a.mood<=4 && Math.random()<0.6){
-      choices.push({ text:'发会儿呆', effects:{mood:+1}, timeAdvanceWeeks:2 });
-      choices.push({ text:'逼自己动起来', effects:{mood:-1,intel:+1}, timeAdvanceWeeks:2 });
-    } else if (Math.random()<0.4){
-      choices.push({ text:'就这样吧', effects:{}, timeAdvanceWeeks:2 });
-    }
-    return { narration, choices, timeAdvanceWeeks: choices.length?0:2, source:'rule', intent };
+    const narration = lines.length ? lines.join('') : this._pickAmbient(state.currentStage);
+    const stage = state.currentStage;
+    let w = 2;
+    if (stage==='S4'||stage==='S5'||stage==='S6') w = 4 + Math.floor(Math.random()*5);
+    else if (stage==='S7'||stage==='S8'||stage==='S9') w = 6 + Math.floor(Math.random()*7);
+    else if (stage==='S10') w = 8 + Math.floor(Math.random()*9);
+    return { narration, choices: [], timeAdvanceWeeks: w, source:'rule', intent };
   }
   async retrospective(state){
     // 复用 data.js 的回望逻辑（flag 驱动），规则兜底
