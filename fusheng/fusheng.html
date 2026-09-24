@@ -394,19 +394,38 @@ body{
 //   城市线: beidrift(24岁) → stay_big_city(30岁) → back_home(40岁前) → retire_choice(58岁)
 
 const STAGES = [
-  { code:'S1', name:'婴幼',    ageRange:[0,3],  decisionRatio:0.08 },  // 几乎无选择
-  { code:'S2', name:'学龄前',  ageRange:[4,6],  decisionRatio:0.18 },  // 1-2选择
-  { code:'S3', name:'小学',    ageRange:[7,12], decisionRatio:0.30 },  // 3-4选择
+  { code:'S1', name:'婴幼',    ageRange:[0,3],  decisionRatio:0.08 },
+  { code:'S2', name:'学龄前',  ageRange:[4,6],  decisionRatio:0.18 },
+  { code:'S3', name:'小学',    ageRange:[7,12], decisionRatio:0.30 },
   { code:'S4', name:'初中',    ageRange:[13,15],decisionRatio:0.55 },
   { code:'S5', name:'高中',    ageRange:[16,18],decisionRatio:0.72 },
   { code:'S6', name:'大学',    ageRange:[19,22],decisionRatio:0.68 },
   { code:'S7', name:'立业',    ageRange:[23,30],decisionRatio:0.62 },
   { code:'S8', name:'成家立业', ageRange:[31,45],decisionRatio:0.78 },
   { code:'S9', name:'收尾',    ageRange:[46,60],decisionRatio:0.45 },
-  { code:'S10',name:'暮年',    ageRange:[61,75],decisionRatio:0.28 },
+  { code:'S10',name:'暮年',    ageRange:[61,120],decisionRatio:0.28 },  // 暮年延长，不再75岁硬上限
 ];
 
-const MAX_AGE_WEEKS = 75 * 52 + 4; // 3904
+const MAX_AGE_WEEKS = 120 * 52; // 6240：打破75岁上限，最老可活到120
+
+// 死亡旁白池：打破年龄上限后，按年龄段随机自然死亡
+const DEATH_EVENTS = {
+  mid:[
+    '你倒在了工位上。同事以为你在午休，下班才发现。',
+    '心电图拉成一条直线。窗外天还没亮。',
+    '最后听见的是监护仪的滴答声，像很久以前的钟。',
+  ],
+  senior:[
+    '你睡过去，没再醒来。窗外阳光很好。',
+    '你握着老伴的手，说了句含糊的话，手松了。',
+    '最后一口气像叹出来，又像松了口气。',
+  ],
+  old:[
+    '你坐在阳台的椅子里，眼睛慢慢闭上。风翻着窗帘。',
+    '护工来叫你吃饭，你没了呼吸，表情很平静。',
+    '你做了一个很长很长的梦，梦里的太阳很暖。',
+  ],
+};
 
 // ---------- 天赋 ----------
 const TALENTS = [
@@ -530,30 +549,61 @@ const EVENTS = [
              { text:'假装不在意', effects:{mood:-1}, timeAdvanceWeeks:12 }] },
   { id:'s4_game', stage:'S4', ageRange:[13,15], kind:'threshold', weight:28, once:true, requirement:{intel:'<=6'},
     narration:'你在网吧通宵了一整夜。天亮出来，眼睛刺痛，早饭吃了两口就吐了。',
-    choices:[{ text:'继续沉迷', effects:{intel:-2,health:-1,mood:+2}, timeAdvanceWeeks:30, setFlags:['game_addict'] },
-             { text:'被父亲抓回家', effects:{mood:-2,intel:-1}, timeAdvanceWeeks:12, setFlags:['caught_gaming'] }] },
+    choices:[{ text:'继续沉迷', effects:{intel:-2,health:-1,mood:+2}, timeAdvanceWeeks:6, setFlags:['game_addict'], nextEvent:'s4_game_aftermath' },
+             { text:'被父亲抓回家', effects:{mood:-2,intel:-1}, timeAdvanceWeeks:6, setFlags:['caught_gaming'], nextEvent:'s4_game_aftermath' }] },
+  // 网吧选择的直接后果：第二天在课堂上昏睡，被老师点名——强联动
+  { id:'s4_game_aftermath', stage:'S4', ageRange:[13,16], kind:'stage', weight:1, once:true,
+    narration:(s)=> `第二天上课你昏睡过去，口水淌了一桌。数学老师把你叫起来，全班看着你。${s.flags.includes('game_addict')?'你嘴里还残留着泡面的味道。':''}`,
+    choices:[{ text:'低头认错', effects:{charm:-1,mood:-1}, timeAdvanceWeeks:8, setFlags:['scolded_in_class'] },
+             { text:'顶嘴"您讲得无聊"', effects:{charm:+1,mood:-2}, timeAdvanceWeeks:8, setFlags:['talked_back'] },
+             { text:'什么都不说', effects:{mood:-2}, timeAdvanceWeeks:8 }] },
   { id:'s4_rebel', stage:'S4', ageRange:[14,15], kind:'stage', weight:22, once:true,
     narration:'母亲翻你的抽屉。你当着她的面把日记撕了。',
-    choices:[{ text:'摔门出去', effects:{mood:-2}, timeAdvanceWeeks:8, setFlags:['rebel'] },
+    choices:[{ text:'摔门出去', effects:{mood:-2}, timeAdvanceWeeks:4, setFlags:['rebel'], nextEvent:'s4_rebel_aftermath' },
              { text:'坐下来谈', effects:{intel:+1,mood:-1}, timeAdvanceWeeks:8 }] },
+  // 摔门的后果：母亲三天没跟你说话——强联动
+  { id:'s4_rebel_aftermath', stage:'S4', ageRange:[14,16], kind:'stage', weight:1, once:true, requirement:{flags:['rebel']},
+    narration:'母亲三天没跟你说一句话。吃饭时她多盛了一勺你的饭，又收回去半勺。你装作没看见。',
+    choices:[{ text:'先开口道歉', effects:{mood:+1,charm:+1}, timeAdvanceWeeks:12, setFlags:['apologized_mom'] },
+             { text:'硬扛到底', effects:{mood:-2,intel:+1}, timeAdvanceWeeks:12, setFlags:['stubborn_teen'] }] },
   { id:'s4_track', stage:'S4', ageRange:[15,15], kind:'stage', weight:30, once:true,
     narration:'文理分科表发下来。你盯着"文科/理科"两个格看了很久。',
     choices:[{ text:'选理科', effects:{intel:+1}, timeAdvanceWeeks:20, setFlags:['track_science'] },
-             { text:'选文科', effects:{intel:0,charm:+1}, timeAdvanceWeeks:20, setFlags:['track_arts'] }] },
+             { text:'选文科', effects:{intel:0,charm:+1}, timeAdvanceWeeks:20, setFlags:['track_arts'] },
+             { text:'听爸妈的', effects:{mood:-1,intel:0}, timeAdvanceWeeks:20, setFlags:['obeyed_parents'] }] },
   { id:'s4_phone', stage:'S4', ageRange:[14,15], kind:'stage', weight:20, once:true, requirement:{family:'>=4'},
     narration:'你想要一部自己的手机。父亲说"中考考好再说"。',
-    choices:[{ text:'拼命学', effects:{intel:+2,health:-1}, timeAdvanceWeeks:20, setFlags:['own_phone'] },
-             { text:'偷偷攒钱买', effects:{mood:-1,intel:-1}, timeAdvanceWeeks:20, setFlags:['own_phone'] }] },
+    choices:[{ text:'拼命学', effects:{intel:+2,health:-1}, timeAdvanceWeeks:20, setFlags:['own_phone'], nextEvent:'s4_phone_reward' },
+             { text:'偷偷攒钱买', effects:{mood:-1,intel:-1}, timeAdvanceWeeks:20, setFlags:['own_phone'], nextEvent:'s4_phone_secret' }] },
+  // 手机选择的后果：拼命学→考好后父亲兑现诺言；偷买→被父母发现
+  { id:'s4_phone_reward', stage:'S4', ageRange:[15,16], kind:'stage', weight:1, once:true, requirement:{flags:['own_phone']},
+    narration:'中考放榜，你比摸底高了三十分。父亲沉默半天，从抽屉里拿出一台旧手机，说他用过了。',
+    choices:[{ text:'高兴收下', effects:{mood:+2,family:+1}, timeAdvanceWeeks:12 },
+             { text:'嫌弃太旧', effects:{mood:-1,charm:-1}, timeAdvanceWeeks:12, setFlags:['ungrateful_teen'] }] },
+  { id:'s4_phone_secret', stage:'S4', ageRange:[15,16], kind:'stage', weight:1, once:true, requirement:{flags:['own_phone']}, excludeIf:{flags:['own_phone_reward_fired']},
+    narration:'母亲洗你裤子时摸到个硬块。她把手机摆在桌上，没说话，看着你。',
+    choices:[{ text:'低头认错', effects:{mood:-2,family:-1}, timeAdvanceWeeks:12, setFlags:['caught_secret_phone'] },
+             { text:'辩解"别人都有"', effects:{charm:-1,mood:-2}, timeAdvanceWeeks:12 }] },
   { id:'s4_body', stage:'S4', ageRange:[13,14], kind:'stage', weight:18, once:true,
     narration:'镜子里的脸变了样。长痘，声音卡在半路，你说话时总清嗓子，怕被同学听见。',
-    choices:[{ text:'偷偷挤痘', effects:{charm:-1,health:-1}, timeAdvanceWeeks:12, setFlags:['picked_acne'] },
+    choices:[{ text:'偷偷挤痘', effects:{charm:-1,health:-1}, timeAdvanceWeeks:12, setFlags:['picked_acne'], nextEvent:'s4_body_aftermath' },
              { text:'学着不在乎', effects:{mood:+1}, timeAdvanceWeeks:12 },
              { text:'买瓶祛痘霜', effects:{family:-1,charm:+1}, timeAdvanceWeeks:12, setFlags:['bought_cream'] }] },
+  // 挤痘的后果：留下疤痕，影响颜值——强联动
+  { id:'s4_body_aftermath', stage:'S4', ageRange:[14,16], kind:'stage', weight:1, once:true, requirement:{flags:['picked_acne']},
+    narration:'两周后，你挤过的地方留了三个深色的坑。你对着镜子看了很久，没敢再挤。',
+    choices:[{ text:'开始留刘海遮', effects:{charm:0,mood:-1}, timeAdvanceWeeks:12 },
+             { text:'不管了', effects:{mood:+1}, timeAdvanceWeeks:12 }] },
   { id:'s4_teacher', stage:'S4', ageRange:[14,15], kind:'stage', weight:18, once:true,
     narration:'语文老师把你作文圈出来，当堂念。念完说"你有点东西"。你脸烧了一整节课。',
-    choices:[{ text:'回去接着写', effects:{intel:+1,mood:+1}, timeAdvanceWeeks:20, setFlags:['teacher_seen'] },
+    choices:[{ text:'回去接着写', effects:{intel:+1,mood:+1}, timeAdvanceWeeks:20, setFlags:['teacher_seen'], nextEvent:'s4_teacher_aftermath' },
              { text:'不好意思再交', effects:{mood:-1}, timeAdvanceWeeks:20 },
              { text:'转去搞数学', effects:{intel:+1}, timeAdvanceWeeks:20, setFlags:['pivot_math'] }] },
+  // 被老师表扬后→下一篇作文被选去参赛——强联动
+  { id:'s4_teacher_aftermath', stage:'S4', ageRange:[15,16], kind:'stage', weight:1, once:true, requirement:{flags:['teacher_seen']},
+    narration:'一个月后，老师让你写篇参赛作文，题目是《我的父亲》。你咬着笔头写了三行，又划掉。',
+    choices:[{ text:'认真写', effects:{intel:+1,mood:+1}, timeAdvanceWeeks:16, setFlags:['wrote_dad_essay'] },
+             { text:'敷衍交差', effects:{mood:-1}, timeAdvanceWeeks:16 }] },
   { id:'s4_smartphone_change', stage:'S4', ageRange:[15,15], kind:'stage', weight:18, once:true,
     narration:'班上建了QQ群。你第一次在群里发了张自拍，没人点赞，你删了。',
     choices:[{ text:'再发一次', effects:{charm:+1,mood:+1}, timeAdvanceWeeks:8 },
@@ -705,8 +755,13 @@ const EVENTS = [
   // —— 不婚不育线：三十岁选了 solo_life 后的专属事件，让这条线也有戏 ——
   { id:'s8_solo_pet', stage:'S8', ageRange:[31,34], kind:'stage', weight:22, once:true, requirement:{flags:['solo_life']},
     narration:'你在宠物店门口站了半小时，最后抱走一只橘猫。它在你怀里打呼，像台小马达。',
-    choices:[{ text:'当孩子养', effects:{mood:+2,family:-1}, timeAdvanceWeeks:30, setFlags:['pet_parent'] },
-             { text:'随便养养', effects:{mood:+1}, timeAdvanceWeeks:30 }] },
+    choices:[{ text:'当孩子养', effects:{mood:+2,family:-1}, timeAdvanceWeeks:12, setFlags:['pet_parent'], nextEvent:'s8_solo_pet_aftermath' },
+             { text:'随便养养', effects:{mood:+1}, timeAdvanceWeeks:12, setFlags:['pet_parent'], nextEvent:'s8_solo_pet_aftermath' }] },
+  // 养猫后果：猫半夜叫醒你——强联动
+  { id:'s8_solo_pet_aftermath', stage:'S8', ageRange:[31,36], kind:'stage', weight:1, once:true, requirement:{flags:['pet_parent']},
+    narration:'猫半夜跳上你胸口，把你压醒。它盯着你看，绿眼睛像两颗玻璃珠。你摸摸它头，它呼噜得像台小马达。',
+    choices:[{ text:'抱着它睡回去', effects:{mood:+2}, timeAdvanceWeeks:20 },
+             { text:'把它关出去，又心疼了', effects:{mood:-1}, timeAdvanceWeeks:20, setFlags:['soft_heart'] }] },
   { id:'s8_solo_hobby', stage:'S8', ageRange:[33,37], kind:'stage', weight:20, once:true, requirement:{flags:['solo_life']},
     narration:'你报了个摄影班。第一次交作业，老师说你拍的天桥"有故事"，你听了心里一动。',
     choices:[{ text:'认真学下去', effects:{mood:+2,intel:+1}, timeAdvanceWeeks:30, setFlags:['hobby_serious'] },
@@ -718,9 +773,19 @@ const EVENTS = [
              { text:'干脆不回家过年', effects:{mood:-2}, timeAdvanceWeeks:12, setFlags:['skip_cny'] }] },
   { id:'s8_solo_money', stage:'S8', ageRange:[38,42], kind:'stage', weight:18, once:true, requirement:{flags:['solo_life']},
     narration:'理财经理推荐了个年化8%的"稳健"产品。你想了想，转了十万进去。',
-    choices:[{ text:'全仓压上', effects:{family:-2,mood:-1}, timeAdvanceWeeks:30, setFlags:['high_risk_invest'] },
-             { text:'只投一半', effects:{family:-1,mood:0}, timeAdvanceWeeks:30, setFlags:['half_invest'] },
+    choices:[{ text:'全仓压上', effects:{family:-2,mood:-1}, timeAdvanceWeeks:6, setFlags:['high_risk_invest'], nextEvent:'s8_solo_money_aftermath' },
+             { text:'只投一半', effects:{family:-1,mood:0}, timeAdvanceWeeks:6, setFlags:['half_invest'], nextEvent:'s8_solo_money_aftermath' },
              { text:'存定期', effects:{mood:+1}, timeAdvanceWeeks:30, setFlags:['safe_deposit'] }] },
+  // 理财后果：半年后看收益，高风险可能暴雷——强联动
+  { id:'s8_solo_money_aftermath', stage:'S8', ageRange:[38,44], kind:'stage', weight:1, once:true, requirement:{flags:['high_risk_invest','half_invest']},
+    narration:(s)=> `半年后，${s.flags.includes('high_risk_invest')?'产品暴雷了，本金只剩三成。理财经理电话打不通，办公室也搬空了。':'你打开APP看了一眼，涨了百分之三，又亏了百分之二，没赚没赔。'}`,
+    choices:(s)=> s.flags.includes('high_risk_invest') ? [
+      { text:'报警', effects:{mood:-2}, timeAdvanceWeeks:20, setFlags:['reported_fraud'] },
+      { text:'认栽，以后不碰', effects:{mood:-3,family:-1}, timeAdvanceWeeks:20, setFlags:['learned_lesson'] }
+    ] : [
+      { text:'继续持有', effects:{mood:0}, timeAdvanceWeeks:20 },
+      { text:'赎回存定期', effects:{mood:+1}, timeAdvanceWeeks:20, setFlags:['switched_to_safe'] }
+    ] },
   { id:'s8_solo_health', stage:'S8', ageRange:[40,44], kind:'threshold', weight:22, once:true, requirement:{flags:['solo_life']},
     narration:'半夜胃疼醒，你一个人打车去医院。急诊室灯火通明，你坐了一宿没人陪。',
     choices:[{ text:'请假休养', effects:{mood:+1,intel:-1}, timeAdvanceWeeks:20, setFlags:['took_sick_leave'] },
@@ -1212,16 +1277,22 @@ class AIProvider{
 // ---------------- 规则 Provider（基线，永远可用） ----------------
 class RuleProvider extends AIProvider{
   get name(){ return 'rule'; }
-  constructor(){ super(); this._lastAmbient = {}; } // stage -> 上次旁白，避免短期重复
+  constructor(){ super(); this._usedAmbient = {}; this._usedTransitions = {}; }
   _pickAmbient(stage){
     const pool = AMBIENT[stage]||AMBIENT.S10;
-    const last = this._lastAmbient[stage];
-    let text = last;
-    for (let t=0; t<3 && text===last && pool.length>1; t++){
-      text = pool[Math.floor(Math.random()*pool.length)];
+    // 旁白彻底去重：记录每阶段已用索引，强制不重复，池耗尽 80% 才重置
+    if (!this._usedAmbient[stage]) this._usedAmbient[stage] = [];
+    if (this._usedAmbient[stage].length >= Math.ceil(pool.length * 0.8)){
+      this._usedAmbient[stage] = this._usedAmbient[stage].slice(-Math.floor(pool.length*0.2));
     }
-    this._lastAmbient[stage] = text;
-    return text;
+    let idx;
+    const tried = new Set();
+    do {
+      idx = Math.floor(Math.random()*pool.length);
+      tried.add(idx);
+    } while (this._usedAmbient[stage].includes(idx) && tried.size < pool.length);
+    this._usedAmbient[stage].push(idx);
+    return pool[idx];
   }
   async ambient(state){
     // 按阶段大步快进（3:1 pacing），避免反复兜底导致重复
@@ -1255,17 +1326,21 @@ class RuleProvider extends AIProvider{
     return { narration, choices: [], timeAdvanceWeeks: w, source:'rule', intent };
   }
   async transition(state){
-    // 衔接上一选择 → 引出下一场景。规则模式从 TRANSITIONS 池取一段。
-    // 避免短期重复：记录上次过渡，重试 3 次。
+    // 衔接上一选择 → 引出下一场景。规则模式从 TRANSITIONS 池取一段，彻底去重。
     const stage = state.currentStage;
     const pool = TRANSITIONS[stage]||TRANSITIONS.S10;
-    const last = this._lastTransition;
-    let text = last;
-    for (let t=0; t<3 && text===last && pool.length>1; t++){
-      text = pool[Math.floor(Math.random()*pool.length)];
+    if (!this._usedTransitions[stage]) this._usedTransitions[stage] = [];
+    if (this._usedTransitions[stage].length >= Math.ceil(pool.length * 0.8)){
+      this._usedTransitions[stage] = this._usedTransitions[stage].slice(-Math.floor(pool.length*0.2));
     }
-    this._lastTransition = text;
-    return { transition: text, source:'rule' };
+    let idx;
+    const tried = new Set();
+    do {
+      idx = Math.floor(Math.random()*pool.length);
+      tried.add(idx);
+    } while (this._usedTransitions[stage].includes(idx) && tried.size < pool.length);
+    this._usedTransitions[stage].push(idx);
+    return { transition: pool[idx], source:'rule' };
   }
   async retrospective(state){
     // 复用 data.js 的回望逻辑（flag 驱动），规则兜底
@@ -1454,21 +1529,20 @@ function isAIActive(){ return _config.enabled && !!_config.endpoint && !!_config
 
 /* ---- file boundary ---- */
 
-// 浮生 · 引擎层
-// 事件触发优先级链（设计 §5.2）：主分支 → 属性阈值 → 年龄段 → 时代 → 关系 → AI 兜底
-// + 状态管理 / Flags / 存档 / 时间快进硬校验（≤12 周）
+// 浮生 · 引擎层 v2 · 选择强联动版
+// 核心改造：选择可带 nextEvent，直接推入"待触发队列"，实现上下文强关联
+// 旁白去重：记录每阶段已用旁白，强制不重复
+// 打破时间限制：移除75岁硬上限，改为健康耗尽或老年随机自然死亡
 
 
-const SAVE_KEY = 'fusheng_save_v1';
+const SAVE_KEY = 'fusheng_save_v2';
 
 // ---------------- 工具：requirement 表达式求值 ----------------
-// 支持 ">=5" "<=3" ">4" "<6" "==7" "!=0"
 function evalReq(req, attrs, flags){
   if (!req) return true;
   for (const k in req){
     const v = req[k];
     if (k==='flags'){
-      // 任意一个 flag 存在即满足（用于 excludeIf 时反向）
       const arr = Array.isArray(v)?v:[v];
       if (!arr.some(f=>flags.includes(f))) return false;
       continue;
@@ -1488,7 +1562,6 @@ function evalReq(req, attrs, flags){
   return true;
 }
 
-// excludeIf：满足任一排除条件则跳过
 function isExcluded(ev, state){
   if (!ev.excludeIf) return false;
   for (const k in ev.excludeIf){
@@ -1501,10 +1574,9 @@ function isExcluded(ev, state){
 }
 
 function stageOf(ageWeeks){
-  // 用整数岁匹配 ageRange，避免 3岁29周(=3.558)落入 S1[0,3]/S2[4,6] 整数空隙被误判为 S10
   const y = Math.floor(ageWeeks/52);
   for (const s of STAGES){ if (y>=s.ageRange[0] && y<=s.ageRange[1]) return s.code; }
-  return ageWeeks/52 > STAGES[STAGES.length-1].ageRange[1] ? 'S10' : 'S1';
+  return y > STAGES[STAGES.length-1].ageRange[1] ? 'S10' : 'S1';
 }
 function stageName(code){ return (STAGES.find(s=>s.code===code)||{}).name||''; }
 
@@ -1519,12 +1591,16 @@ function newRun(birthYear, attrs, talentIds){
     history: [],
     currentStage: 'S1',
     _moodSum: 5, _moodCount: 1,
-    _triggered: [],          // 已触发的 once 事件 id
-    _eraFired: [],           // 已触发的时代事件 id
-    _familyBonusYear: -1,    // 城中村 18 岁起每 5 年家境+1 跟踪
-    lastChoiceText: null,    // 上一次选择文本（供下一节点过渡旁白衔接）
+    _triggered: [],
+    _eraFired: [],
+    _familyBonusYear: -1,
+    lastChoiceText: null,
+    pendingEvents: [],          // 待触发队列：选择→后果强联动的核心
+    _usedAmbient: {},          // 每阶段已用旁白索引，强制去重
+    _usedTransitions: {},      // 每阶段已用过渡旁白索引
+    recentChoices: [],         // 最近5次选择文本，供新事件引用上下文
+    _deathRoll: 0,             // 老年死亡累积概率
   };
-  // 应用天赋
   for (const tid of talentIds){
     const t = TALENTS.find(x=>x.id===tid); if (!t) continue;
     applyEffects(state, t.effects||{});
@@ -1534,10 +1610,8 @@ function newRun(birthYear, attrs, talentIds){
   return state;
 }
 
-// 应用属性变化，并按上限 clamp；记录心境均值
 function applyEffects(state, effects){
   const caps = {};
-  // 从天赋读取 caps
   for (const tid of state.talents){
     const t = TALENTS.find(x=>x.id===tid);
     if (t && t.caps) Object.assign(caps, t.caps);
@@ -1546,17 +1620,17 @@ function applyEffects(state, effects){
     if (!(k in state.attrs)) continue;
     let v = state.attrs[k] + effects[k];
     if (caps[k]!=null) v = Math.min(v, caps[k]);
-    v = Math.max(0, Math.min(12, v));            // 硬上下限 0~12（天赋可超 10）
+    v = Math.max(0, Math.min(12, v));
     state.attrs[k] = v;
   }
 }
 
-// ---------------- 触发引擎 ----------------
+// ---------------- 触发引擎 v2 ----------------
 function pickNext(state){
   const ageY = state.ageWeeks/52;
   state.currentStage = stageOf(state.ageWeeks);
 
-  // 城中村逆袭线：18 岁起每 5 年家境+1
+  // 城中村逆袭线
   if (state.talents.includes('chengCun')){
     if (ageY>=18 && state._familyBonusYear<0){ state._familyBonusYear = 18; state.attrs.family = Math.min(12, state.attrs.family+1); }
     else if (state._familyBonusYear>0 && ageY>=state._familyBonusYear+5){
@@ -1564,11 +1638,33 @@ function pickNext(state){
     }
   }
 
-  // 1. 主分支 / nextNode 跳转优先
-  // 2. 属性阈值事件
-  // 3. 年龄段事件
-  // 4. 时代事件
-  // 5. AI 兜底（动态节点）
+  // 0. 死亡检查：65岁后每年累积死亡概率（打破75岁硬上限）
+  if (ageY>=65){
+    state._deathRoll += 1;
+    // 每年+3%概率，health低额外+5%，心境低额外+3%
+    const deathChance = state._deathRoll * 0.03 + (state.attrs.health<=3?0.05:0) + (state.attrs.mood<=3?0.03:0);
+    if (Math.random() < deathChance){
+      return makeDeathNode(state);
+    }
+  }
+  // 健康归零直接死亡
+  if (state.attrs.health<=0 && ageY>0){
+    return makeDeathNode(state);
+  }
+
+  // 1. 待触发队列优先（选择→后果强联动）：取队列第一个
+  if (state.pendingEvents && state.pendingEvents.length){
+    const evId = state.pendingEvents.shift();
+    const ev = EVENTS.find(e=>e.id===evId);
+    if (ev){
+      // 仍需校验 requirement（如属性不够则跳过）
+      if (!isExcluded(ev, state) && evalReq(ev.requirement, state.attrs, state.flags)){
+        return resolveNode(state, ev);
+      }
+    }
+  }
+
+  // 2. 主分支 / 属性阈值 / 年龄段 / 时代 / AI 兜底
   const candidates = [];
   for (const ev of EVENTS){
     if (ev.weight<=0) continue;
@@ -1580,34 +1676,33 @@ function pickNext(state){
     if (!evalReq(ev.requirement, state.attrs, state.flags)) continue;
     candidates.push(ev);
   }
-  // 主分支强制
   const main = candidates.filter(e=>e.kind==='mainBranch');
   if (main.length){ const ev = pickWeighted(main); return resolveNode(state, ev); }
 
-  // 属性阈值
   const thr = candidates.filter(e=>e.kind==='threshold');
   if (thr.length){ const ev = pickWeighted(thr); return resolveNode(state, ev); }
 
-  // 年龄段
   const stage = candidates.filter(e=>e.kind==='stage');
   if (stage.length && Math.random()<0.7){ const ev = pickWeighted(stage); return resolveNode(state, ev); }
 
-  // 时代事件（出生年+年龄命中真实年份）
   const calYear = state.birthYear + Math.floor(ageY);
   const era = ERA_EVENTS.find(e=>e.triggerYear===calYear && !state._eraFired.includes(e.id));
   if (era){ state._eraFired.push(era.id); return { id:era.id, stage:state.currentStage, narration:era.narration, choices:[], timeAdvanceWeeks:2, kind:'era', source:'era' }; }
 
-  // 关系事件（父母线简化：30 岁后随机一次父母唠叨）
-  if (ageY>=30 && !state._triggered.includes('rel_parent') && Math.random()<0.25){
-    state._triggered.push('rel_parent');
-    return { id:'rel_parent', stage:state.currentStage, narration:'母亲打电话来，问你吃没吃饭。说了十分钟，又说没事。', choices:[{ text:'嗯嗯啊啊', effects:{mood:+0}, timeAdvanceWeeks:2 }], timeAdvanceWeeks:2, kind:'relation', source:'rule' };
-  }
-
-  // AI 兜底：动态节点（可走 LLM 或规则）
-  return null; // 交由 main 调用 ai.current().dynamicNode(state) 生成
+  return null;
 }
 
-// nextNode 跳转：返回指定事件（result 节点）
+// 构造死亡节点
+function makeDeathNode(state){
+  const y = Math.floor(state.ageWeeks/52);
+  const pool = DEATH_EVENTS[y>=75?'old':(y>=60?'senior':'mid')];
+  const narration = pool[Math.floor(Math.random()*pool.length)];
+  return {
+    id:'_death', stage:state.currentStage, narration, choices:[], timeAdvanceWeeks:0,
+    kind:'death', source:'rule', isDeath:true,
+  };
+}
+
 function jumpTo(state, nodeId){
   const ev = EVENTS.find(e=>e.id===nodeId);
   if (!ev) return null;
@@ -1640,26 +1735,29 @@ function pickWeighted(arr){
 function applyChoice(state, node, choiceIndex){
   const choice = node.choices?.[choiceIndex];
   if (!choice || choice.locked) return null;
-  // 时间快进硬校验（设计 §11.5）
   const adv = clampWeeks(choice.timeAdvanceWeeks || 0);
   applyEffects(state, choice.effects||{});
   if (choice.setFlags) for (const f of choice.setFlags) if (!state.flags.includes(f)) state.flags.push(f);
-  // 记录节点日志（用于回望/时间轴）
+  // 选择→后果强联动：若选择带 nextEvent，推入待触发队列，下一节点立即承接
+  if (choice.nextEvent){
+    const ids = Array.isArray(choice.nextEvent) ? choice.nextEvent : [choice.nextEvent];
+    for (const id of ids) state.pendingEvents.push(id);
+  }
   pushHistory(state, node, choice);
-  // 心境均值统计
   state._moodSum += state.attrs.mood; state._moodCount += 1;
   state.ageWeeks += adv;
-  // 记录上次选择文本，供下一节点过渡旁白衔接
   state.lastChoiceText = choice.text;
+  // 记录最近5次选择，供新事件引用上下文
+  state.recentChoices.push(choice.text);
+  if (state.recentChoices.length > 5) state.recentChoices.shift();
   return choice;
 }
-// 纯旁白节点推进：前期大步快进不受 12 周硬限（clampAmbientWeeks 上限 60）
+
 function applyAmbientAdvance(state, node, weeks){
   pushHistory(state, node, null);
   state._moodSum += state.attrs.mood; state._moodCount += 1;
   state.ageWeeks += clampAmbientWeeks(weeks||2);
 }
-function clampAmbientWeeks(n){ n=parseInt(n,10); if(isNaN(n)||n<0)return 2; if(n>60)return 60; return n; }
 
 function pushHistory(state, node, choice){
   state.history.push({
@@ -1673,10 +1771,10 @@ function pushHistory(state, node, choice){
 }
 
 function clampWeeks(n){ n=parseInt(n,10); if(isNaN(n)||n<0)return 2; if(n>12)return 12; return n; }
+function clampAmbientWeeks(n){ n=parseInt(n,10); if(isNaN(n)||n<0)return 2; if(n>60)return 60; return n; }
 
 // ---------------- 回望 / 结局 ----------------
 async function buildEnding(state){
-  // 叙事结局优先交给 AI（若启用）
   const ai = current();
   let r;
   try{ r = await ai.endingNarrative(withMoodAvg(state)); }
@@ -1688,11 +1786,9 @@ async function buildRetrospective(state){
   try{ return await ai.retrospective(withMoodAvg(state)); }
   catch{ return { narration:'你想起很多个下午，阳光斜斜地照进来。', source:'rule' }; }
 }
-// AI 意图（暴露给 UI 调试 / 未来扩展）
 function getIntent(state){ return analyzeIntent(state); }
 
 function withMoodAvg(state){
-  // 给结局模板一个 moodAvg 字段
   return { ...state, moodAvg: state._moodSum / Math.max(1,state._moodCount) };
 }
 
@@ -1975,13 +2071,21 @@ function boot(){
 
 // ---------------- 游戏循环 ----------------
 async function nextTurn(){
-  if (state.ageWeeks >= MAX_AGE_WEEKS || state.attrs.health<=0){
+  // 打破75岁硬上限：仅健康归零或引擎返回死亡节点才结局
+  if (state.attrs.health<=0){
     return finish();
   }
   updateTopbar(state); updateAttrs(state);
 
   // 引擎按优先级链挑选
   let node = pickNext(state);
+
+  // 引擎返回死亡节点 → 直接结局
+  if (node && node.isDeath){
+    currentNode = node;
+    renderNode(stageEl, node, state, { onChoice: ()=>finish() });
+    return;
+  }
 
   if (node===null){
     // 无固定事件 → 走 AI 兜底

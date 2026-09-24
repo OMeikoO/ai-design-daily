@@ -35,13 +35,21 @@ function boot(){
 
 // ---------------- 游戏循环 ----------------
 async function nextTurn(){
-  if (state.ageWeeks >= MAX_AGE_WEEKS || state.attrs.health<=0){
+  // 打破75岁硬上限：仅健康归零或引擎返回死亡节点才结局
+  if (state.attrs.health<=0){
     return finish();
   }
   ui.updateTopbar(state); ui.updateAttrs(state);
 
   // 引擎按优先级链挑选
   let node = engine.pickNext(state);
+
+  // 引擎返回死亡节点 → 直接结局
+  if (node && node.isDeath){
+    currentNode = node;
+    ui.renderNode(stageEl, node, state, { onChoice: ()=>finish() });
+    return;
+  }
 
   if (node===null){
     // 无固定事件 → 走 AI 兜底

@@ -8,19 +8,38 @@
 //   城市线: beidrift(24岁) → stay_big_city(30岁) → back_home(40岁前) → retire_choice(58岁)
 
 export const STAGES = [
-  { code:'S1', name:'婴幼',    ageRange:[0,3],  decisionRatio:0.08 },  // 几乎无选择
-  { code:'S2', name:'学龄前',  ageRange:[4,6],  decisionRatio:0.18 },  // 1-2选择
-  { code:'S3', name:'小学',    ageRange:[7,12], decisionRatio:0.30 },  // 3-4选择
+  { code:'S1', name:'婴幼',    ageRange:[0,3],  decisionRatio:0.08 },
+  { code:'S2', name:'学龄前',  ageRange:[4,6],  decisionRatio:0.18 },
+  { code:'S3', name:'小学',    ageRange:[7,12], decisionRatio:0.30 },
   { code:'S4', name:'初中',    ageRange:[13,15],decisionRatio:0.55 },
   { code:'S5', name:'高中',    ageRange:[16,18],decisionRatio:0.72 },
   { code:'S6', name:'大学',    ageRange:[19,22],decisionRatio:0.68 },
   { code:'S7', name:'立业',    ageRange:[23,30],decisionRatio:0.62 },
   { code:'S8', name:'成家立业', ageRange:[31,45],decisionRatio:0.78 },
   { code:'S9', name:'收尾',    ageRange:[46,60],decisionRatio:0.45 },
-  { code:'S10',name:'暮年',    ageRange:[61,75],decisionRatio:0.28 },
+  { code:'S10',name:'暮年',    ageRange:[61,120],decisionRatio:0.28 },  // 暮年延长，不再75岁硬上限
 ];
 
-export const MAX_AGE_WEEKS = 75 * 52 + 4; // 3904
+export const MAX_AGE_WEEKS = 120 * 52; // 6240：打破75岁上限，最老可活到120
+
+// 死亡旁白池：打破年龄上限后，按年龄段随机自然死亡
+export const DEATH_EVENTS = {
+  mid:[
+    '你倒在了工位上。同事以为你在午休，下班才发现。',
+    '心电图拉成一条直线。窗外天还没亮。',
+    '最后听见的是监护仪的滴答声，像很久以前的钟。',
+  ],
+  senior:[
+    '你睡过去，没再醒来。窗外阳光很好。',
+    '你握着老伴的手，说了句含糊的话，手松了。',
+    '最后一口气像叹出来，又像松了口气。',
+  ],
+  old:[
+    '你坐在阳台的椅子里，眼睛慢慢闭上。风翻着窗帘。',
+    '护工来叫你吃饭，你没了呼吸，表情很平静。',
+    '你做了一个很长很长的梦，梦里的太阳很暖。',
+  ],
+};
 
 // ---------- 天赋 ----------
 export const TALENTS = [
@@ -144,30 +163,61 @@ export const EVENTS = [
              { text:'假装不在意', effects:{mood:-1}, timeAdvanceWeeks:12 }] },
   { id:'s4_game', stage:'S4', ageRange:[13,15], kind:'threshold', weight:28, once:true, requirement:{intel:'<=6'},
     narration:'你在网吧通宵了一整夜。天亮出来，眼睛刺痛，早饭吃了两口就吐了。',
-    choices:[{ text:'继续沉迷', effects:{intel:-2,health:-1,mood:+2}, timeAdvanceWeeks:30, setFlags:['game_addict'] },
-             { text:'被父亲抓回家', effects:{mood:-2,intel:-1}, timeAdvanceWeeks:12, setFlags:['caught_gaming'] }] },
+    choices:[{ text:'继续沉迷', effects:{intel:-2,health:-1,mood:+2}, timeAdvanceWeeks:6, setFlags:['game_addict'], nextEvent:'s4_game_aftermath' },
+             { text:'被父亲抓回家', effects:{mood:-2,intel:-1}, timeAdvanceWeeks:6, setFlags:['caught_gaming'], nextEvent:'s4_game_aftermath' }] },
+  // 网吧选择的直接后果：第二天在课堂上昏睡，被老师点名——强联动
+  { id:'s4_game_aftermath', stage:'S4', ageRange:[13,16], kind:'stage', weight:1, once:true,
+    narration:(s)=> `第二天上课你昏睡过去，口水淌了一桌。数学老师把你叫起来，全班看着你。${s.flags.includes('game_addict')?'你嘴里还残留着泡面的味道。':''}`,
+    choices:[{ text:'低头认错', effects:{charm:-1,mood:-1}, timeAdvanceWeeks:8, setFlags:['scolded_in_class'] },
+             { text:'顶嘴"您讲得无聊"', effects:{charm:+1,mood:-2}, timeAdvanceWeeks:8, setFlags:['talked_back'] },
+             { text:'什么都不说', effects:{mood:-2}, timeAdvanceWeeks:8 }] },
   { id:'s4_rebel', stage:'S4', ageRange:[14,15], kind:'stage', weight:22, once:true,
     narration:'母亲翻你的抽屉。你当着她的面把日记撕了。',
-    choices:[{ text:'摔门出去', effects:{mood:-2}, timeAdvanceWeeks:8, setFlags:['rebel'] },
+    choices:[{ text:'摔门出去', effects:{mood:-2}, timeAdvanceWeeks:4, setFlags:['rebel'], nextEvent:'s4_rebel_aftermath' },
              { text:'坐下来谈', effects:{intel:+1,mood:-1}, timeAdvanceWeeks:8 }] },
+  // 摔门的后果：母亲三天没跟你说话——强联动
+  { id:'s4_rebel_aftermath', stage:'S4', ageRange:[14,16], kind:'stage', weight:1, once:true, requirement:{flags:['rebel']},
+    narration:'母亲三天没跟你说一句话。吃饭时她多盛了一勺你的饭，又收回去半勺。你装作没看见。',
+    choices:[{ text:'先开口道歉', effects:{mood:+1,charm:+1}, timeAdvanceWeeks:12, setFlags:['apologized_mom'] },
+             { text:'硬扛到底', effects:{mood:-2,intel:+1}, timeAdvanceWeeks:12, setFlags:['stubborn_teen'] }] },
   { id:'s4_track', stage:'S4', ageRange:[15,15], kind:'stage', weight:30, once:true,
     narration:'文理分科表发下来。你盯着"文科/理科"两个格看了很久。',
     choices:[{ text:'选理科', effects:{intel:+1}, timeAdvanceWeeks:20, setFlags:['track_science'] },
-             { text:'选文科', effects:{intel:0,charm:+1}, timeAdvanceWeeks:20, setFlags:['track_arts'] }] },
+             { text:'选文科', effects:{intel:0,charm:+1}, timeAdvanceWeeks:20, setFlags:['track_arts'] },
+             { text:'听爸妈的', effects:{mood:-1,intel:0}, timeAdvanceWeeks:20, setFlags:['obeyed_parents'] }] },
   { id:'s4_phone', stage:'S4', ageRange:[14,15], kind:'stage', weight:20, once:true, requirement:{family:'>=4'},
     narration:'你想要一部自己的手机。父亲说"中考考好再说"。',
-    choices:[{ text:'拼命学', effects:{intel:+2,health:-1}, timeAdvanceWeeks:20, setFlags:['own_phone'] },
-             { text:'偷偷攒钱买', effects:{mood:-1,intel:-1}, timeAdvanceWeeks:20, setFlags:['own_phone'] }] },
+    choices:[{ text:'拼命学', effects:{intel:+2,health:-1}, timeAdvanceWeeks:20, setFlags:['own_phone'], nextEvent:'s4_phone_reward' },
+             { text:'偷偷攒钱买', effects:{mood:-1,intel:-1}, timeAdvanceWeeks:20, setFlags:['own_phone'], nextEvent:'s4_phone_secret' }] },
+  // 手机选择的后果：拼命学→考好后父亲兑现诺言；偷买→被父母发现
+  { id:'s4_phone_reward', stage:'S4', ageRange:[15,16], kind:'stage', weight:1, once:true, requirement:{flags:['own_phone']},
+    narration:'中考放榜，你比摸底高了三十分。父亲沉默半天，从抽屉里拿出一台旧手机，说他用过了。',
+    choices:[{ text:'高兴收下', effects:{mood:+2,family:+1}, timeAdvanceWeeks:12 },
+             { text:'嫌弃太旧', effects:{mood:-1,charm:-1}, timeAdvanceWeeks:12, setFlags:['ungrateful_teen'] }] },
+  { id:'s4_phone_secret', stage:'S4', ageRange:[15,16], kind:'stage', weight:1, once:true, requirement:{flags:['own_phone']}, excludeIf:{flags:['own_phone_reward_fired']},
+    narration:'母亲洗你裤子时摸到个硬块。她把手机摆在桌上，没说话，看着你。',
+    choices:[{ text:'低头认错', effects:{mood:-2,family:-1}, timeAdvanceWeeks:12, setFlags:['caught_secret_phone'] },
+             { text:'辩解"别人都有"', effects:{charm:-1,mood:-2}, timeAdvanceWeeks:12 }] },
   { id:'s4_body', stage:'S4', ageRange:[13,14], kind:'stage', weight:18, once:true,
     narration:'镜子里的脸变了样。长痘，声音卡在半路，你说话时总清嗓子，怕被同学听见。',
-    choices:[{ text:'偷偷挤痘', effects:{charm:-1,health:-1}, timeAdvanceWeeks:12, setFlags:['picked_acne'] },
+    choices:[{ text:'偷偷挤痘', effects:{charm:-1,health:-1}, timeAdvanceWeeks:12, setFlags:['picked_acne'], nextEvent:'s4_body_aftermath' },
              { text:'学着不在乎', effects:{mood:+1}, timeAdvanceWeeks:12 },
              { text:'买瓶祛痘霜', effects:{family:-1,charm:+1}, timeAdvanceWeeks:12, setFlags:['bought_cream'] }] },
+  // 挤痘的后果：留下疤痕，影响颜值——强联动
+  { id:'s4_body_aftermath', stage:'S4', ageRange:[14,16], kind:'stage', weight:1, once:true, requirement:{flags:['picked_acne']},
+    narration:'两周后，你挤过的地方留了三个深色的坑。你对着镜子看了很久，没敢再挤。',
+    choices:[{ text:'开始留刘海遮', effects:{charm:0,mood:-1}, timeAdvanceWeeks:12 },
+             { text:'不管了', effects:{mood:+1}, timeAdvanceWeeks:12 }] },
   { id:'s4_teacher', stage:'S4', ageRange:[14,15], kind:'stage', weight:18, once:true,
     narration:'语文老师把你作文圈出来，当堂念。念完说"你有点东西"。你脸烧了一整节课。',
-    choices:[{ text:'回去接着写', effects:{intel:+1,mood:+1}, timeAdvanceWeeks:20, setFlags:['teacher_seen'] },
+    choices:[{ text:'回去接着写', effects:{intel:+1,mood:+1}, timeAdvanceWeeks:20, setFlags:['teacher_seen'], nextEvent:'s4_teacher_aftermath' },
              { text:'不好意思再交', effects:{mood:-1}, timeAdvanceWeeks:20 },
              { text:'转去搞数学', effects:{intel:+1}, timeAdvanceWeeks:20, setFlags:['pivot_math'] }] },
+  // 被老师表扬后→下一篇作文被选去参赛——强联动
+  { id:'s4_teacher_aftermath', stage:'S4', ageRange:[15,16], kind:'stage', weight:1, once:true, requirement:{flags:['teacher_seen']},
+    narration:'一个月后，老师让你写篇参赛作文，题目是《我的父亲》。你咬着笔头写了三行，又划掉。',
+    choices:[{ text:'认真写', effects:{intel:+1,mood:+1}, timeAdvanceWeeks:16, setFlags:['wrote_dad_essay'] },
+             { text:'敷衍交差', effects:{mood:-1}, timeAdvanceWeeks:16 }] },
   { id:'s4_smartphone_change', stage:'S4', ageRange:[15,15], kind:'stage', weight:18, once:true,
     narration:'班上建了QQ群。你第一次在群里发了张自拍，没人点赞，你删了。',
     choices:[{ text:'再发一次', effects:{charm:+1,mood:+1}, timeAdvanceWeeks:8 },
@@ -319,8 +369,13 @@ export const EVENTS = [
   // —— 不婚不育线：三十岁选了 solo_life 后的专属事件，让这条线也有戏 ——
   { id:'s8_solo_pet', stage:'S8', ageRange:[31,34], kind:'stage', weight:22, once:true, requirement:{flags:['solo_life']},
     narration:'你在宠物店门口站了半小时，最后抱走一只橘猫。它在你怀里打呼，像台小马达。',
-    choices:[{ text:'当孩子养', effects:{mood:+2,family:-1}, timeAdvanceWeeks:30, setFlags:['pet_parent'] },
-             { text:'随便养养', effects:{mood:+1}, timeAdvanceWeeks:30 }] },
+    choices:[{ text:'当孩子养', effects:{mood:+2,family:-1}, timeAdvanceWeeks:12, setFlags:['pet_parent'], nextEvent:'s8_solo_pet_aftermath' },
+             { text:'随便养养', effects:{mood:+1}, timeAdvanceWeeks:12, setFlags:['pet_parent'], nextEvent:'s8_solo_pet_aftermath' }] },
+  // 养猫后果：猫半夜叫醒你——强联动
+  { id:'s8_solo_pet_aftermath', stage:'S8', ageRange:[31,36], kind:'stage', weight:1, once:true, requirement:{flags:['pet_parent']},
+    narration:'猫半夜跳上你胸口，把你压醒。它盯着你看，绿眼睛像两颗玻璃珠。你摸摸它头，它呼噜得像台小马达。',
+    choices:[{ text:'抱着它睡回去', effects:{mood:+2}, timeAdvanceWeeks:20 },
+             { text:'把它关出去，又心疼了', effects:{mood:-1}, timeAdvanceWeeks:20, setFlags:['soft_heart'] }] },
   { id:'s8_solo_hobby', stage:'S8', ageRange:[33,37], kind:'stage', weight:20, once:true, requirement:{flags:['solo_life']},
     narration:'你报了个摄影班。第一次交作业，老师说你拍的天桥"有故事"，你听了心里一动。',
     choices:[{ text:'认真学下去', effects:{mood:+2,intel:+1}, timeAdvanceWeeks:30, setFlags:['hobby_serious'] },
@@ -332,9 +387,19 @@ export const EVENTS = [
              { text:'干脆不回家过年', effects:{mood:-2}, timeAdvanceWeeks:12, setFlags:['skip_cny'] }] },
   { id:'s8_solo_money', stage:'S8', ageRange:[38,42], kind:'stage', weight:18, once:true, requirement:{flags:['solo_life']},
     narration:'理财经理推荐了个年化8%的"稳健"产品。你想了想，转了十万进去。',
-    choices:[{ text:'全仓压上', effects:{family:-2,mood:-1}, timeAdvanceWeeks:30, setFlags:['high_risk_invest'] },
-             { text:'只投一半', effects:{family:-1,mood:0}, timeAdvanceWeeks:30, setFlags:['half_invest'] },
+    choices:[{ text:'全仓压上', effects:{family:-2,mood:-1}, timeAdvanceWeeks:6, setFlags:['high_risk_invest'], nextEvent:'s8_solo_money_aftermath' },
+             { text:'只投一半', effects:{family:-1,mood:0}, timeAdvanceWeeks:6, setFlags:['half_invest'], nextEvent:'s8_solo_money_aftermath' },
              { text:'存定期', effects:{mood:+1}, timeAdvanceWeeks:30, setFlags:['safe_deposit'] }] },
+  // 理财后果：半年后看收益，高风险可能暴雷——强联动
+  { id:'s8_solo_money_aftermath', stage:'S8', ageRange:[38,44], kind:'stage', weight:1, once:true, requirement:{flags:['high_risk_invest','half_invest']},
+    narration:(s)=> `半年后，${s.flags.includes('high_risk_invest')?'产品暴雷了，本金只剩三成。理财经理电话打不通，办公室也搬空了。':'你打开APP看了一眼，涨了百分之三，又亏了百分之二，没赚没赔。'}`,
+    choices:(s)=> s.flags.includes('high_risk_invest') ? [
+      { text:'报警', effects:{mood:-2}, timeAdvanceWeeks:20, setFlags:['reported_fraud'] },
+      { text:'认栽，以后不碰', effects:{mood:-3,family:-1}, timeAdvanceWeeks:20, setFlags:['learned_lesson'] }
+    ] : [
+      { text:'继续持有', effects:{mood:0}, timeAdvanceWeeks:20 },
+      { text:'赎回存定期', effects:{mood:+1}, timeAdvanceWeeks:20, setFlags:['switched_to_safe'] }
+    ] },
   { id:'s8_solo_health', stage:'S8', ageRange:[40,44], kind:'threshold', weight:22, once:true, requirement:{flags:['solo_life']},
     narration:'半夜胃疼醒，你一个人打车去医院。急诊室灯火通明，你坐了一宿没人陪。',
     choices:[{ text:'请假休养', effects:{mood:+1,intel:-1}, timeAdvanceWeeks:20, setFlags:['took_sick_leave'] },

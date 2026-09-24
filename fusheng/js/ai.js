@@ -73,16 +73,22 @@ class AIProvider{
 // ---------------- 规则 Provider（基线，永远可用） ----------------
 class RuleProvider extends AIProvider{
   get name(){ return 'rule'; }
-  constructor(){ super(); this._lastAmbient = {}; } // stage -> 上次旁白，避免短期重复
+  constructor(){ super(); this._usedAmbient = {}; this._usedTransitions = {}; }
   _pickAmbient(stage){
     const pool = AMBIENT[stage]||AMBIENT.S10;
-    const last = this._lastAmbient[stage];
-    let text = last;
-    for (let t=0; t<3 && text===last && pool.length>1; t++){
-      text = pool[Math.floor(Math.random()*pool.length)];
+    // 旁白彻底去重：记录每阶段已用索引，强制不重复，池耗尽 80% 才重置
+    if (!this._usedAmbient[stage]) this._usedAmbient[stage] = [];
+    if (this._usedAmbient[stage].length >= Math.ceil(pool.length * 0.8)){
+      this._usedAmbient[stage] = this._usedAmbient[stage].slice(-Math.floor(pool.length*0.2));
     }
-    this._lastAmbient[stage] = text;
-    return text;
+    let idx;
+    const tried = new Set();
+    do {
+      idx = Math.floor(Math.random()*pool.length);
+      tried.add(idx);
+    } while (this._usedAmbient[stage].includes(idx) && tried.size < pool.length);
+    this._usedAmbient[stage].push(idx);
+    return pool[idx];
   }
   async ambient(state){
     // 按阶段大步快进（3:1 pacing），避免反复兜底导致重复
@@ -116,17 +122,21 @@ class RuleProvider extends AIProvider{
     return { narration, choices: [], timeAdvanceWeeks: w, source:'rule', intent };
   }
   async transition(state){
-    // 衔接上一选择 → 引出下一场景。规则模式从 TRANSITIONS 池取一段。
-    // 避免短期重复：记录上次过渡，重试 3 次。
+    // 衔接上一选择 → 引出下一场景。规则模式从 TRANSITIONS 池取一段，彻底去重。
     const stage = state.currentStage;
     const pool = TRANSITIONS[stage]||TRANSITIONS.S10;
-    const last = this._lastTransition;
-    let text = last;
-    for (let t=0; t<3 && text===last && pool.length>1; t++){
-      text = pool[Math.floor(Math.random()*pool.length)];
+    if (!this._usedTransitions[stage]) this._usedTransitions[stage] = [];
+    if (this._usedTransitions[stage].length >= Math.ceil(pool.length * 0.8)){
+      this._usedTransitions[stage] = this._usedTransitions[stage].slice(-Math.floor(pool.length*0.2));
     }
-    this._lastTransition = text;
-    return { transition: text, source:'rule' };
+    let idx;
+    const tried = new Set();
+    do {
+      idx = Math.floor(Math.random()*pool.length);
+      tried.add(idx);
+    } while (this._usedTransitions[stage].includes(idx) && tried.size < pool.length);
+    this._usedTransitions[stage].push(idx);
+    return { transition: pool[idx], source:'rule' };
   }
   async retrospective(state){
     // 复用 data.js 的回望逻辑（flag 驱动），规则兜底
