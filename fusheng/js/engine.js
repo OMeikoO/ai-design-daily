@@ -3,7 +3,7 @@
 // + 状态管理 / Flags / 存档 / 时间快进硬校验（≤12 周）
 
 import { EVENTS, STAGES, TALENTS, ERA_EVENTS, MAX_AGE_WEEKS } from './data.js';
-import { current as currentAI, analyzeIntent } from './ai.js';
+import { current as currentAI, analyzeIntent, RuleProvider } from './ai.js';
 
 const SAVE_KEY = 'fusheng_save_v1';
 
@@ -221,7 +221,7 @@ export async function buildEnding(state){
   const ai = currentAI();
   let r;
   try{ r = await ai.endingNarrative(withMoodAvg(state)); }
-  catch{ r = await new (await import('./ai.js')).RuleProvider().endingNarrative(withMoodAvg(state)); }
+  catch{ r = await new RuleProvider().endingNarrative(withMoodAvg(state)); }
   return r;
 }
 export async function buildRetrospective(state){
