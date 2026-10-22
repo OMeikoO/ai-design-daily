@@ -1,7 +1,7 @@
 {
-  "date": "2026-10-21",
-  "updatedAt": "2026-10-21T09:07:07+08:00",
-  "totalItems": 30,
+  "date": "2026-10-22",
+  "updatedAt": "2026-10-22T09:07:29+08:00",
+  "totalItems": 33,
   "categories": [
     {
       "id": "interaction",
@@ -41,6 +41,102 @@
     }
   ],
   "items": [
+    {
+      "id": "20261022-ifanr-daily",
+      "category": "tech",
+      "title": "爱范儿早报：Claude Duet主动智能体、PHP超级漏洞、iPhone Duo限购",
+      "summary": "①今日快讯：Anthropic推出Claude Duet主动智能体，能主动汇报并在后台持续办事；PHP紧急修复两个严重漏洞（CVE-2026-109618/109619），攻击者无需登录即可远程执行代码，OpenAI称GPT-5.6 Sol参与发现；iPhone Duo开启全球限购每位顾客最多2台，首发当日到店库存已售罄；Today AI累计融资超2亿美元，腾讯、蚂蚁等参投；中办国办发布文件全面实施「人工智能+」行动；曝DeepSeek近1000亿元新融资接近完成，投前估值约5000亿元；英伟达推出DSX POD模块化AI工厂，最快14天部署；Codex推出永久对话缓存；OpenAI模型将入驻谷歌云；宇树发布H2-X人形机器人续航约8小时；生数科技公开Motubrain 2.0训练流程；星巴克10月22日起全国实行「消费入座」。②对设计师/产品经理的价值：主动智能体（Claude Duet）+ 永久对话缓存（Codex）意味着「长程任务托管」正在成为现实，交互设计重心从「对话回合」转向「任务委托与进度追踪」；PHP漏洞由AI发现则提示安全测试正被AI重构。③建议：为Agent功能设计「后台任务看板」原型，明确用户可委托的范围、主动汇报的频率与格式、以及紧急事项的人工介入通道。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1685223",
+      "tags": [
+        "Claude Duet",
+        "PHP漏洞",
+        "iPhone Duo",
+        "DeepSeek融资",
+        "AI+行动"
+      ],
+      "publishedAt": "2026-10-22"
+    },
+    {
+      "id": "20261022-36kr-001",
+      "category": "tech",
+      "title": "豆包4.19亿月活领跑AI原生应用，腾讯WorkBuddy登顶办公Agent",
+      "summary": "①QuestMobile发布2026年三季度AI应用市场报告：9月AI办公赛道月活达1.42亿，同比增长50.6%。通用AI助手格局趋于稳定，豆包以4.19亿月活稳居第一，千问1.58亿、DeepSeek 1.23亿位列第二、第三，三强合计占前十总量八成以上；办公Agent赛道腾讯WorkBuddy以3235万月活位居榜首，百度搭子、千问办公紧随其后。文章指出通用助手流量争夺进入头部竞争阶段，大厂又把目光投向办公场景，但原有领先优势未必延续。②对设计师/产品经理的价值：AI应用竞争从「流量入口」转向「场景深耕」，办公Agent的交互设计重点是任务编排、进度可视化与多工具协同，而非单纯的对话体验。③建议：如果你在做B端AI产品，不要只比拼模型能力，重点设计「任务拆解→多工具调用→结果合并→人工确认」的完整闭环，尤其是跨应用数据流转的异常处理界面。",
+      "source": "36氪",
+      "url": "https://36kr.com/p/4035697724266375",
+      "tags": [
+        "豆包",
+        "WorkBuddy",
+        "AI月活",
+        "办公Agent",
+        "QuestMobile"
+      ],
+      "publishedAt": "2026-10-22"
+    },
+    {
+      "id": "20261022-36kr-002",
+      "category": "interaction",
+      "title": "走向超级智能体：UIUC与谷歌提出6A框架，主动性成关键设计维度",
+      "summary": "①UIUC、谷歌、斯坦福、UC Berkeley和CMU研究者联合发表综述《Proactive AI for Superintelligent Agents》，提出智能体需要「主动性」与智能、对齐并重。论文给出6A分析框架：Awareness（状态跟踪与信息获取）、Anticipation（预判变化后果）、Agenda（目标选择与优先级维护）、Arbitration（介入时机与程度判断）、Action（方案呈现与执行）、Adaptation（从反馈中调整）。综述覆盖编码、科研、智能家居、医疗等13个应用领域，指出当前系统长期维护既定职责仍有发展空间。②对设计师/产品经理的价值：6A框架可直接转化为Agent产品的设计检查清单——你的Agent是否有「记忆」跟踪跨会话状态？能否预判用户下一步需求？发现冲突时如何呈现方案并请求确认？失败后又怎样调整策略？③建议：用6A框架给你的Agent产品做一次交互审计，重点补齐「主动发现异常→准备方案→请求确认」这条非成功路径的界面与反馈设计。",
+      "source": "36氪",
+      "url": "https://36kr.com/p/4036284643038340",
+      "tags": [
+        "超级智能体",
+        "主动性",
+        "6A框架",
+        "Agent交互",
+        "长程任务"
+      ],
+      "publishedAt": "2026-10-22"
+    },
+    {
+      "id": "20261022-woshipm-001",
+      "category": "interaction",
+      "title": "GPT-6智能UI与免费策略：OpenAI把广告嵌入决策链路",
+      "summary": "①OpenAI将GPT-6 Luna免费开放给所有用户，付费用户继续使用旗舰版Sol，同时上线「智能UI」——模型可根据问题实时生成图表、表单、滑块、可点击按钮等交互组件，把用户决策闭环留在对话框内。作者判断其策略是「先变现、再扩规模」：广告业务上线6周年化收入过1亿美元、CPM超60美元，欧莱雅等品牌已把虚拟试妆与内容生产接入ChatGPT生态。②对设计师/产品经理的价值：智能UI让广告从「展示位」变成「可嵌入决策链路的交互入口」，交互设计对象从「固定页面」变成「模型即时生成的动态界面」；一次性轻工具类功能正被通用模型吸收。③建议：盘点自家产品中「可被模型即时生成的轻工具」（如数据看板、简单表单、对比表格），评估是否还有独立存在的必要；同时为核心业务准备「生成式界面」的展示规范与安全边界。",
+      "source": "人人都是产品经理",
+      "url": "https://www.woshipm.com/ai/6478074.html",
+      "tags": [
+        "GPT-6",
+        "智能UI",
+        "OpenAI广告",
+        "对话式界面",
+        "决策链路"
+      ],
+      "publishedAt": "2026-10-22"
+    },
+    {
+      "id": "20261022-web-001",
+      "category": "tools",
+      "title": "Google Stitch语音更新：自然语言描述实时生成UI界面",
+      "summary": "①Google更新AI设计工具Stitch，新增语音驱动UI设计能力：用户可以用自然语言描述需求（如「给这个应用一个温馨咖啡店的感觉」），工具实时生成可运行的UI元素，包括圆角、发光效果、菜单间距等。此次更新推动了「Vibe Design」运动——用情感化语言替代技术参数（如「让结账流程感觉安心」「给这个仪表盘注入活力」）。②对设计师/产品经理的价值：设计工具的竞争从「精确控制像素」转向「快速捕捉意图并验证」，语音/自然语言输入大幅降低原型验证门槛，让非技术人员也能参与早期设计探索；但同时也带来「AI审美同质化」和「精细控制丧失」的风险。③建议：把Stitch这类工具纳入早期创意评审流程，用语音描述快速生成3-5个情绪方向供团队选择，确定方向后再转入传统工具精调；同时为团队建立「AI生成界面的设计规范」，避免过度依赖默认风格。",
+      "source": "AI DAMN",
+      "url": "https://ai-damn.com/google-s-stitch-update-lets-you-design-uis-with-just-your-voice-1773894027339",
+      "tags": [
+        "Google Stitch",
+        "语音UI",
+        "Vibe Design",
+        "AI设计工具",
+        "自然语言设计"
+      ],
+      "publishedAt": "2026-10-22"
+    },
+    {
+      "id": "20261022-web-002",
+      "category": "tools",
+      "title": "Claude Design全面开放：提示词与代码库秒变原型和线框图",
+      "summary": "①Anthropic宣布Claude Design结束beta测试，向所有用户开放（包括Free计划用户），作为Claude对话中的模板直接使用；独立站点claude.ai/design将于12月14日关闭。Claude Design基于Opus 4.7视觉模型，可将提示词、图片或代码库转化为高保真原型、演示文稿和线框图，并支持跨项目保持品牌设计系统一致性。②对设计师/产品经理的价值：AI设计工具正在从「独立应用」变成「对话中的能力」，意味着设计师可以在与AI协作的过程中随时生成、迭代视觉稿，而无需在不同工具间切换；但独立设计工具的关闭也提示「寄生在对话中的设计」可能牺牲专业工作流的深度。③建议：如果你是产品经理或独立开发者，尝试用Claude Design把PRD直接转成可点击原型，在评审会上用「可操作的界面」替代静态文档；同时记录哪些精调需求（如复杂动效、响应式断点）仍需专业设计工具完成，形成清晰的「AI设计→人工精调」分工边界。",
+      "source": "AI Catchup",
+      "url": "https://aicatchup.com/news/claude-design-launch",
+      "tags": [
+        "Claude Design",
+        "原型生成",
+        "线框图",
+        "Anthropic",
+        "设计工具"
+      ],
+      "publishedAt": "2026-10-22"
+    },
     {
       "id": "20261021-ifanr-daily",
       "category": "tech",
@@ -120,22 +216,6 @@
         "复盘"
       ],
       "publishedAt": "2026-10-20"
-    },
-    {
-      "id": "20261021-tools-001",
-      "category": "tools",
-      "title": "Figma Specs发布：用Markdown给AI Agent写设计规范",
-      "summary": "①Figma在首届Config India发布Specs（开放测试）：画布上的Markdown容器，可写brief、PRD、技术说明与设计规则，并能内嵌FigJam图、Code Layers和设计稿；Code Layers进入公测，可直接让Agent把设计转成代码；Figma MCP新增20余个工具。②价值：设计规范从「人读的文档」升级为「Agent可执行的上下文」，设计系统的交付物多了一层机器可读格式；对设计师，写清规则比多画几页更能约束AI产出，Code Layers则把设计稿与代码放在同一层，缩短交付链路。③建议：把现有设计系统拆成tokens、组件规则、禁忌三类Markdown；用「必须/建议/禁止」标注并附正反例；让Agent产出后先对照Specs自检，再进入评审。",
-      "source": "IT时代网",
-      "url": "https://roll.sohu.com/a/1088281576_121423427",
-      "tags": [
-        "Figma",
-        "设计规范",
-        "Design System",
-        "MCP",
-        "AI Agent"
-      ],
-      "publishedAt": "2026-10-15"
     },
     {
       "id": "20261021-interaction-001",
@@ -472,38 +552,6 @@
         "创意工具护城河"
       ],
       "publishedAt": "2026-10-16"
-    },
-    {
-      "id": "20261018-woshipm-002",
-      "category": "design",
-      "title": "对话OpenAI产品负责人：模型三个月迭代一次，PM的核心价值转向定义问题",
-      "summary": "人人都是产品经理编译自 Lenny's Podcast 对 OpenAI 产品负责人 Tara Seshan（负责 Codex 与 ChatGPT Work）的访谈。核心观点：①AI 产品应面向「两三个月后」的模型能力设计——围绕当下能力做容易在模型升级后过时，押注一年后又会迟迟落不了地，产品团队需要与研究团队紧密协作，卡住「能力演进与实际可用」之间的窗口；②在高度不确定的市场里，长篇战略推演的作用下降，PM 的核心价值转向「定义关键问题＋最快验证假设」，找到那个最关键、最值得验证的 Eigenquestion，比写漂亮文档更重要；③未来的工作更像「掌舵而非划桨」——把更完整的任务交给 Agent，人只在关键节点审阅、反馈、调方向，把精力留给目标选择、产品判断与最终责任；④Agent 将从一次性助手走向「持续协作的同事」，下一阶段可能是多位同事带着各自的 Agent 协同推进，协作界面也要从「个人对话」扩展到团队共享的工作过程；⑤她也强调，Agent 能不能真干活同样取决于数据、权限与基础设施——「把同事锁在房间里、不给他任何工具和数据，他也没用」。对设计师/产品经理的价值：清晰指出了 AI 时代 PM/设计师的能力重心迁移。可执行建议：把你手上的路线图改写成一个核心假设＋一次最小可行实验，用可交互原型和真实测试结果代替长篇文档来对齐团队。",
-      "source": "人人都是产品经理",
-      "url": "https://www.woshipm.com/ai/6478995.html",
-      "tags": [
-        "OpenAI",
-        "Tara Seshan",
-        "掌舵而非划桨",
-        "定义问题",
-        "PM职业发展"
-      ],
-      "publishedAt": "2026-10-15"
-    },
-    {
-      "id": "20261018-figma-001",
-      "category": "tools",
-      "title": "Figma Config India 2026：Code Layers与Specs开放公测，MCP新增20家合作方",
-      "summary": "Figma 在首届 Config India（2026-10-15）发布了面向 AI 协作的一批更新：①Code Layers（在画布上直接运行代码）开放公测，所有套餐可用；②Specs（可协作的 Markdown 规范容器）开放公测，面向付费套餐；③Guidelines 开放公测，Code Sources 进入封闭测试；④Figma MCP 服务器能力增强——现在可以生成 Code Layers、读写 Specs，并新增 20 家 MCP 合作方（含 OpenCode 等）。官方数据：印度是 Figma 在美国之外最大的用户市场，孟买证交所前 100 强公司中 40% 在使用 Figma。设计视角：这一轮更新的共同指向是「设计资产的可编程化与规范化」——Specs 把口头约定变成可被 Agent 读取的结构化规范，Code Layers 把设计画布变成能跑代码的容器，MCP 则让 Agent 能在设计资产和生产代码之间双向读写。对设计师/产品经理的价值：设计与开发的交接正在从「交付静态稿」变成「交付可被 Agent 消费的规范＋代码层」，这既降低返工，也要求设计师具备写清规范、定义边界的能力。可执行建议：挑一个组件，在 Figma 里用 Specs 写下它的状态、边界与验收标准，再用 MCP 让外部 Agent 依据这份 Spec 生成/校验代码，对比传统交付的返工次数。",
-      "source": "Figma",
-      "url": "https://forum.figma.com/product-updates-3/here-s-everything-from-config-india-2026-59008",
-      "tags": [
-        "Figma",
-        "Config India",
-        "Code Layers",
-        "Specs",
-        "MCP"
-      ],
-      "publishedAt": "2026-10-15"
     },
     {
       "id": "20261018-styles-001",
