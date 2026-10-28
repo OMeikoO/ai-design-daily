@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PDF 学习工作台 · 软考高项</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dexie@4.0.8/dist/dexie.min.js"></script>
+<style>
+  :root {
+    --bg: #f5f5f8;
+    --bg-elev: #ffffff;
+    --bg-sidebar: #fafafb;
+    --text: #1a1a2e;
+    --text-muted: #6b6b80;
+    --border: #e5e5ef;
+    --brand: #4B3FE3;
+    --brand-soft: #f2f7ff;
+    --accent: #27D2BF;
+    --highlight-yellow: #ffe066;
+    --highlight-green: #96f2a4;
+    --highlight-blue: #91c5ff;
+    --highlight-pink: #ffb3d9;
+    --pen-red: #f03e3e;
+    --pen-blue: #1c7ed6;
+    --pen-black: #1a1a2e;
+    --shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  [data-theme="dark"] {
+    --bg: #0f0f1a;
+    --bg-elev: #1a1a2e;
+    --bg-sidebar: #16162a;
+    --text: #e8e8f0;
+    --text-muted: #9090a5;
+    --border: #2a2a40;
+    --brand: #6f6fff;
+    --brand-soft: #1a1759;
+    --highlight-yellow: #8a7a00;
+    --highlight-green: #0a6e1a;
+    --highlight-blue: #0a4a7a;
+    --highlight-pink: #8a004a;
+    --pen-red: #ff6b6b;
+    --pen-blue: #4dabf7;
+    --pen-black: #e8e8f0;
+    --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); }
+  #app { display: flex; flex-direction: column; height: 100%; }
+
+  /* ===== 顶部栏 ===== */
+  .topbar {
+    display: flex; align-items: center; gap: 8px;
+    height: 48px; padding: 0 12px;
+    background: var(--bg-elev); border-bottom: 1px solid var(--border);
+    flex-shrink: 0; z-index: 100;
+  }
+  .tabs { display: flex; gap: 4px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 6px 14px; border-radius: 8px;
+    font-size: 13px; cursor: pointer; white-space: nowrap;
+    background: transparent; color: var(--text-muted);
+    border: 1px solid transparent; transition: all .15s;
+  }
+  .tab:hover { background: var(--bg-sidebar); }
+  .tab.active { background: var(--brand-soft); color: var(--brand); border-color: var(--brand); }
+  .topbar-actions { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+  .btn {
+    padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg-elev); color: var(--text); font-size: 13px;
+    cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .btn:hover { background: var(--bg-sidebar); }
+  .btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .btn.primary:hover { opacity: .9; }
+  .btn.active { background: var(--brand-soft); color: var(--brand); border-color: var(--brand); }
+  .btn svg { width: 16px; height: 16px; }
+  #fileInput { display: none; }
+
+  /* ===== 主体 ===== */
+  .main {
+    display: flex; flex: 1; overflow: hidden;
+  }
+  .sidebar {
+    width: 220px; background: var(--bg-sidebar); border-right: 1px solid var(--border);
+    overflow-y: auto; flex-shrink: 0; transition: width .2s;
+  }
+  .sidebar.collapsed { width: 0; overflow: hidden; }
+  .sidebar-title {
+    padding: 12px 14px 8px; font-size: 11px; font-weight: 600;
+    color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;
+  }
+  .outline-list { list-style: none; padding: 4px 0 16px; }
+  .outline-item {
+    padding: 5px 14px; font-size: 13px; cursor: pointer; border-left: 2px solid transparent;
+    transition: all .15s; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .outline-item:hover { background: rgba(75,63,227,.06); border-left-color: var(--brand); }
+  .outline-item.level-1 { padding-left: 22px; }
+  .outline-item.level-2 { padding-left: 34px; font-size: 12px; color: var(--text-muted); }
+  .outline-item.level-3 { padding-left: 46px; font-size: 12px; color: var(--text-muted); }
+
+  .viewer {
+    flex: 1; overflow: auto; position: relative;
+    background: var(--bg);
+  }
+  .viewer-inner {
+    padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 16px;
+    min-height: 100%;
+  }
+  .page-wrap {
+    position: relative; box-shadow: var(--shadow); background: #fff;
+    border-radius: 4px; overflow: hidden;
+  }
+  [data-theme="dark"] .page-wrap { box-shadow: 0 2px 12px rgba(0,0,0,.5); }
+  .page {
+    position: relative; background: #fff; overflow: hidden;
+  }
+  .page canvas { display: block; }
+  .textLayer { position: absolute; top: 0; left: 0; overflow: hidden; opacity: .26; line-height: 1; }
+  .textLayer > div, .textLayer > br { color: transparent; }
+  .highlightLayer { position: absolute; top: 0; left: 0; pointer-events: auto; }
+  .noteLayer { position: absolute; top: 0; left: 0; pointer-events: auto; }
+  .penLayer { position: absolute; top: 0; left: 0; pointer-events: auto; }
+
+  /* ===== 工具栏 ===== */
+  .toolbar {
+    display: flex; gap: 4px; align-items: center; padding: 6px 12px;
+    background: var(--bg-elev); border-top: 1px solid var(--border);
+    flex-shrink: 0; flex-wrap: wrap;
+  }
+  .tool-group { display: flex; gap: 4px; align-items: center; padding: 0 4px; }
+  .tool-group + .tool-group { border-left: 1px solid var(--border); padding-left: 8px; }
+  .color-chip {
+    width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+    border: 2px solid transparent; transition: all .15s;
+  }
+  .color-chip:hover { transform: scale(1.1); }
+  .color-chip.active { border-color: var(--brand); box-shadow: 0 0 0 2px var(--brand-soft); }
+
+  /* ===== 便签 ===== */
+  .note-popup {
+    position: absolute; width: 200px; padding: 8px 10px;
+    background: var(--highlight-yellow); color: #333;
+    border: 1px solid rgba(0,0,0,.15); border-radius: 8px;
+    font-size: 13px; cursor: pointer; z-index: 10;
+    box-shadow: var(--shadow);
+  }
+  .note-popup .note-content {
+    min-height: 20px; outline: none; white-space: pre-wrap; word-break: break-all;
+  }
+  .note-popup .note-content:empty::before { content: '点击编辑便签...'; color: #888; }
+  .note-popup .note-delete {
+    position: absolute; top: -8px; right: -8px; width: 20px; height: 20px;
+    border-radius: 50%; background: #f03e3e; color: #fff; border: none;
+    font-size: 12px; cursor: pointer; display: none; align-items: center; justify-content: center;
+  }
+  .note-popup:hover .note-delete { display: flex; }
+
+  /* ===== 标注列表 ===== */
+  .annot-panel {
+    width: 260px; background: var(--bg-sidebar); border-left: 1px solid var(--border);
+    flex-shrink: 0; display: flex; flex-direction: column; overflow: hidden; transition: width .2s;
+  }
+  .annot-panel.collapsed { width: 0; overflow: hidden; }
+  .annot-header {
+    padding: 10px 14px; font-size: 12px; font-weight: 600; color: var(--text-muted);
+    border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
+  }
+  .annot-list { flex: 1; overflow-y: auto; padding: 8px; }
+  .annot-item {
+    padding: 8px 10px; margin-bottom: 6px; border-radius: 8px;
+    background: var(--bg-elev); border: 1px solid var(--border);
+    cursor: pointer; transition: all .15s;
+  }
+  .annot-item:hover { border-color: var(--brand); }
+  .annot-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
+  .annot-preview { font-size: 12px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ===== 翻页控件 ===== */
+  .page-nav {
+    display: flex; align-items: center; gap: 10px; padding: 8px 14px;
+    background: var(--bg-elev); border-top: 1px solid var(--border); flex-shrink: 0;
+  }
+  .page-nav button {
+    width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg-elev); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .page-nav button:hover:not(:disabled) { background: var(--bg-sidebar); }
+  .page-nav button:disabled { opacity: .4; cursor: not-allowed; }
+  .page-nav input {
+    width: 60px; text-align: center; padding: 4px 6px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px;
+  }
+  .page-nav span { font-size: 13px; color: var(--text-muted); }
+
+  /* ===== 模态框 ===== */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+  }
+  .modal {
+    background: var(--bg-elev); border-radius: 12px; padding: 24px;
+    max-width: 480px; width: 90%; max-height: 80vh; overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,.2);
+  }
+  .modal h3 { margin-bottom: 12px; font-size: 16px; }
+  .modal p { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+  .modal .file-list { max-height: 300px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; }
+  .modal .file-item {
+    padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .modal .file-item:last-child { border-bottom: none; }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .annot-panel { display: none; }
+    .topbar .tab { padding: 6px 10px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <button class="btn" id="toggleSidebar" title="目录">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="tabs" id="tabBar"></div>
+    <div class="topbar-actions">
+      <button class="btn" id="toggleAnnot" title="标注列表">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </button>
+      <button class="btn" id="btnExport" title="导出标注">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button class="btn" id="btnImport" title="导入标注">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+      <button class="btn primary" id="btnUpload" title="上传PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>上传</span>
+      </button>
+      <input type="file" id="fileInput" accept="application/pdf" multiple>
+      <input type="file" id="importInput" accept="application/json">
+      <button class="btn" id="btnTheme" title="深色模式">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-title">目录</div>
+      <ul class="outline-list" id="outlineList"></ul>
+    </div>
+    <div class="viewer" id="viewer">
+      <div class="viewer-inner" id="viewerInner"></div>
+    </div>
+    <div class="annot-panel" id="annotPanel">
+      <div class="annot-header">
+        <span>标注</span>
+        <span id="annotCount">0 项</span>
+      </div>
+      <div class="annot-list" id="annotList"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="tool-group">
+      <button class="btn" id="btnPrev" title="上一页">‹</button>
+      <div class="page-nav" style="padding:0; border:none;">
+        <input type="number" id="pageInput" min="1" value="1">
+        <span id="totalPage">/ 0</span>
+      </div>
+      <button class="btn" id="btnNext" title="下一页">›</button>
+    </div>
+    <div class="tool-group">
+      <button class="btn" data-tool="highlight" title="高亮">
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="12" width="16" height="3" transform="rotate(-30 12 13.5)"/></svg>
+      </button>
+      <button class="btn" data-tool="underline" title="下划线">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="18" x2="20" y2="18"/><line x1="4" y1="14" x2="20" y2="14"/></svg>
+      </button>
+      <button class="btn" data-tool="pen" title="画笔">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+      </button>
+      <button class="btn" data-tool="note" title="便签">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>
+      </button>
+    </div>
+    <div class="tool-group" id="colorGroup">
+      <div class="color-chip active" style="background:var(--highlight-yellow)" data-color="#ffe066" data-tool="highlight"></div>
+      <div class="color-chip" style="background:var(--highlight-green)" data-color="#96f2a4" data-tool="highlight"></div>
+      <div class="color-chip" style="background:var(--highlight-blue)" data-color="#91c5ff" data-tool="highlight"></div>
+      <div class="color-chip" style="background:var(--highlight-pink)" data-color="#ffb3d9" data-tool="highlight"></div>
+      <div class="color-chip" style="background:var(--pen-red)" data-color="#f03e3e" data-tool="pen"></div>
+      <div class="color-chip" style="background:var(--pen-blue)" data-color="#1c7ed6" data-tool="pen"></div>
+      <div class="color-chip" style="background:var(--pen-black); border:1px solid #666" data-color="#1a1a2e" data-tool="pen"></div>
+    </div>
+    <div class="tool-group">
+      <button class="btn" id="btnUndo" title="撤销">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+      </button>
+      <button class="btn" id="btnErase" title="橡皮/删除标注">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7L3 16c-1-1-1-3 0-4L13 2l7 7-10 10"/><line x1="18" y1="13" x2="8" y2="3"/></svg>
+      </button>
+    </div>
+    <div class="tool-group">
+      <button class="btn" id="btnSingle" title="单页">单页</button>
+      <button class="btn active" id="btnDouble" title="双页">双页</button>
+    </div>
+    <div class="tool-group">
+      <button class="btn" id="btnZoomOut" title="缩小">-</button>
+      <span id="zoomLabel" style="font-size:12px; color:var(--text-muted); min-width:40px; text-align:center;">100%</span>
+      <button class="btn" id="btnZoomIn" title="放大">+</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ 配置 ============ */
+const BUILTIN_BOOKS = [
+  { id: 'book1', name: '考点汇总·案例专题·论文专题', path: '.uploads/9e2aa96e-c095-4aea-839e-9807569568bb_27年重点考点汇总、案例专题、论文专题等.pdf' },
+  { id: 'book2', name: '题目书（无答案版）', path: '.uploads/e70e0bc9-870f-41e6-912e-a394d9dc6c32_27年题目书无答案无解析版.pdf' },
+];
+const ZOOM_LEVELS = [0.6, 0.75, 0.9, 1, 1.15, 1.3, 1.5, 1.8];
+
+/* ============ IndexedDB ============ */
+const db = new Dexie('pdfReader');
+db.version(1).stores({
+  annotations: '++id, fileId, page, type',
+  progress: 'fileId',
+  uploadedBooks: '++id, name, file',
+});
+
+/* ============ 状态 ============ */
+const state = {
+  books: [...BUILTIN_BOOKS],
+  currentFileId: BUILTIN_BOOKS[0].id,
+  pdfDoc: null,
+  currentPage: 1,
+  totalPages: 0,
+  isDouble: window.innerWidth > 768,
+  zoom: 1,
+  tool: 'highlight',
+  color: '#ffe066',
+  penWidth: 2,
+  penStroke: null, // 正在画的笔迹
+  isErasing: false,
+  isDrawing: false,
+};
+
+/* ============ 初始化 ============ */
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // 加载上传的书
+  const uploaded = await db.uploadedBooks.toArray();
+  for (const b of uploaded) {
+    const objUrl = URL.createObjectURL(b.file);
+    state.books.push({ id: 'up_' + b.id, name: b.name, path: objUrl, isUploaded: true });
+  }
+  // 恢复当前书
+  const saved = localStorage.getItem('currentFileId');
+  if (saved && state.books.find(b => b.id === saved)) state.currentFileId = saved;
+
+  renderTabs();
+  setupEvents();
+  await loadBook(state.currentFileId);
+});
+
+/* ============ 事件绑定 ============ */
+function setupEvents() {
+  // 翻页
+  document.getElementById('btnPrev').onclick = () => goPage(-1);
+  document.getElementById('btnNext').onclick = () => goPage(1);
+  document.getElementById('pageInput').onchange = (e) => goToPage(parseInt(e.target.value) || 1);
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goPage(-1);
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goPage(1); }
+  });
+
+  // 工具栏按钮
+  document.querySelectorAll('[data-tool]').forEach(btn => {
+    btn.onclick = () => {
+      state.tool = btn.dataset.tool;
+      document.querySelectorAll('.btn[data-tool]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.isErasing = false;
+      document.getElementById('btnErase').classList.remove('active');
+    };
+  });
+  document.querySelectorAll('.color-chip').forEach(c => {
+    c.onclick = () => {
+      state.color = c.dataset.color;
+      document.querySelectorAll('.color-chip').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll(`.color-chip[data-tool="${state.tool}"]`).forEach(x => { if(x.dataset.color===state.color) x.classList.add('active'); });
+      c.classList.add('active');
+    };
+  });
+  document.getElementById('btnUndo').onclick = undoAnnotation;
+  document.getElementById('btnErase').onclick = () => {
+    state.isErasing = !state.isErasing;
+    document.getElementById('btnErase').classList.toggle('active', state.isErasing);
+    state.tool = state.isErasing ? null : state.tool;
+  };
+  document.getElementById('btnSingle').onclick = () => setLayout(false);
+  document.getElementById('btnDouble').onclick = () => setLayout(true);
+  document.getElementById('btnZoomIn').onclick = () => setZoom(Math.min(ZOOM_LEVELS[ZOOM_LEVELS.indexOf(state.zoom)+1] || state.zoom*1.2, 2.5));
+  document.getElementById('btnZoomOut').onclick = () => setZoom(Math.max(ZOOM_LEVELS[ZOOM_LEVELS.indexOf(state.zoom)-1] || state.zoom*0.85, 0.4));
+  document.getElementById('toggleSidebar').onclick = () => document.getElementById('sidebar').classList.toggle('collapsed');
+  document.getElementById('toggleAnnot').onclick = () => document.getElementById('annotPanel').classList.toggle('collapsed');
+  document.getElementById('btnTheme').onclick = () => {
+    const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('theme', t);
+  };
+  if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+
+  // 上传/导入/导出
+  document.getElementById('btnUpload').onclick = () => document.getElementById('fileInput').click();
+  document.getElementById('fileInput').onchange = handleFileUpload;
+  document.getElementById('btnImport').onclick = () => document.getElementById('importInput').click();
+  document.getElementById('importInput').onchange = handleImport;
+  document.getElementById('btnExport').onclick = handleExport;
+
+  // 窗口缩放
+  window.addEventListener('resize', () => {
+    if (!state.isDouble && window.innerWidth > 768) { setLayout(true); }
+  });
+}
+
+/* ============ 标签栏 ============ */
+function renderTabs() {
+  const bar = document.getElementById('tabBar');
+  bar.innerHTML = '';
+  state.books.forEach(book => {
+    const tab = document.createElement('div');
+    tab.className = 'tab' + (book.id === state.currentFileId ? ' active' : '');
+    tab.textContent = book.name;
+    tab.onclick = () => loadBook(book.id);
+    bar.appendChild(tab);
+  });
+}
+
+/* ============ 加载书 ============ */
+async function loadBook(fileId) {
+  state.currentFileId = fileId;
+  localStorage.setItem('currentFileId', fileId);
+  const book = state.books.find(b => b.id === fileId);
+  if (!book) return;
+
+  // 恢复进度
+  const prog = await db.progress.get(fileId);
+  state.currentPage = prog?.lastPage || 1;
+  document.getElementById('pageInput').value = state.currentPage;
+
+  try {
+    const loadingTask = pdfjsLib.getDocument({ url: book.path });
+    state.pdfDoc = await loadingTask.promise;
+    state.totalPages = state.pdfDoc.numPages;
+    document.getElementById('totalPage').textContent = `/ ${state.totalPages}`;
+    renderTabs();
+    renderOutline();
+    await renderPages();
+    await renderAnnotationList();
+  } catch (e) {
+    // 可能是相对路径，尝试直接 fetch
+    console.error('加载PDF失败:', e);
+    alert('PDF 加载失败。可能是路径问题。\n如果是上传的PDF请确认文件存在。');
+  }
+}
+
+/* ============ 目录 ============ */
+function renderOutline() {
+  const ol = document.getElementById('outlineList');
+  ol.innerHTML = '';
+  try {
+    function walk(items, depth=0) {
+      for (const it of items) {
+        if (Array.isArray(it)) { walk(it, depth+1); continue; }
+        if (!it.title) continue;
+        const li = document.createElement('li');
+        li.className = 'outline-item level-' + Math.min(depth,3);
+        li.textContent = it.title;
+        const dest = it.dest;
+        li.onclick = () => {
+          state.pdfDoc.getPageIndex(dest[0]).then(idx => goToPage(idx+1));
+        };
+        ol.appendChild(li);
+      }
+    }
+    walk(state.pdfDoc.outline || []);
+  } catch (e) { /* outline 可能不可用 */ }
+  if (ol.children.length === 0) {
+    ol.innerHTML = '<li style="padding:12px; font-size:12px; color:var(--text-muted);">本书无内置目录</li>';
+  }
+}
+
+/* ============ 渲染页面 ============ */
+async function renderPages() {
+  const viewer = document.getElementById('viewerInner');
+  viewer.innerHTML = '';
+  const n = state.isDouble ? 2 : 1;
+  const pagesToRender = [];
+  // 双页时：左为奇数页，右为偶数页；单页时一页一页
+  for (let i = 0; i < n; i++) {
+    const p = state.currentPage + i;
+    if (p > 0 && p <= state.totalPages) pagesToRender.push(p);
+  }
+  // 如果左页空了（比如最后一页奇数），只渲染右
+  if (state.isDouble && pagesToRender.length === 2 && state.currentPage % 2 === 0) {
+    // 起始页为偶数时显示 [空白, p]
+  }
+
+  for (const pageNum of pagesToRender) {
+    const wrap = document.createElement('div');
+    wrap.className = 'page-wrap';
+    wrap.dataset.page = pageNum;
+
+    const pageDiv = document.createElement('div');
+    pageDiv.className = 'page';
+
+    const canvas = document.createElement('canvas');
+    const textLayer = document.createElement('div');
+    textLayer.className = 'textLayer';
+    const highlightLayer = document.createElement('div');
+    highlightLayer.className = 'highlightLayer';
+    const noteLayer = document.createElement('div');
+    noteLayer.className = 'noteLayer';
+    const penLayer = document.createElement('canvas');
+    penLayer.className = 'penLayer';
+    penLayer.style.pointerEvents = 'auto';
+
+    pageDiv.append(canvas, textLayer, highlightLayer, noteLayer, penLayer);
+    wrap.appendChild(pageDiv);
+    viewer.appendChild(wrap);
+
+    await renderSinglePage(pageNum, wrap, canvas, textLayer, highlightLayer, noteLayer, penLayer);
+  }
+  // 保存进度
+  db.progress.put({ fileId: state.currentFileId, lastPage: state.currentPage });
+}
+
+async function renderSinglePage(pageNum, wrap, canvas, textLayer, highlightLayer, noteLayer, penLayer) {
+  const page = await state.pdfDoc.getPage(pageNum);
+  const viewport = page.getViewport({ scale: state.zoom });
+  canvas.width = viewport.width * 2;
+  canvas.height = viewport.height * 2;
+  canvas.style.width = viewport.width + 'px';
+  canvas.style.height = viewport.height + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(2, 0, 0, 2, 0, 0);
+  await page.render({ canvasContext: ctx, viewport }).promise;
+
+  // Text layer for highlighting
+  textLayer.style.width = viewport.width + 'px';
+  textLayer.style.height = viewport.height + 'px';
+  textLayer.style.transform = `scale(1)`;
+  const textContent = await page.getTextContent();
+  pdfjsLib.renderTextLayer({
+    textContentSource: textContent,
+    container: textLayer,
+    viewport,
+    textDivs: [],
+  });
+
+  // Layers
+  highlightLayer.style.width = viewport.width + 'px';
+  highlightLayer.style.height = viewport.height + 'px';
+  noteLayer.style.width = viewport.width + 'px';
+  noteLayer.style.height = viewport.height + 'px';
+  penLayer.width = viewport.width * 2;
+  penLayer.height = viewport.height * 2;
+  penLayer.style.width = viewport.width + 'px';
+  penLayer.style.height = viewport.height + 'px';
+  penLayer.style.position = 'absolute';
+  penLayer.style.top = 0; penLayer.style.left = 0;
+  penLayer.getContext('2d').scale(2, 2);
+
+  // 渲染已有标注
+  await renderPageAnnotations(pageNum, highlightLayer, noteLayer, penLayer, viewport);
+
+  // 绑定事件到 pageDiv
+  bindPageEvents(wrap, canvas, textLayer, highlightLayer, noteLayer, penLayer, viewport, pageNum);
+}
+
+/* ============ 渲染页面已有标注 ============ */
+async function renderPageAnnotations(pageNum, highlightLayer, noteLayer, penCanvas, viewport) {
+  const anns = await db.annotations.where({ fileId: state.currentFileId, page: pageNum }).toArray();
+  for (const ann of anns) {
+    if (ann.type === 'highlight') {
+      for (const r of ann.data.rects) {
+        const div = document.createElement('div');
+        div.style.position = 'absolute';
+        div.style.left = r.x * viewport.width + 'px';
+        div.style.top = r.y * viewport.height + 'px';
+        div.style.width = r.w * viewport.width + 'px';
+        div.style.height = r.h * viewport.height + 'px';
+        div.style.background = ann.data.color;
+        div.style.opacity = ann.data.style === 'underline' ? 0 : 0.4;
+        div.style.borderBottom = ann.data.style === 'underline' ? `3px solid ${ann.data.color}` : 'none';
+        div.style.position = 'absolute';
+        div.style.bottom = ann.data.style === 'underline' ? (viewport.height - (r.y + r.h) * viewport.height) + 'px' : div.style.bottom;
+        highlightLayer.appendChild(div);
+      }
+    } else if (ann.type === 'note') {
+      const popup = createNotePopup(ann);
+      popup.style.left = ann.data.x * viewport.width + 'px';
+      popup.style.top = ann.data.y * viewport.height + 'px';
+      noteLayer.appendChild(popup);
+    } else if (ann.type === 'pen') {
+      const pctx = penCanvas.getContext('2d');
+      pctx.beginPath();
+      pctx.strokeStyle = ann.data.color;
+      pctx.lineWidth = ann.data.width;
+      pctx.lineCap = 'round';
+      pctx.lineJoin = 'round';
+      for (const stroke of ann.data.strokes) {
+        if (stroke.points.length < 2) continue;
+        pctx.moveTo(stroke.points[0].x * viewport.width, stroke.points[0].y * viewport.height);
+        for (let i = 1; i < stroke.points.length; i++) {
+          pctx.lineTo(stroke.points[i].x * viewport.width, stroke.points[i].y * viewport.height);
+        }
+      }
+      pctx.stroke();
+    }
+  }
+}
+
+function createNotePopup(ann) {
+  const div = document.createElement('div');
+  div.className = 'note-popup';
+  div.innerHTML = `<div class="note-content" contenteditable="true">${ann.data.content || ''}</div><button class="note-delete" title="删除">×</button>`;
+  const content = div.querySelector('.note-content');
+  const del = div.querySelector('.note-delete');
+  content.oninput = async () => {
+    ann.data.content = content.innerText;
+    await db.annotations.update(ann.id, { data: ann.data });
+    renderAnnotationList();
+  };
+  del.onclick = async (e) => {
+    e.stopPropagation();
+    await db.annotations.delete(ann.id);
+    div.remove();
+    renderAnnotationList();
+  };
+  return div;
+}
+
+/* ============ 页面交互 ============ */
+function bindPageEvents(wrap, canvas, textLayer, highlightLayer, noteLayer, penCanvas, viewport, pageNum) {
+  const pageDiv = wrap.querySelector('.page');
+
+  // 高亮：鼠标在 textLayer 上选择文字
+  textLayer.addEventListener('mouseup', (e) => {
+    if (state.tool !== 'highlight' && state.tool !== 'underline') return;
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    const rects = range.getClientRects();
+    if (rects.length === 0) return;
+    const parentRect = pageDiv.getBoundingClientRect();
+    const rectArr = [];
+    for (const r of rects) {
+      rectArr.push({
+        x: (r.left - parentRect.left) / parentRect.width,
+        y: (r.top - parentRect.top) / parentRect.height,
+        w: r.width / parentRect.width,
+        h: r.height / parentRect.height,
+      });
+    }
+    if (rectArr.length > 0) {
+      saveAnnotation({
+        fileId: state.currentFileId,
+        page: pageNum,
+        type: 'highlight',
+        data: { rects: rectArr, text: sel.toString(), color: state.color, style: state.tool === 'underline' ? 'underline' : 'highlight' }
+      });
+      renderPages();
+    }
+    sel.removeAllRanges();
+  });
+
+  // 便签：点击空白处
+  pageDiv.addEventListener('click', (e) => {
+    if (state.tool !== 'note' || state.isErasing) return;
+    if (e.target.closest('.note-popup')) return;
+    const rect = pageDiv.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    saveAnnotation({
+      fileId: state.currentFileId,
+      page: pageNum,
+      type: 'note',
+      data: { x, y, content: '' }
+    }).then(ann => { renderPages(); });
+  });
+
+  // 画笔
+  let drawing = false;
+  let currentStroke = null;
+  const getPos = (e) => {
+    const rect = pageDiv.getBoundingClientRect();
+    const cx = (e.touches ? e.touches[0].clientX : e.clientX);
+    const cy = (e.touches ? e.touches[0].clientY : e.clientY);
+    return {
+      x: (cx - rect.left) / rect.width,
+      y: (cy - rect.top) / rect.height,
+    };
+  };
+
+  const startDraw = (e) => {
+    if (state.tool !== 'pen' || state.isErasing) return;
+    e.preventDefault();
+    drawing = true;
+    currentStroke = { points: [getPos(e)], color: state.color, width: state.penWidth };
+    state.penStroke = { strokes: [currentStroke], color: state.color, width: state.penWidth };
+  };
+  const moveDraw = (e) => {
+    if (!drawing) return;
+    e.preventDefault();
+    const pos = getPos(e);
+    currentStroke.points.push(pos);
+    // 实时绘制
+    const pctx = penCanvas.getContext('2d');
+    pctx.beginPath();
+    pctx.strokeStyle = state.color;
+    pctx.lineWidth = state.penWidth;
+    pctx.lineCap = 'round';
+    pctx.lineJoin = 'round';
+    const pts = currentStroke.points;
+    const prev = pts[pts.length-2];
+    pctx.moveTo(prev.x * viewport.width, prev.y * viewport.height);
+    pctx.lineTo(pos.x * viewport.width, pos.y * viewport.height);
+    pctx.stroke();
+  };
+  const endDraw = (e) => {
+    if (!drawing) return;
+    drawing = false;
+    if (currentStroke && currentStroke.points.length > 1) {
+      saveAnnotation({
+        fileId: state.currentFileId,
+        page: pageNum,
+        type: 'pen',
+        data: state.penStroke
+      });
+    }
+    state.penStroke = null;
+    currentStroke = null;
+  };
+
+  penCanvas.addEventListener('mousedown', startDraw);
+  penCanvas.addEventListener('mousemove', moveDraw);
+  document.addEventListener('mouseup', endDraw);
+  penCanvas.addEventListener('touchstart', startDraw, { passive: false });
+  penCanvas.addEventListener('touchmove', moveDraw, { passive: false });
+  penCanvas.addEventListener('touchend', endDraw);
+
+  // 擦除：点击标注删除
+  const clickErase = async (e) => {
+    if (!state.isErasing) return;
+    // 检查点击位置是否覆盖标注
+    const rect = pageDiv.getBoundingClientRect();
+    const cx = (e.clientX - rect.left) / rect.width;
+    const cy = (e.clientY - rect.top) / rect.height;
+    const anns = await db.annotations.where({ fileId: state.currentFileId, page: pageNum }).toArray();
+    for (const ann of anns) {
+      let hit = false;
+      if (ann.type === 'highlight') {
+        hit = ann.data.rects.some(r => cx >= r.x && cx <= r.x+r.w && cy >= r.y && cy <= r.y+r.h);
+      } else if (ann.type === 'note') {
+        hit = Math.abs(cx - ann.data.x) < 0.05 && Math.abs(cy - ann.data.y) < 0.05;
+      } else if (ann.type === 'pen') {
+        // 简化：检查到最近笔迹点的距离
+        for (const stroke of ann.data.strokes) {
+          for (const pt of stroke.points) {
+            const d = Math.hypot(cx - pt.x, cy - pt.y);
+            if (d < 0.02) { hit = true; break; }
+          }
+          if (hit) break;
+        }
+      }
+      if (hit) {
+        await db.annotations.delete(ann.id);
+        renderPages();
+        renderAnnotationList();
+        return;
+      }
+    }
+  };
+  pageDiv.addEventListener('click', clickErase, true);
+}
+
+/* ============ 翻页/跳转 ============ */
+function goPage(delta) {
+  const target = state.currentPage + delta;
+  if (target < 1 || target > state.totalPages) return;
+  goToPage(target);
+}
+function goToPage(n) {
+  state.currentPage = Math.max(1, Math.min(n, state.totalPages));
+  document.getElementById('pageInput').value = state.currentPage;
+  renderPages();
+}
+function setLayout(isDouble) {
+  state.isDouble = isDouble && window.innerWidth > 768;
+  document.getElementById('btnSingle').classList.toggle('active', !state.isDouble);
+  document.getElementById('btnDouble').classList.toggle('active', state.isDouble);
+  renderPages();
+}
+function setZoom(z) {
+  state.zoom = Math.round(z * 100) / 100;
+  document.getElementById('zoomLabel').textContent = Math.round(state.zoom * 100) + '%';
+  renderPages();
+}
+
+/* ============ 标注 CRUD ============ */
+async function saveAnnotation(data) {
+  const id = await db.annotations.add(data);
+  await renderAnnotationList();
+  return { id, ...data };
+}
+async function undoAnnotation() {
+  const last = await db.annotations.where({ fileId: state.currentFileId, page: state.currentPage }).reverse().first();
+  if (last) {
+    await db.annotations.delete(last.id);
+    renderPages();
+    renderAnnotationList();
+  }
+}
+
+/* ============ 标注列表 ============ */
+async function renderAnnotationList() {
+  const list = document.getElementById('annotList');
+  const anns = await db.annotations.where({ fileId: state.currentFileId }).orderBy('page').toArray();
+  document.getElementById('annotCount').textContent = anns.length + ' 项';
+  list.innerHTML = '';
+  for (const a of anns) {
+    const div = document.createElement('div');
+    div.className = 'annot-item';
+    let preview = '';
+    if (a.type === 'highlight') preview = a.data.text?.slice(0, 40) || '高亮';
+    else if (a.type === 'note') preview = a.data.content?.slice(0, 40) || '便签';
+    else if (a.type === 'pen') preview = '笔迹 ' + a.data.strokes.reduce((s,x) => s + x.points.length, 0) + ' 点';
+    const label = { highlight: '高亮', underline: '划线', note: '便签', pen: '画笔' }[a.type] || a.type;
+    div.innerHTML = `<div class="annot-meta">P${a.page} · ${label}</div><div class="annot-preview">${preview}</div>`;
+    div.onclick = () => {
+      goToPage(a.page);
+      setTimeout(() => {
+        const viewer = document.getElementById('viewer');
+        const wrap = viewer.querySelector(`.page-wrap[data-page="${a.page}"]`);
+        if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 200);
+    };
+    list.appendChild(div);
+  }
+}
+
+/* ============ 文件上传 ============ */
+async function handleFileUpload(e) {
+  const files = Array.from(e.target.files);
+  if (files.length === 0) return;
+  for (const f of files) {
+    const record = await db.uploadedBooks.add({ name: f.name.replace(/\.pdf$/i, ''), file: f });
+    const objUrl = URL.createObjectURL(f);
+    state.books.push({ id: 'up_' + record.id, name: f.name.replace(/\.pdf$/i, ''), path: objUrl, isUploaded: true });
+  }
+  renderTabs();
+  e.target.value = '';
+}
+
+/* ============ 导入/导出 ============ */
+async function handleExport() {
+  const data = await db.annotations.where({ fileId: state.currentFileId }).toArray();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${state.books.find(b=>b.id===state.currentFileId)?.name || 'annotations'}-标注.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+async function handleImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      const data = JSON.parse(reader.result);
+      let count = 0;
+      for (const ann of data) {
+        if (ann.fileId === state.currentFileId) {
+          await db.annotations.add({ fileId: ann.fileId, page: ann.page, type: ann.type, data: ann.data });
+          count++;
+        }
+      }
+      alert(`导入成功 ${count} 条标注`);
+      renderPages();
+      renderAnnotationList();
+    } catch (err) {
+      alert('导入失败：' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+</script>
+</body>
+</html>
