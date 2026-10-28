@@ -870,7 +870,7 @@ async function undoAnnotation() {
 /* ============ 标注列表 ============ */
 async function renderAnnotationList() {
   const list = document.getElementById('annotList');
-  const anns = await db.annotations.where({ fileId: state.currentFileId }).orderBy('page').toArray();
+  const anns = (await db.annotations.where({ fileId: state.currentFileId }).toArray()).sort((a, b) => a.page - b.page);
   document.getElementById('annotCount').textContent = anns.length + ' 项';
   list.innerHTML = '';
   for (const a of anns) {
