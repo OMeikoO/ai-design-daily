@@ -121,8 +121,16 @@
     position: relative; background: #fff; overflow: hidden;
   }
   .page canvas { display: block; }
-  .textLayer { position: absolute; top: 0; left: 0; overflow: hidden; opacity: .26; line-height: 1; }
-  .textLayer > div, .textLayer > br { color: transparent; }
+  .textLayer {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden; line-height: 1; text-align: initial;
+    opacity: .26; text-size-adjust: none; forced-color-adjust: none;
+    z-index: 2;
+  }
+  .textLayer span, .textLayer br {
+    color: transparent; position: absolute; white-space: pre;
+    cursor: text; transform-origin: 0% 0%;
+  }
   .highlightLayer { position: absolute; top: 0; left: 0; pointer-events: auto; }
   .noteLayer { position: absolute; top: 0; left: 0; pointer-events: auto; }
   .penLayer { position: absolute; top: 0; left: 0; pointer-events: auto; }
