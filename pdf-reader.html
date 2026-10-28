@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>PDF 学习工作台 · 软考高项</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dexie@4.0.8/dist/dexie.min.js"></script>
+<script src="./libs/dexie.min.js"></script>
+<script type="module">
+  import * as _pdfjs from './libs/pdf.min.mjs';
+  window.pdfjsLib = _pdfjs;
+</script>
 <style>
   :root {
     --bg: #f5f5f8;
@@ -354,9 +357,9 @@ const state = {
 };
 
 /* ============ 初始化 ============ */
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
-
 document.addEventListener('DOMContentLoaded', async () => {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = './libs/pdf.worker.min.mjs';
+
   // 加载上传的书
   const uploaded = await db.uploadedBooks.toArray();
   for (const b of uploaded) {
@@ -465,21 +468,36 @@ async function loadBook(fileId) {
     state.totalPages = state.pdfDoc.numPages;
     document.getElementById('totalPage').textContent = `/ ${state.totalPages}`;
     renderTabs();
-    renderOutline();
+    await renderOutline();
     await renderPages();
     await renderAnnotationList();
   } catch (e) {
-    // 可能是相对路径，尝试直接 fetch
     console.error('加载PDF失败:', e);
-    alert('PDF 加载失败。可能是路径问题。\n如果是上传的PDF请确认文件存在。');
+    showToast('PDF 加载失败：' + (e && e.message ? e.message.slice(0, 60) : '未知错误'));
   }
 }
 
+/* ============ 轻提示 ============ */
+function showToast(msg) {
+  let t = document.getElementById('appToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'appToast';
+    t.style.cssText = 'position:fixed;top:64px;left:50%;transform:translateX(-50%);background:#f03e3e;color:#fff;padding:10px 18px;border-radius:8px;z-index:99999;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.25);max-width:80vw;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.display = 'none'; }, 4000);
+}
+
 /* ============ 目录 ============ */
-function renderOutline() {
+async function renderOutline() {
   const ol = document.getElementById('outlineList');
   ol.innerHTML = '';
   try {
+    const outline = (await state.pdfDoc.getOutline()) || [];
     function walk(items, depth=0) {
       for (const it of items) {
         if (Array.isArray(it)) { walk(it, depth+1); continue; }
@@ -488,13 +506,19 @@ function renderOutline() {
         li.className = 'outline-item level-' + Math.min(depth,3);
         li.textContent = it.title;
         const dest = it.dest;
-        li.onclick = () => {
-          state.pdfDoc.getPageIndex(dest[0]).then(idx => goToPage(idx+1));
+        li.onclick = async () => {
+          try {
+            let d = dest;
+            if (typeof d === 'string') d = await state.pdfDoc.getDestination(d);
+            if (!Array.isArray(d) || !d[0]) return;
+            const idx = await state.pdfDoc.getPageIndex(d[0]);
+            goToPage(idx + 1);
+          } catch (e) { /* 跳转失败忽略 */ }
         };
         ol.appendChild(li);
       }
     }
-    walk(state.pdfDoc.outline || []);
+    walk(outline);
   } catch (e) { /* outline 可能不可用 */ }
   if (ol.children.length === 0) {
     ol.innerHTML = '<li style="padding:12px; font-size:12px; color:var(--text-muted);">本书无内置目录</li>';
@@ -561,13 +585,14 @@ async function renderSinglePage(pageNum, wrap, canvas, textLayer, highlightLayer
   textLayer.style.width = viewport.width + 'px';
   textLayer.style.height = viewport.height + 'px';
   textLayer.style.transform = `scale(1)`;
+  textLayer.style.setProperty('--scale-factor', viewport.scale);
   const textContent = await page.getTextContent();
-  pdfjsLib.renderTextLayer({
+  const tl = new pdfjsLib.TextLayer({
     textContentSource: textContent,
     container: textLayer,
     viewport,
-    textDivs: [],
   });
+  await tl.render();
 
   // Layers
   highlightLayer.style.width = viewport.width + 'px';
@@ -899,11 +924,11 @@ async function handleImport(e) {
           count++;
         }
       }
-      alert(`导入成功 ${count} 条标注`);
+      showToast(`导入成功 ${count} 条标注`);
       renderPages();
       renderAnnotationList();
     } catch (err) {
-      alert('导入失败：' + err.message);
+      showToast('导入失败：' + (err.message || '').slice(0, 60));
     }
   };
   reader.readAsText(file);
