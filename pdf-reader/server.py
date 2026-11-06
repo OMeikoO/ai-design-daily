@@ -104,7 +104,9 @@ def api_list_books(h):
         e = dict(b)
         e['annotationCount'] = len(st['annotations']) if st else 0
         e['progressSummary'] = (st or {}).get('progress', {})
-        e['hasText'] = load_texts(b['id']) is not None
+        texts = load_texts(b['id'])
+        e['hasText'] = texts is not None
+        e['chapterCount'] = len(texts['chapters']) if texts else 0
         out.append(e)
     return 200, out
 
@@ -356,12 +358,38 @@ def serve_static(h, rel):
     return 200, content, {'Content-Type': ctype}
 
 
-def serve_pdf_file(h, bid):
-    """PDF 流式 + Range 分段（PDF.js 按需拉页）"""
+def serve_pdf_file(h, bid, query=''):
+    """PDF 文件：?info=1 元信息 / ?chunk=N 4MB分片（预览代理对大响应不友好）/ 整文件+Range"""
     path = os.path.join(BOOKS_DIR, f'{bid}.pdf')
     if not os.path.isfile(path):
-        return 404, {'error': '文件不存在'}
+        return h._send(404, {'error': '文件不存在'})
     size = os.path.getsize(path)
+    csize = 4 * 1024 * 1024
+    qs = parse_qs(query)
+    if 'info' in qs:
+        return h._send(200, {'size': size, 'chunkSize': csize, 'chunks': (size + csize - 1) // csize})
+    if 'chunk' in qs:
+        try:
+            n = int(qs['chunk'][0])
+        except (ValueError, IndexError):
+            return h._send(400, {'error': 'chunk 参数错误'})
+        start = n * csize
+        if n < 0 or start >= size:
+            return h._send(416, {'error': 'chunk 超范围'})
+        end = min(start + csize, size)
+        with open(path, 'rb') as f:
+            f.seek(start)
+            chunk = f.read(end - start)
+        h.send_response(200)
+        h.send_header('Content-Type', 'application/octet-stream')
+        h.send_header('Content-Length', str(len(chunk)))
+        h.send_header('Access-Control-Allow-Origin', '*')
+        h.end_headers()
+        try:
+            h.wfile.write(chunk)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+        return
     rng = h.headers.get('Range', '')
     m = re.match(r'bytes=(\d*)-(\d*)$', rng.strip())
     if m and (m.group(1) or m.group(2)):
@@ -475,7 +503,7 @@ class Handler(BaseHTTPRequestHandler):
         m = re.match(r'^/api/books/([^/]+)/file$', path)
         if m and method == 'GET':
             try:
-                serve_pdf_file(self, m.group(1))
+                serve_pdf_file(self, m.group(1), parsed.query)
             except Exception as e:
                 self._send(500, {'error': str(e)})
             return

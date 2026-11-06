@@ -1,1 +1,1 @@
-{"bookId": "b001", "updatedAt": "2026-11-06T11:53:42+08:00", "progress": {}, "annotations": []}
+{"bookId": "b001", "updatedAt": "2026-11-06T14:06:24+08:00", "progress": {"text": {"chapterIdx": 6, "ratio": 0.011260845486431604, "anchorOffset": 0, "clientTs": "2026-11-06T06:06:24.603Z", "updatedAt": "2026-11-06T14:06:24+08:00"}, "pdf": {"lastPage": 3, "zoom": 1, "double": true, "clientTs": "2026-11-06T06:06:09.540Z", "updatedAt": "2026-11-06T14:06:09+08:00"}}, "annotations": []}
