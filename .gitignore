@@ -1,0 +1,6 @@
+.uploads/
+__pycache__/
+pdf-reader/server.log
+pdf-reader/data/books/*.pdf
+pdf-reader/data/state/*.tmp
+pdf-reader/data/texts/*.tmp
