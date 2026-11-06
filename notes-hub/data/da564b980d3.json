@@ -1,0 +1,62 @@
+{
+ "id": "da564b980d3",
+ "name": "考试速记样例",
+ "pages": 1,
+ "notes": [
+  {
+   "page": 1,
+   "type": "便签",
+   "rawType": "Text",
+   "color": "#e53333",
+   "text": "",
+   "comment": "第五章 2027 年考纲有变化，注意新教材表述。",
+   "author": "Meiko",
+   "date": "",
+   "thumb": "582e8554a96a"
+  },
+  {
+   "page": 1,
+   "type": "高亮",
+   "rawType": "Highlight",
+   "color": "#ffe066",
+   "text": "挣值管理（EVM）是高项必考的计算专题。",
+   "comment": "",
+   "author": "Meiko",
+   "date": "",
+   "thumb": "0da006d24c93"
+  },
+  {
+   "page": 1,
+   "type": "高亮",
+   "rawType": "Highlight",
+   "color": "#ffb2d9",
+   "text": "EV 的名字最多，务必区分 PV / EV / AC。",
+   "comment": "这三个缩写考前必须背熟！",
+   "author": "Meiko",
+   "date": "",
+   "thumb": "f04da0c97488"
+  },
+  {
+   "page": 1,
+   "type": "高亮",
+   "rawType": "Highlight",
+   "color": "#99f2a3",
+   "text": "进度偏差 SV = EV - PV，成本偏差 CV = EV - AC。",
+   "comment": "",
+   "author": "Meiko",
+   "date": "",
+   "thumb": "c7c46637a330"
+  },
+  {
+   "page": 1,
+   "type": "下划线",
+   "rawType": "Underline",
+   "color": "#3380ff",
+   "text": "CPI = EV / AC，SPI = EV / PV，大于 1 为好。",
+   "comment": "",
+   "author": "Meiko",
+   "date": "",
+   "thumb": "c0e09f767a25"
+  }
+ ]
+}
