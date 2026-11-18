@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>「惠」字双方案 Logo · 两案速览与选型</title>
+<style>
+  :root {
+    --ink: #0B1B2E;
+    --ink2: #14263D;
+    --paper: #FFFFFF;
+    --paper2: #F4F7FB;
+    --line: #E2E9F2;
+    --text: #17293F;
+    --text2: #5A6E86;
+    --text3: #93A4B8;
+    --navy: #025EC6;
+    --navy-d: #014BA3;
+    --cyan: #26ADF1;
+    --cyan-l: #7FD6F5;
+    --orange: #FD6E24;
+    --disc: #F3F7FE;
+    --green: #0FA36B;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+    --mono: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family: var(--font);
+    background: var(--paper);
+    color: var(--text);
+    line-height: 1.85;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    background:
+      radial-gradient(1200px 600px at 78% -10%, rgba(38,173,241,.30), transparent 62%),
+      radial-gradient(900px 520px at 12% 0%, rgba(2,94,198,.34), transparent 60%),
+      linear-gradient(160deg, #06182E 0%, #0A2242 46%, #0E2E56 100%);
+    color: #fff; padding: 84px 0 72px; position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content:''; position:absolute; inset:0;
+    background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 56px 56px; pointer-events:none;
+  }
+  .hero .wrap { position: relative; z-index: 2; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .24em;
+    text-transform: uppercase; color: var(--cyan-l); margin-bottom: 22px;
+  }
+  h1 { font-size: clamp(30px, 4.2vw, 50px); line-height: 1.24; font-weight: 800; letter-spacing: -.01em; }
+  h1 em { font-style: normal; color: var(--cyan-l); }
+  .hero-sub { margin-top: 20px; font-size: 17px; color: #B9CBDE; max-width: 640px; }
+  .hero-sub .lk { color: var(--cyan-l); text-decoration: none; border-bottom: 1px solid rgba(127,214,245,.5); }
+  .hero-sub .lk:hover { border-bottom-color: var(--cyan-l); }
+  .hb { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .hb .tag {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .08em;
+    padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.18);
+  }
+  .hb .tag.a { border-color: rgba(127,214,245,.55); color: var(--cyan-l); }
+  .hb .tag.b { border-color: rgba(253,110,36,.5); color: #FFB08A; }
+  .hb .tag.n { color: #9FB4CC; }
+  .hero-grid {
+    display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; margin-top: 52px;
+  }
+  .hero-metas { display: grid; gap: 1px; background: rgba(255,255,255,.12); border-radius: 14px; overflow: hidden; }
+  .hm {
+    background: rgba(8,26,48,.72); padding: 16px 20px;
+    display: grid; grid-template-columns: 150px 1fr; gap: 16px; align-items: baseline;
+  }
+  .hm .k { font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; color: var(--cyan-l); text-transform: uppercase; }
+  .hm .v { font-size: 14.5px; color: #E3ECF6; }
+  .hero-logos { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .hl {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14);
+    border-radius: 20px; padding: 20px; text-align: center;
+  }
+  .hl img { width: 100%; height: auto; display:block; border-radius: 50%; }
+  .hl .t { margin-top: 12px; font-size: 13.5px; color: #C7D8E9; letter-spacing:.04em; }
+  .hl .t b { color: #fff; font-weight: 700; }
+
+  /* ---------- SECTION ---------- */
+  section { padding: 76px 0 8px; }
+  .sec-head { display:flex; align-items:baseline; gap:18px; margin-bottom: 14px; }
+  .sec-num {
+    font-family: var(--mono); font-size: 13px; letter-spacing:.18em; color: var(--navy);
+    border:1px solid var(--line); border-radius: 999px; padding: 4px 12px; background: var(--paper2);
+  }
+  h2 { font-size: 28px; font-weight: 800; letter-spacing: -.005em; }
+  .sec-desc { color: var(--text2); font-size: 16px; max-width: 760px; margin-bottom: 36px; }
+  h3 {
+    font-size: 18.5px; font-weight: 750; margin: 44px 0 16px;
+    display:flex; align-items:center; gap:10px;
+  }
+  h3::before { content:''; width:20px; height:3px; background:var(--navy); border-radius:2px; flex:none; }
+  h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  p { margin-bottom: 14px; }
+  strong { color: var(--navy); font-weight: 700; }
+  code {
+    font-family: var(--mono); font-size: 13px; background: var(--paper2);
+    border:1px solid var(--line); border-radius:5px; padding: 1px 6px; color: var(--navy-d);
+  }
+  .lead { font-size: 17px; }
+  .muted { color: var(--text2); }
+  .tiny { font-size: 13px; color: var(--text3); }
+
+  /* ---------- 卡片 ---------- */
+  .card {
+    background: var(--paper2); border: 1px solid var(--line);
+    border-radius: 16px; padding: 26px 28px; margin: 22px 0;
+  }
+  .card.white { background: #fff; }
+  .card.tint { background: linear-gradient(120deg, #EAF3FF, #F6F9FF); border-color:#D6E6FA; }
+
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin: 24px 0; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin: 24px 0; }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin: 24px 0; }
+
+  /* 图例 */
+  .leg {
+    display:flex; flex-wrap:wrap; align-items:center; gap:8px;
+    background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 14px;
+  }
+  .leg .dot { width:12px; height:12px; border-radius:3px; flex:none; }
+  .leg b { font-size: 13.5px; color: var(--text); }
+  .leg .v { font-family: var(--mono); font-size: 11.5px; color: var(--text3); width:100%; line-height:1.6; }
+
+  .mini { background:#fff; border:1px solid var(--line); border-radius:14px; padding:22px; }
+  .mini .n {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing:.16em; color: var(--navy);
+    margin-bottom: 8px; text-transform: uppercase;
+  }
+  .mini h4 { color: var(--text); }
+  .mini p { font-size: 13.5px; color: var(--text2); margin: 0; line-height:1.8; }
+
+  /* ---------- 表 ---------- */
+  .table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:14px; margin: 20px 0 28px; background:#fff; }
+  table { width:100%; border-collapse:collapse; min-width: 640px; font-size: 14.5px; }
+  thead th {
+    background: var(--paper2); text-align:left; padding: 13px 18px; font-weight: 700;
+    font-size: 13px; letter-spacing:.03em; color: var(--text); border-bottom:1px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody td { padding: 13px 18px; border-bottom:1px solid var(--line); vertical-align: top; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:nth-child(even) { background: #FBFCFE; }
+  .num { font-family: var(--mono); font-size: 13px; white-space: nowrap; }
+
+  /* ---------- 色卡 ---------- */
+  .swatches { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin: 26px 0; }
+  .sw { border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#fff; }
+  .sw .chip { height: 96px; position:relative; }
+  .sw .chip .pct {
+    position:absolute; right:10px; bottom:8px; font-family:var(--mono);
+    font-size: 13px; font-weight:700; color:#fff; text-shadow:0 1px 4px rgba(0,0,0,.35);
+  }
+  .sw .chip .pct.dark { text-shadow:none; color: rgba(0,0,0,.6); }
+  .sw .meta { padding: 13px 15px 15px; }
+  .sw .nm { font-weight: 700; font-size: 14px; }
+  .sw .rl { font-size:12.5px; color: var(--text2); margin: 3px 0 9px; line-height:1.55; min-height:38px; }
+  .sw .hx { font-family:var(--mono); font-size:12.5px; color: var(--navy-d); }
+  .sw .rg { font-family:var(--mono); font-size:11px; color: var(--text3); }
+
+  .ramp { display:flex; height:54px; border-radius:12px; overflow:hidden; border:1px solid var(--line); margin:18px 0 8px; }
+  .ramp div { flex:1; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:#fff; }
+
+  /* ---------- 对比度 ---------- */
+  .cd { border:1px solid var(--line); border-radius:14px; overflow:hidden; margin:20px 0 26px; background:#fff; }
+  .cd-row { display:grid; grid-template-columns: 1fr 190px 140px; align-items:center; border-bottom:1px solid var(--line); }
+  .cd-row:last-child { border-bottom:none; }
+  .cd-s { padding: 16px 20px; font-weight: 700; font-size: 15px; }
+  .cd-r { font-family:var(--mono); font-size: 20px; font-weight:700; text-align:center; }
+  .cd-r small { display:block; font-size:10.5px; color:var(--text3); font-weight:400; }
+  .cd-g { text-align:center; font-family:var(--mono); font-size:12px; letter-spacing:.08em; }
+  .pass { color: var(--green); } .warn { color: #B45309; } .fail { color: #B91C1C; }
+
+  /* ---------- 图 ---------- */
+  figure { margin: 26px 0; }
+  figure img { width:100%; height:auto; display:block; border:1px solid var(--line); border-radius:14px; }
+  figure figcaption { font-size:13px; color:var(--text2); text-align:center; margin-top:10px; }
+  .fig-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:26px 0; }
+  .fig-2 figure { margin:0; }
+
+  /* ---------- 列表 ---------- */
+  .spec { list-style:none; margin:14px 0 22px; }
+  .spec li {
+    padding: 13px 0 13px 32px; border-bottom:1px dashed var(--line);
+    position:relative; font-size:15px;
+  }
+  .spec li:last-child { border-bottom:none; }
+  .spec li::before {
+    content:''; position:absolute; left:6px; top:23px; width:8px; height:8px;
+    border-radius:50%; background: var(--navy);
+  }
+  .spec li b { font-weight:700; }
+  .spec li .d { display:block; font-size:13.5px; color:var(--text2); line-height:1.75; }
+
+  /* ---------- 尺度测试 ---------- */
+  .scale { display:flex; align-items:flex-end; gap:30px; flex-wrap:wrap; padding:28px; background:var(--paper2); border:1px solid var(--line); border-radius:16px; margin:22px 0; }
+  .si { text-align:center; }
+  .si img { display:block; margin:0 auto 9px; border-radius:50%; }
+  .si .lb { font-family:var(--mono); font-size:11px; color:var(--text2); }
+
+  /* ---------- 方案卡 ---------- */
+  .plan { border:1px solid var(--line); border-radius:18px; overflow:hidden; background:#fff; }
+  .plan .ph { padding: 18px 24px; color:#fff; display:flex; align-items:baseline; gap:12px; }
+  .plan.a .ph { background: linear-gradient(100deg,#025EC6,#1E86E8); }
+  .plan.b .ph { background: linear-gradient(100deg,#0A2242,#0E3D74); }
+  .plan .ph .t { font-size:18px; font-weight:750; }
+  .plan .ph .s { font-family:var(--mono); font-size:11.5px; opacity:.85; letter-spacing:.1em; }
+  .plan .pb { padding: 24px; }
+  .plan .pb > img { width: 74%; display:block; margin: 0 auto 22px; border-radius:50%; }
+  .plan .pb .tag { display:inline-block; font-family:var(--mono); font-size:11px; letter-spacing:.1em; padding:4px 10px; border-radius:999px; background:var(--paper2); color:var(--text2); margin-bottom:12px; }
+
+  /* ---------- 选用建议 ---------- */
+  .reco { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:24px 0; }
+  .rc { border-radius:16px; padding:26px 28px; border:1px solid var(--line); background:#fff; }
+  .rc.pick { border-color:#BBD9FB; background: linear-gradient(150deg,#EFF6FF,#FFFFFF); box-shadow: 0 6px 26px rgba(2,94,198,.10); }
+  .rc .badge { font-family:var(--mono); font-size:11px; letter-spacing:.14em; padding:4px 10px; border-radius:999px; display:inline-block; margin-bottom:12px; }
+  .rc.pick .badge { background:var(--navy); color:#fff; }
+  .rc.alt .badge { background:var(--paper2); color:var(--text2); border:1px solid var(--line); }
+
+  /* ---------- 声明 ---------- */
+  .decl {
+    border-left: 4px solid var(--navy); background: linear-gradient(90deg,#F2F8FF,#FFFFFF);
+    border-radius: 0 16px 16px 0; padding: 24px 28px; margin: 24px 0;
+  }
+  .decl .t { font-family:var(--mono); font-size:11.5px; letter-spacing:.18em; color:var(--navy); margin-bottom:8px; text-transform:uppercase; }
+  .decl p { margin:0; }
+
+  .quote {
+    margin: 34px 0; padding: 30px 36px; background: var(--ink); color:#E8F0F8;
+    border-radius:16px; font-size: 18.5px; line-height:1.8;
+  }
+  .quote b { color: var(--cyan-l); font-weight:700; }
+
+  .note {
+    font-size:13px; color:var(--text2); background:var(--paper2); border:1px dashed var(--line);
+    border-radius:10px; padding: 13px 16px; margin: 14px 0;
+  }
+
+  footer {
+    margin-top: 76px; padding: 40px 0 56px; border-top: 1px solid var(--line);
+    font-size:13px; color:var(--text3);
+  }
+  footer .wrap { display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px; }
+  .mono { font-family:var(--mono); }
+
+  @media (max-width: 900px) {
+    .hero-grid, .grid-2, .grid-3, .grid-4, .fig-2, .reco, .swatches { grid-template-columns:1fr; }
+    .swatches { grid-template-columns: repeat(2,1fr); }
+    .cd-row { grid-template-columns: 1fr 110px 100px; }
+    .wrap { padding: 0 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Brand Identity · Logo Design Brief</div>
+    <h1>「惠」字双方案 Logo<br><em>两案速览与选型</em></h1>
+    <p class="hero-sub">
+      方案 A「水平势能」与方案 B「环流聚核」——共用同一套字形基因、同一色彩系统与同一圆形容器，
+      以两种结构语义承载同一个品牌主张。本版聚焦两案本身：<strong>理念内核 → 结构对照 → 选型结论</strong>，
+      字形放样、色彩工程与尺度规范见<a class="lk" href="./logo-design-rationale.html">完整版《Logo 完整设计说明》</a>。
+    </p>
+    <div class="hb">
+      <span class="tag a">A · 水平势能</span>
+      <span class="tag b">B · 环流聚核</span>
+      <span class="tag n">同一 DNA · 同一色彩 · 同一容器</span>
+    </div>
+
+    <div class="hero-grid">
+      <div class="hero-logos">
+        <div class="hl">
+          <img src="./assets/logo_A.png" alt="方案 A 圆形 Logo">
+          <div class="t"><b>方案 A</b> · 水平势能</div>
+        </div>
+        <div class="hl">
+          <img src="./assets/logo_B.png" alt="方案 B 圆形 Logo">
+          <div class="t"><b>方案 B</b> · 环流聚核</div>
+        </div>
+      </div>
+
+      <div class="hero-metas">
+        <div class="hm"><span class="k">容器</span><span class="v">正圆 · 直径 <span class="mono">834 px</span> · 浅底 <code>#F3F7FE</code></span></div>
+        <div class="hm"><span class="k">字形</span><span class="v">「惠」· 定制几何黑体 · 字面 <span class="mono">512 × 356 px</span></span></div>
+        <div class="hm"><span class="k">笔画</span><span class="v">中轴竖 <span class="mono">84</span> / 日框侧竖 <span class="mono">58</span> / 横画 <span class="mono">53</span></span></div>
+        <div class="hm"><span class="k">主色</span><span class="v">惠 <code>#025EC6</code> · 流 <code>#26ADF1</code> · 点 <code>#FD6E24</code></span></div>
+        <div class="hm"><span class="k">同源校验</span><span class="v">两方案字形像素级一致率 <span class="mono">99.99%</span></span></div>
+        <div class="hm"><span class="k">适用</span><span class="v">To G / To B 数字平台标识、APP 图标、大屏主视觉</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ==================== 01 ==================== -->
+<section id="s1">
+  <div class="sec-head"><span class="sec-num">01</span><h2>设计命题与理念内核</h2></div>
+  <p class="sec-desc">
+    标识不是图案的堆叠，而是「一个主张 + 三层语义」的结构化表达。本套 Logo 把品牌要说的三件事
+    压缩进一个圆形容器里：<strong>主体是谁</strong>、<strong>在做什么</strong>、<strong>凭什么被信任</strong>。
+  </p>
+
+  <div class="decl">
+    <div class="t">Core Proposition</div>
+    <p>
+      一个「惠」字立在水流之上——<strong>字是主体，水是行为</strong>。
+      「惠」是普惠惠民之惠，水是润泽万物之水，二者相叠即成「惠泽四方」的完整语义。
+      字面朝下承接水流，水流托举字面向上，两者互为因果；
+      一枚橙色动能方块嵌在水的核心，代表<strong>实时运转的数据脉冲</strong>。
+      整个标识在圆形容器内闭合，象征平台的<strong>开放性、完整性与持续性</strong>。
+    </p>
+  </div>
+
+  <div class="grid-3">
+    <div class="mini">
+      <div class="n">Layer 01</div>
+      <h4>惠 · 主体识别</h4>
+      <p>「惠」字采用定制几何黑体：横平竖直、笔画等宽、转角切角，摒弃书法气质，
+         保留「十起势—日为骨—心回锋」的骨架而重绘全部笔画，
+         在小尺寸下依然能凭轮廓锁定识别。字面宽高比 <span class="mono">512 : 356</span>，
+         在圆形内形成稳定的视觉重量。<br>
+         字义取<strong>「惠及民生、普惠共享」</strong>，与 To G 平台的政策语汇天然同频——
+         一个字即完成主体定位，无需副标解释。</p>
+    </div>
+    <div class="mini">
+      <div class="n">Layer 02</div>
+      <h4>流 · 行为表达</h4>
+      <p>三道抽象水波 / 数据流自深蓝渐变至青蓝，沿弧线由左下向右上抬升，
+         表达<strong>数据汇聚、价值流动、持续上升</strong>。渐变不是装饰，
+         而是「从沉淀到跃升」的路径可视化。</p>
+    </div>
+    <div class="mini">
+      <div class="n">Layer 03</div>
+      <h4>点 · 动能标记</h4>
+      <p>橙色圆角方块置于流的焦点，尺寸 <span class="mono">100 × 83 px</span>（A）/
+         <span class="mono">112 × 83 px</span>（B）。它代表实时在线的数据节点——
+         <strong>一个活跃的、跳动着的系统</strong>。全图仅 4.2%（A）/ 3.9%（B）面积，却承担 100% 的视觉记忆点。</p>
+    </div>
+  </div>
+
+  <div class="quote">
+    一句话：<b>字立其上，水流其下，一点居中</b>——以「惠」确认主体，
+    以「流」表达运转，以「橙」点亮动能，圆形闭合成就完整可信。
+  </div>
+
+  <h3>两方案共享的 DNA Lock</h3>
+  <p class="muted">
+    无论最终选用哪一方案，以下基因不可变更。这不是风格偏好，而是可被逐像素验证的硬约束。
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:150px">基因项</th><th style="width:220px">锁定值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>容器</td><td class="num">正圆 D=834</td><td>圆心与画布中心严格重合；两方案圆径完全一致（实测 834.7 / 834.7）。</td></tr>
+        <tr><td>圆底色</td><td class="num">#F3F7FE</td><td>极浅冷蓝，兼作负形空间与品牌底色，不使用纯白以保留蓝调氛围。</td></tr>
+        <tr><td>「惠」字形</td><td class="num">512 × 356 px</td><td>两方案字形经对齐比对，像素不一致率仅 <span class="mono">0.01%</span>（抗锯齿边界）。属同一基因。</td></tr>
+        <tr><td>中轴长竖笔宽</td><td class="num">84 px</td><td>视觉主脊，贯穿全字。所有横画以此为基准对齐。</td></tr>
+        <tr><td>日框侧竖笔宽</td><td class="num">58 px</td><td>「日」框左右竖笔，等宽对称。</td></tr>
+        <tr><td>横画厚度</td><td class="num">53 px</td><td>顶横 / 内横统一厚度，构成稳定节奏。</td></tr>
+        <tr><td>字色</td><td class="num">#025EC6</td><td>字面填充为纯色，不做渐变、不加描边、不加投影。</td></tr>
+        <tr><td>橙点</td><td class="num">#FD6E24</td><td>唯一暖色。尺寸与位置随方案微调，色值恒定不变。</td></tr>
+        <tr><td>流线渐变</td><td class="num">#025EC6 → #26ADF1</td><td>由深蓝（沉）至青蓝（跃），沿流向单向推进。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== 02 ==================== -->
+<section id="s2">
+  <div class="sec-head"><span class="sec-num">02</span><h2>两案对照与选型建议</h2></div>
+  <p class="sec-desc">
+    两方案共享全部 DNA，差异仅在「流」的拓扑结构与「字流关系」——这决定了两者的语义分工与场景适配。
+  </p>
+
+  <figure>
+    <img src="./assets/compare.png" alt="两方案在浅底与深底下的并置对比">
+    <figcaption>方案 A 与方案 B 在浅底（#FFFFFF）与深底（#0B1626）环境下的表现 — 两方案在两种底色下均保持边界清晰。</figcaption>
+  </figure>
+
+  <div class="grid-2">
+    <div class="plan a">
+      <div class="ph"><span class="t">方案 A</span><span class="s">HORIZONTAL / 水平势能</span></div>
+      <div class="pb">
+        <img src="./assets/logo_A.png" alt="方案 A">
+        <span class="tag">上字 · 下流 · 开口向右</span>
+        <p style="font-size:14.5px; color:var(--text2)">
+          「惠」字悬于图形上方，水流在字下由左向右铺展，三道波纹呈<strong>向右开口的承接姿态</strong>，
+          橙色方块落在字与流之间的视觉空腔里。
+        </p>
+        <ul class="spec" style="margin-top:14px">
+          <li><b>结构</b><span class="d">字（512×356）位于上半区；三条弧形波带占据下半区 y=500..696。</span></li>
+          <li><b>流向</b><span class="d">自左下向右上升，末端上挑至右上，形成横向推进的开放感。</span></li>
+          <li><b>重心</b><span class="d">字重压上：深蓝族占饱和像素 84.7%，其中字形本体占 63.9%，视觉稳定、可信度强。</span></li>
+          <li><b>语义</b><span class="d">「稳中求进 / 稳态输出」——适合权威展示与规模背书场景。</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="plan b">
+      <div class="ph"><span class="t">方案 B</span><span class="s">ORBITAL / 环流聚核</span></div>
+      <div class="pb">
+        <img src="./assets/logo_B.png" alt="方案 B">
+        <span class="tag">字在环中 · 流绕字行 · 闭环</span>
+        <p style="font-size:14.5px; color:var(--text2)">
+          「惠」字下沉并与水波互咬，水流自左侧绕过字身下方汇聚成<strong>椭圆环</strong>，
+          橙色方块被环流包裹在核心位置。
+        </p>
+        <ul class="spec" style="margin-top:14px">
+          <li><b>结构</b><span class="d">字下沉至圆心偏上；两道弧带首尾相接构成闭合椭圆环，纵跨 y=500..737。</span></li>
+          <li><b>流向</b><span class="d">自左上入环，绕行一周回到右下的深蓝段，形成循环往复。</span></li>
+          <li><b>重心</b><span class="d">图形与字融为一体，字形占比降至 58.5%，动态感更强。</span></li>
+          <li><b>语义</b><span class="d">「循环运转 / 自我驱动」——适合平台机制与长期主义叙事。</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p class="sec-desc">
+    两方案在技术上完全等价——同一基因、同一色彩、同一容器。差异是叙事差异，因此选型应由品牌当下要讲什么决定。
+  </p>
+
+  <div class="reco">
+    <div class="rc pick">
+      <span class="badge">PRIMARY · 建议主用</span>
+      <h4 style="font-size:19px; margin-bottom:10px">方案 A · 水平势能</h4>
+      <p style="font-size:14.5px; color:var(--text2)">
+        当品牌当前的任务是<strong>建立权威、获取信任、对外背书规模</strong>时选 A。
+        「惠」字占据 63.9% 的饱和像素视觉重量（连同沉段流带的深蓝合计 84.7%），第一眼读出的是主体名称而非图形装饰；
+        横向铺展的水流天然适配大屏、宽幅物料与并排排版。
+      </p>
+      <ul class="spec" style="margin-top:14px">
+        <li><b>优势</b><span class="d">字重集中、小尺寸识别稳定、易于与中文名称排版组合、跨媒介适应面广。</span></li>
+        <li><b>代价</b><span class="d">语义偏静态与稳态，缺少「循环自我驱动」的平台叙事张力。</span></li>
+      </ul>
+    </div>
+
+    <div class="rc alt">
+      <span class="badge">ALTERNATE · 机制表达</span>
+      <h4 style="font-size:19px; margin-bottom:10px">方案 B · 环流聚核</h4>
+      <p style="font-size:14.5px; color:var(--text2)">
+        当品牌当前的任务是<strong>讲清机制、强调运转、塑造长期主义</strong>时选 B。
+        字与流互咬成环，橙色动能点被包裹在核心，天然传达「系统持续自我循环」的机制叙事；
+        在方形 App 图标与竖版场景中完整度更高。
+      </p>
+      <ul class="spec" style="margin-top:14px">
+        <li><b>优势</b><span class="d">机制叙事强、构图居中且封闭、方形裁切友好、视觉更灵动。</span></li>
+        <li><b>代价</b><span class="d">字面占比降至 58.5%，极小尺寸下主体名称的直读效率低于 A。</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="decl">
+    <div class="t">Final Recommendation</div>
+    <p>
+      建议<strong>以方案 A 作为品牌主标识</strong>——当前品牌处于「让用户先认清我们是谁」的阶段，
+      字重充足、识别直接是更优解；<strong>保留方案 B 作为机制板块 / App 图标 / 动态场景的专属副标识</strong>，
+      用于讲述平台的运转逻辑。二者共享全部 DNA 与色彩系统，同屏共存不会产生品牌分裂感。
+    </p>
+  </div>
+
+  <div class="grid-3">
+    <div class="mini">
+      <div class="n">Step 01</div>
+      <h4>矢量重建</h4>
+      <p>按本文档的实测数据（圆径 834、字面 512×356、笔宽 84/58/53、橙点 100×83 / 112×83）重新绘制矢量稿，
+         保留真实渐变而非位图。</p>
+    </div>
+    <div class="mini">
+      <div class="n">Step 02</div>
+      <h4>输出物料</h4>
+      <p>彩色版（圆版 + 单色版）、深浅底适配版、SVG 矢量、
+         PNG 透明底多倍图、CMYK 印刷文件。</p>
+    </div>
+    <div class="mini">
+      <div class="n">Step 03</div>
+      <h4>建立规范</h4>
+      <p>发布《Logo 使用规范》，锁定安全空间、最小尺寸、禁止事项，
+         交付图标网格与应用清单。</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div style="font-weight:700; color:var(--text); margin-bottom:4px">「惠」字双方案 Logo · 两案速览与选型</div>
+      <div>速览版 · 完整版含字形放样、色彩工程、尺度体系与应用规范</div>
+    </div>
+    <div class="mono" style="text-align:right">
+      V1.0 · 2026-11-18<br>
+      容器 D834 · 字面 512×356 · 笔宽 84/58/53
+    </div>
+  </div>
+</footer>
+
+</div>
+
+</body>
+</html>
