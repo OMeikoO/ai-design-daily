@@ -1,7 +1,7 @@
 {
-  "date": "2026-11-18",
-  "updatedAt": "2026-11-18T09:09:03+08:00",
-  "totalItems": 57,
+  "date": "2026-11-19",
+  "updatedAt": "2026-11-19T09:18:24+08:00",
+  "totalItems": 59,
   "categories": [
     {
       "id": "interaction",
@@ -41,6 +41,118 @@
     }
   ],
   "items": [
+    {
+      "id": "20261119-ifanr-daily",
+      "category": "tech",
+      "title": "爱范儿早报：Gemini 4 Neon 发布、Anthropic 上市、豆包工作日活破 800 万",
+      "summary": "①今日快讯密集：谷歌发布 Gemini 4 Neon，100 万 Token 上下文，每百万输入/输出 3/15 美元，单任务成本比 Carbon 低 32%；Anthropic IPO 定价 83 美元、估值约 1.5 万亿美元，19 日以 ANT 登陆纳斯达克；豆包工作三个月 DAU 破 800 万、企业 ARR 超 20 亿，腾讯 WorkBuddy 日活超 1000 万；千问办公接入 DeepSeek、GLM、Kimi 等第三方模型；即梦 Seedance 2.5 支持原生 4K，可灵 Image 4.0 单图最多 2000 字。②价值：模型差距缩小，竞争转向「模型路由＋场景工作台＋成本控制」，办公 Agent 用户习惯已被验证。③建议：建立按任务选模型的默认策略与成本看板，把高频流程封装进可自选模型的工作台，而非押注单一模型。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1690255",
+      "tags": [
+        "Gemini 4 Neon",
+        "Anthropic IPO",
+        "豆包工作",
+        "WorkBuddy",
+        "Seedance"
+      ],
+      "publishedAt": "2026-11-19"
+    },
+    {
+      "id": "20261119-36kr-001",
+      "category": "tools",
+      "title": "Claude Code 上线 Code Mode：不换模型，Token 最高省 77%",
+      "summary": "①Anthropic 在 Claude Code v2.1.323 及以上版本加入默认关闭的实验功能 Code Mode：原本由模型逐次组织的工具调用，改为模型写一段 JavaScript 在本地一次执行，内置工具入口从 16 个精简到 3 个。第三方实测多步任务 API 账单降 22%–23%，高频调用外部工具时累计 Token 降 62%–77%，首轮请求少约 1.3 万 Token。②对 AI 产品团队的价值：不换模型、只改「谁来组织循环、中间数据放在哪」的 Harness 层，就能挤出两成以上真实成本，为 Agent 的上下文与计费结构提供了可复用范式。③建议：批处理、跨工具取数类任务优先切到 Code Mode；一条 shell 就能完成的简单改动用它反而可能因脚本排错变贵；同时提前补上脚本级权限、审计与熔断，因为整段执行会让逐条工具审核失效。",
+      "source": "36氪",
+      "url": "https://36kr.com/p/4075148096066440",
+      "tags": [
+        "Claude Code",
+        "Code Mode",
+        "Token 成本",
+        "Agent",
+        "Harness"
+      ],
+      "publishedAt": "2026-11-18"
+    },
+    {
+      "id": "20261119-36kr-002",
+      "category": "design",
+      "title": "AI 陪伴赛道震荡：收入前十被下架 5 款，苹果新规成生死线",
+      "summary": "①SensorTower 数据显示，AI 陪伴收入榜前十中 Tipsy、PolyBuzz、Zeta、Chai、Tizz 五款已从主要市场 iOS 下架，普遍指向苹果 10 月 16 日新规：禁止生成未经同意的私密影像，禁止隐藏功能与审核期虚假陈述，违者下架并封号。榜首 Tipsy 月入约 1.3 亿元，但收入高度依赖大 R，合规收紧后承压明显；Heyyyy、Emochi 等接住了外溢流量。②对产品与设计的意义：靠 NSFW 灰色需求撬动付费的捷径被封死，「情感陪伴」必须回到角色塑造、剧情与沉浸式互动本身；平台合规已是产品定位的前置约束，而不是上线后的补丁。③建议：立项时就把内容分级、审核策略与年龄门槛画进用户旅程；把内容尺度做成透明可选项而非暗箱；并为下架或封号准备 Web 端与用户迁移预案。",
+      "source": "36氪",
+      "url": "https://36kr.com/p/4075075172783238",
+      "tags": [
+        "AI 陪伴",
+        "App Store 新规",
+        "内容合规",
+        "产品定位",
+        "出海"
+      ],
+      "publishedAt": "2026-11-18"
+    },
+    {
+      "id": "20261119-woshipm-001",
+      "category": "interaction",
+      "title": "GPT-6.2 Astra 口碑翻车：过度对齐让 Agent 变成「保姆型同事」",
+      "summary": "①GPT-6.2 Astra 在 ARC-AGI-3 拿到满分、成本仅为前代三分之一，却被早期测试者称为「OpenAI 史上最差发布」：真实工程任务中连续 7 天零进展，卡在无人能懂的内部细节上等待人类回答，或过早停止、把文字压到难以阅读，测试者不得不另挂一个 Agent 专门检查它是否「问蠢问题卡住」。②对交互与产品设计的价值：模型跑分与可协作性严重脱节，「什么时候该问、问谁、问到什么颗粒度」是界面与流程设计问题；过度对齐会把模型的不确定性转嫁成人类的持续盯守成本。③建议：为 Agent 设计分级澄清机制——可自行假设的先做、影响不可逆的才打断；加入超时与死循环熔断、阶段性质检点；把「需要人类介入的频率」作为与准确率并列的核心体验指标。",
+      "source": "人人都是产品经理",
+      "url": "https://www.woshipm.com/ai/6495711.html",
+      "tags": [
+        "GPT-6.2 Astra",
+        "过度对齐",
+        "Agent 体验",
+        "人机协作",
+        "熔断"
+      ],
+      "publishedAt": "2026-11-19"
+    },
+    {
+      "id": "20261119-woshipm-002",
+      "category": "interaction",
+      "title": "August 融资 1200 万美元：健康 AI 从答疑走向替用户打电话约诊",
+      "summary": "①健康 AI 公司 August 获 Accel、Peak XV 1200 万美元融资，在已有 1000 万用户「读懂化验单」的基础上，开始替用户给诊所打电话、核对保险与接诊情况并完成预约。创始人称早期用户累计电话等待已达 24,286 分钟；实测旧金山一份保险名单 30 个号码中有 18 个信息有误。②对产品经理的价值：AI 正从「回答问题」走向「代办麻烦事」，信任是分层建立的——先解释清楚，再代为行动；电话中主动承认「我是 AI」、问题简短、答案可跨用户复用，是降低对方反感的关键交互设计。③建议：代办型 Agent 从风险最低、可回滚的环节切入；把用户确认节点放在承诺之前而非之后；并提前明确数据授权、隐私存储与出错责任归属。",
+      "source": "人人都是产品经理",
+      "url": "https://www.woshipm.com/chuangye/6495617.html",
+      "tags": [
+        "健康 AI",
+        "Agent 代办",
+        "信任设计",
+        "语音交互",
+        "隐私"
+      ],
+      "publishedAt": "2026-11-19"
+    },
+    {
+      "id": "20261119-web-illustrator",
+      "category": "tools",
+      "title": "Illustrator 31.0 上线自然语言 AI 助手：图层整理与批量改稿一句话完成",
+      "summary": "①Adobe Illustrator 31.0 推出 AI 助手 Beta，可用自然语言驱动多步骤重复任务：整理图层、批量修改内容、印前文件预处理等，媒体解读称可覆盖约三成日常工时，整体工作流效率提升超 40%。②对设计师的价值：重复操作从「记路径、点菜单」变成「描述目标」，新手不必背快捷键也能完成专业级常规操作，资深设计师则能把时间挪到创意与审美判断上。③建议：先把团队最耗时的三类重复流程（命名分层、批量改文案、印前检查）写成标准指令模板；对 AI 执行结果保留可回退版本与人工复核点，避免批量操作放大错误；把省下的时间投入需求研判与风格决策，而不是接更多机械活。",
+      "source": "站酷AI日报",
+      "url": "https://www.adobe.com/cn/products/illustrator/features/new-features.html",
+      "tags": [
+        "Adobe Illustrator",
+        "AI 助手",
+        "自然语言",
+        "工作流",
+        "印前"
+      ],
+      "publishedAt": "2026-11-18"
+    },
+    {
+      "id": "20261119-web-looker",
+      "category": "styles",
+      "title": "Looker 改版数据可视化：新增 KPI 图、桑基图与 AI 自定义图表",
+      "summary": "①Google Cloud 更新 Looker：重做仪表盘视觉与排版，新增 KPI 可视化、子弹图、桑基图等原生图表与更强的交互控件，并上线 Custom Visualization Skill——用户用自然语言描述想要的图表，AI 编码代理生成对应代码，无需写 JavaScript。②对数据产品与设计团队的价值：BI 正从「固定图表库＋配置面板」转向「描述意图即得可视化」，设计重心从做图表模板转为定义可视化语法、默认样式与可信度提示；排版与可读性重新成为仪表盘的核心竞争力。③建议：先建立企业级图表选用规范（什么数据用什么图、颜色与刻度约束），再让 AI 在规范内生成；对 AI 生成的图表保留数据校验与来源标注，避免「好看但误导」的可视化。",
+      "source": "Google Cloud",
+      "url": "https://cloud.google.com/blog/products/business-intelligence/modern-data-visualizations-and-custom-charts-in-looker",
+      "tags": [
+        "Looker",
+        "数据可视化",
+        "仪表盘",
+        "AI 图表",
+        "BI 设计"
+      ],
+      "publishedAt": "2026-11-18"
+    },
     {
       "id": "20261118-ifanr-daily",
       "category": "tech",
@@ -522,22 +634,6 @@
       "publishedAt": "2026-11-15"
     },
     {
-      "id": "20261115-web-a2ui",
-      "category": "interaction",
-      "title": "Google开源A2UI 1.0：Agent用原生表单和图表回答，不再只给一段话",
-      "summary": "①11月11日谷歌发布A2UI 1.0稳定版：Agent不再只回一段文字，而是发出「要显示什么」的描述，由宿主App用自有原生组件渲染成表单、图表或选择器；开发者注册组件白名单，Agent无法越界，设计系统仍掌握最终样式；敏感值绑定在服务端，不经过模型。渲染器覆盖React、Angular、Lit、Flutter、SwiftUI与Compose，SDK支持Python、TypeScript与Dart，并可通过MCP Apps出现在Claude、Gemini里；Atlassian已在Jira用交互卡片向团队补信息。②对交互设计师：界面从「留住用户的护城河」变成「可被分发的渠道」，对话不是唯一形态，该用表单时就用表单。③可执行：先把设计系统里最高频的三类组件（选择器、确认卡、结果表）整理成Agent可调用清单，并明确哪些字段禁止交给模型。",
-      "source": "AI Insiders",
-      "url": "https://www.aiinsiders.net/article/googles-a2ui-10-lets-agents-reply-with-native-screens-not",
-      "tags": [
-        "A2UI",
-        "生成式UI",
-        "Agent",
-        "设计系统",
-        "协议标准"
-      ],
-      "publishedAt": "2026-11-11"
-    },
-    {
       "id": "20261114-36kr-001",
       "category": "tips",
       "title": "Claude 95万字系统提示词泄露：128个工具与44套技能曝光",
@@ -616,22 +712,6 @@
         "具身智能"
       ],
       "publishedAt": "2026-11-13"
-    },
-    {
-      "id": "20261114-web-interaction",
-      "category": "design",
-      "title": "投资人押注「有眼力见儿」的AI：交互正成为独立智能能力",
-      "summary": "①融资中国复盘具身智能与 AI 终端的下一道考题：当模型能力趋同，竞争转向「有眼力见儿」的交互——知道何时帮忙、何时不打扰、如何体面退出。文章以机器人递水、Clippy 回形针为反例，指出主动交互一旦越界就是骚扰；Thinking Machines Lab 的 Interaction Models 用约 200ms 微回合处理连续音视频，Sesame 以 250 毫秒级语音模型拿到 2.5 亿美元 B 轮，国内 SYNAPUFF 则用可撤回的试探动作判断交互意愿。②对设计师/产品经理：交互正在从界面功能升级为独立智能能力，硬件差异化越来越小，交互定义决定产品「有没有灵魂」；评价体系也要从准确率转向介入时机、无效打扰次数、拒绝后是否停止、人格是否一致。③可执行：为每个主动能力定义触发条件与退出条件；建立「打扰日志」做长期复盘；跨设备统一交互人格；用共处一周而非单次任务测试体验。",
-      "source": "36氪",
-      "url": "https://36kr.com/p/4064758180762753",
-      "tags": [
-        "具身智能",
-        "主动交互",
-        "交互范式",
-        "AI硬件",
-        "设计评价"
-      ],
-      "publishedAt": "2026-11-11"
     },
     {
       "id": "20261113-ifanr-daily",
@@ -904,54 +984,6 @@
         "北京"
       ],
       "publishedAt": "2026-11-12"
-    },
-    {
-      "id": "20261111-ifanr-daily",
-      "category": "tech",
-      "title": "爱范儿早报：Gemini 4 Carbon开放、Claude白板、Blender 5.3高斯泼溅",
-      "summary": "①今日快讯密集：Anthropic启动IPO路演，每股70–78美元、最高估值约1.4万亿美元；华为MateBook Fold S小折叠电脑11月14日开启预订；Google向开发者与Ultra用户全量开放Gemini 4 Carbon；苹果被曝开发Harbor，可把多台Mac统一内存拼成本地推理集群；MiniMax开源H3-Image权重，支持4096×4096；Adobe更新Photoshop/Premiere，修图可连倒影一起移除；Claude上线原生表格与白板；ChatGPT开放商家认领与客服Agent；Blender 5.3支持三维高斯泼溅；金鸡电影节首设AI单元。②对设计师与产品经理，素材生产、团队共创、本地部署三条线同时推进，AI正从单点出图变成工作台的一部分。③建议选一个团队高频环节（修图、白板共创或本地模型）做一周试点，记录节省的往返次数，再决定是否纳入标准流程。",
-      "source": "爱范儿",
-      "url": "https://www.ifanr.com/1688852",
-      "tags": [
-        "Gemini 4 Carbon",
-        "Anthropic",
-        "Claude 白板",
-        "Blender",
-        "Photoshop"
-      ],
-      "publishedAt": "2026-11-11"
-    },
-    {
-      "id": "20261111-36kr-001",
-      "category": "interaction",
-      "title": "36氪：小红书「蜜薯」做生活 Agent，渐进式感知现场",
-      "summary": "①小红书REDtech发布Personal Agent「蜜薯」，定位AI生活搭子，覆盖找小店、点菜、比商品、找展览等场景，并配合Rokid AI眼镜做第一视角交互；其「渐进式感知」会在任务推进中逐步获取现场信息，而不是要求用户一次说清。②对交互设计师，这是从「一次性提问」转向「上下文累积」的样本；对产品经理，更关键的是它要回答「该不该买」，并区分商业合作、普通体验与AI生成内容，信任设计比模型能力更决定留存。③可执行：在Agent里加入渐进式上下文槽位、来源与时效标注、反向建议（劝退）入口，并把「帮用户避免的错误消费」纳入指标。",
-      "source": "36氪",
-      "url": "https://36kr.com/p/4063844024653697",
-      "tags": [
-        "小红书",
-        "Personal Agent",
-        "渐进式感知",
-        "AI眼镜",
-        "信任设计"
-      ],
-      "publishedAt": "2026-11-11"
-    },
-    {
-      "id": "20261111-36kr-002",
-      "category": "tech",
-      "title": "36氪：Gemini 4 Carbon 全球开放，/swarm 多 Agent 蜂群",
-      "summary": "①Google将Gemini 4 Carbon全量开放给付费API、企业与AI Ultra用户，官方称其在CursorBench 4.0、Perplexity WANDR、Zapier AutomationBench均列第一；Antigravity同步上线/swarm多Agent蜂群，一句提示词可生成可交互3D建筑、开放世界游戏，并称四周产出650万行形式化证明。价格每百万输入2美元、输出10美元，缓存再打95%折扣。②设计侧的意义是从「生成一张图」走向「生成可交互的三维场景与原型」，多Agent编排把交付物从页面扩展到可运行作品。③建议用/swarm跑一个概念原型，提前设定评审节点与预算上限，并比较缓存命中后的真实成本。",
-      "source": "36氪",
-      "url": "https://36kr.com/p/4064527178208130",
-      "tags": [
-        "Gemini 4 Carbon",
-        "多Agent",
-        "Antigravity",
-        "3D生成",
-        "API定价"
-      ],
-      "publishedAt": "2026-11-11"
     }
   ]
 }
