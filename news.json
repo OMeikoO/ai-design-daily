@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-25",
-  "updatedAt": "2026-11-25T10:54:38+08:00",
+  "date": "2026-11-26",
+  "updatedAt": "2026-11-26T10:09:33+08:00",
   "totalItems": 44,
   "categories": [
     {
@@ -41,6 +41,118 @@
     }
   ],
   "items": [
+    {
+      "id": "20261126-ifanr-daily",
+      "category": "tech",
+      "title": "爱范儿早报：微软红色警报、Shopify周末重写系统、AI芯片交期30个月",
+      "summary": "①今日要闻：Exchange 宕机致微软内部发布 Code Red，定下 1 小时恢复目标并将引入 AI 代理辅助诊断；Shopify CEO 亲手用 AI 在周末重写完整生产系统后判断——未来 6-12 个月全球手写代码都得换掉；AI 芯片基板交期拉长至 30 个月；OpenAI 给出半个世纪未解的矩阵乘法难题答案 2.25 并附 Lean 形式化证明；Meta Muse 推出 Voice+Avatar+Spaces 三件套，把聊天框升级为 Living Interface。②AI 产品落地侧：腾讯混元 Hy4 flash 64GB Mac mini 可跑；Sand.ai MAGI-2 一次生成 30 秒有声视频；生数科技 Motubrain 2.0 从操作视频学新任务；蔚来 NWM 3.0 世界模型年底推送；微信 WeMM-Video 已用于视频号问小微。③行业侧：手机厂商集体下调 2027 出货目标，小米降 25%；小鹏 Robotaxi 广州开启无安全员载客；理想 Q3 经营与自由现金流转正；人形机器人量产需过可靠性、系统协作、持续学习三道关。",
+      "source": "爱范儿",
+      "url": "https://www.ifanr.com/1695128",
+      "tags": [
+        "Shopify",
+        "Code Red",
+        "AI重写代码",
+        "Living Interface",
+        "早报"
+      ],
+      "publishedAt": "2026-11-26"
+    },
+    {
+      "id": "20261126-36kr-001",
+      "category": "interaction",
+      "title": "Shopify CEO 亲证：AI 一个周末重写老系统，全球旧软件一年内必须换掉",
+      "summary": "①是什么：Shopify 创始人兼 CEO Tobi Lütke 亲手在周末用 AI 重写了完整的生产级代码仓库——周五拍板，周一上午新系统就在跑了。这个写了二十多年代码、从未离开一线的程序员紧接着抛出判断：未来 6-12 个月，全球绝大多数手写的生产代码都得被 AI 重写，软件不仅能接近零 Bug，很多情况下还能快 100 倍。②价值：这不是大佬焦虑贩卖，而是知行合一的实测——过去工程师供给是需求的 0.1%，现在 AI 把供给上限拉到了几乎可按需匹配。对设计师/产品经理来说，意味着「软件架构」和「实现成本」这两条硬约束同时消失，产品形态的想象力被彻底打开。③建议：用 AI 重写旧项目前先盘点哪些功能是真正值得保留的产品逻辑、哪些只是历史债务；为 AI 生成代码设计可读的意图注释和验收 checklist；团队立刻把「一次 AI 交付周期」纳入排期，准备好被机器追着迭代的节奏。",
+      "source": "36氪",
+      "url": "https://36kr.com/p/4085897065769601",
+      "tags": [
+        "Shopify",
+        "AI重写",
+        "Agent",
+        "代码生成",
+        "产品迭代"
+      ],
+      "publishedAt": "2026-11-26"
+    },
+    {
+      "id": "20261126-36kr-002",
+      "category": "tools",
+      "title": "黎曼猜想证明代码暴砍99.5%：Anthropic研究员用Claude把天书压成7.6万行",
+      "summary": "①是什么：上个月轰动全网的 1740 万行 Lean 黎曼猜想证明，在 Anthropic 研究员 Luke Sernau（也就是 2023 年谷歌内部《我们没有护城河》泄密文作者）+ Claude 的联手下，被砍到了 7.6 万行纯代码、1300 页可读版——机器验证全部通过，Apache 2.0 开源。瘦身方法是「拍扁所有定义→跨模块消消乐→再封装」，外加在数学路径上抄近道（如干掉 Vandiver 猜想分支）。原版在 AWS 高配机上编译需 21 小时，新版普通 12 核机器 1-2 小时即可。②价值：这给 AI 辅助科研和 AI Coding 都上了一课——复杂系统的重写比从零写更需要领域专家的判断和 AI 的执行配合；而机器验证已成为 AI 输出的信任基础设施。③建议：在做复杂 AI 项目时保留「扁平化+化简+重构」的工作流；用 Lean 或 Coq 这类证明辅助器的思路设计自己的 Agent 验收环节；团队要同时储备领域知识和 AI 工具能力，单纯的 prompt engineering 已经不够了。",
+      "source": "36氪",
+      "url": "https://36kr.com/p/4085937380043398",
+      "tags": [
+        "Claude",
+        "黎曼猜想",
+        "Lean",
+        "AI重写",
+        "机器验证"
+      ],
+      "publishedAt": "2026-11-26"
+    },
+    {
+      "id": "20261126-36kr-003",
+      "category": "interaction",
+      "title": "红果 AI 演员成「偶像练习生」：AI 角色跨剧串场，粉丝追 AI 不是追戏",
+      "summary": "①是什么：红果短剧上，AI 角色陈昊宇在 10+ 部 AI 短剧中跨剧出演，有独立影人页、年龄人设和 vlog，被粉丝当作真正的明星追。制作方开始让 AI 角色走出原故事，在不同 IP 里串场维持人设——汐钰从《旺家丫头》串到《汐钰一句话：团灭 AI 电诈》，观众追的是这个虚拟演员本人的持续出场。②价值：AI 短剧的次抛型角色正在变成有长期关系的 AI 人格产品，这对 AI 陪伴、虚拟偶像、数字人等赛道的交互设计都是启示——角色的连续性和跨场景一致性比单部作品的质量更能留住粉丝。③建议：设计 AI 角色时先做人设底层文档（persona bible），跨场景串演必须守住人设边界；在 UI 上为 AI 角色提供独立的身份入口（影人页/主页）和成长轨迹，而不是嵌在单部内容里；用人格记忆和一致性作为核心体验指标，而非单次生成质量。",
+      "source": "36氪",
+      "url": "https://36kr.com/p/4085262890833540",
+      "tags": [
+        "AI演员",
+        "虚拟偶像",
+        "人格设计",
+        "红果",
+        "跨场景"
+      ],
+      "publishedAt": "2026-11-26"
+    },
+    {
+      "id": "20261126-woshipm-001",
+      "category": "design",
+      "title": "Nirva 8克AI项链：放弃眼镜赛道，从首饰切入 Personal AI 的形态命题",
+      "summary": "①是什么：前 Meta 智能眼镜研究员吕唯做了一款只有 8 克、售价 249 美元的 AI 项链 Nirva——识别佩戴者自己的声音，记录日常对话，用模型分析情绪、沟通方式和行为习惯。累计融资 3300 万美元，候补名单 9000+ 人。创始人花十年研究下一代智能眼镜后，判断现阶段首饰是比眼镜更好的 AI 硬件入口。②价值：Personal AI 的硬件形态选择正在经历从「显式计算设备」转向「隐式身体延伸」的范式转变——眼镜有太重、太显眼、需要主动启动等问题，而项链/手环类首饰天然可 24 小时佩戴、低存在感、有社交礼仪的掩护。③建议：做 AI 硬件时先问「用户每天愿意戴多久」而不是「技术能做到什么」；隐私边界必须作为第一优先级设计（识别「自己的声音」vs 环境音、对话摘要 vs 原文存储）；首饰形态下交互反馈要靠 LED 闪烁、震动等微妙信号，而不是大弹窗。",
+      "source": "人人都是产品经理",
+      "url": "https://www.woshipm.com/chuangye/6493062.html",
+      "tags": [
+        "AI硬件",
+        "Personal AI",
+        "形态设计",
+        "首饰",
+        "隐私"
+      ],
+      "publishedAt": "2026-11-25"
+    },
+    {
+      "id": "20261126-andbeyond-001",
+      "category": "interaction",
+      "title": "Meta Muse Living Interface：聊天框之后，AI 界面进化到实时声音+表情 Avatar+生成空间",
+      "summary": "①是什么：Meta 11 月初在 Muse 应用内连续推出三个组件——Muse Voice 实时语音带表情 Avatar（说话时会有视觉在场感）、Spaces（用聊天描述一个空间，Muse 直接在应用内生成出来）、配合之前的 Chat 历史，共同构成了「Living Interface」（活的界面）这个新的 AI 界面品类。它不是替代聊天框，而是围绕聊天框生长出来的声音、表情和共享空间层。②价值：三年来默认 AI 界面都是矩形聊天框，它教会了数亿人跟模型说话，但也悄悄限制了助手能「感觉」到什么。Living Interface 把打断、语气、在场感、共享空间这些真实对话的要素还给了 AI 助手，这对产品设计师是一个范式级的提醒。③建议：设计 AI 助手时从「如何输入输出」升级到「如何在场」；实时语音交互要处理好打断、等待、确认三种状态的过渡动画；Spaces 这类生成空间要有「撤销」「回退到纯聊天」的逃生出口，避免用户被过多视觉层淹没。",
+      "source": "AndBeyond.tech",
+      "url": "https://www.andbeyond.tech/chat-box-to-living-interface/",
+      "tags": [
+        "Living Interface",
+        "Meta Muse",
+        "Voice",
+        "Avatar",
+        "生成空间"
+      ],
+      "publishedAt": "2026-11-25"
+    },
+    {
+      "id": "20261126-Figma-001",
+      "category": "tools",
+      "title": "Figma 上 3D 变换、Kombai 出可检查 Agent Loop：AI 设计工具的分水岭",
+      "summary": "①是什么：11 月 10-17 日这一周，Figma 先后上线 Motion 更新和 3D Transform，把 3D 变换能力直接塞进了画布；Kombai 则在 6 天内连推 7 个 changelog，核心是 CLI 里长出了可调用的资产管线（`kombai asset generate` 从代码库生成图片视频）和可链接的 check 报告。Design Agent 博客评论一针见血：Figma 扩大了 AI 能生成的边界，但没有给 Agent 一个可验证的输出通道；Kombai 虽然能力还弱，却先搭起了 Agent 可读的调用契约。②价值：AI 设计工具的真正分水岭不是「AI 能画什么」，而是「AI 输出能不能被 Agent 读回来再检查」——没有可验证的闭环，AI 生成的设计永远是一次性的不可回收资产。③建议：设计师选型 AI 工具时，除了看生成效果，必须检查输出是否带结构化元数据（颜色值、间距、组件 ID、可被 Agent 调用的 API 入口）；自己的设计系统要预留 AI Agent 读写的契约层，不要把所有逻辑锁在 Figma 插件里；设计团队可以先用 Kombai 的「可检查管线」思路做一轮工作流自查。",
+      "source": "Design Agent",
+      "url": "https://design-agent.dev/blog/2026-11-17-ai-design-launch-watch/",
+      "tags": [
+        "Figma",
+        "Kombai",
+        "AI设计工具",
+        "Agent Loop",
+        "可验证"
+      ],
+      "publishedAt": "2026-11-25"
+    },
     {
       "id": "20261125-ifanr-daily",
       "category": "tech",
@@ -602,38 +714,6 @@
       "publishedAt": "2026-11-19"
     },
     {
-      "id": "20261119-36kr-001",
-      "category": "tools",
-      "title": "Claude Code 上线 Code Mode：不换模型，Token 最高省 77%",
-      "summary": "①Anthropic 在 Claude Code v2.1.323 及以上版本加入默认关闭的实验功能 Code Mode：原本由模型逐次组织的工具调用，改为模型写一段 JavaScript 在本地一次执行，内置工具入口从 16 个精简到 3 个。第三方实测多步任务 API 账单降 22%–23%，高频调用外部工具时累计 Token 降 62%–77%，首轮请求少约 1.3 万 Token。②对 AI 产品团队的价值：不换模型、只改「谁来组织循环、中间数据放在哪」的 Harness 层，就能挤出两成以上真实成本，为 Agent 的上下文与计费结构提供了可复用范式。③建议：批处理、跨工具取数类任务优先切到 Code Mode；一条 shell 就能完成的简单改动用它反而可能因脚本排错变贵；同时提前补上脚本级权限、审计与熔断，因为整段执行会让逐条工具审核失效。",
-      "source": "36氪",
-      "url": "https://36kr.com/p/4075148096066440",
-      "tags": [
-        "Claude Code",
-        "Code Mode",
-        "Token 成本",
-        "Agent",
-        "Harness"
-      ],
-      "publishedAt": "2026-11-18"
-    },
-    {
-      "id": "20261119-36kr-002",
-      "category": "design",
-      "title": "AI 陪伴赛道震荡：收入前十被下架 5 款，苹果新规成生死线",
-      "summary": "①SensorTower 数据显示，AI 陪伴收入榜前十中 Tipsy、PolyBuzz、Zeta、Chai、Tizz 五款已从主要市场 iOS 下架，普遍指向苹果 10 月 16 日新规：禁止生成未经同意的私密影像，禁止隐藏功能与审核期虚假陈述，违者下架并封号。榜首 Tipsy 月入约 1.3 亿元，但收入高度依赖大 R，合规收紧后承压明显；Heyyyy、Emochi 等接住了外溢流量。②对产品与设计的意义：靠 NSFW 灰色需求撬动付费的捷径被封死，「情感陪伴」必须回到角色塑造、剧情与沉浸式互动本身；平台合规已是产品定位的前置约束，而不是上线后的补丁。③建议：立项时就把内容分级、审核策略与年龄门槛画进用户旅程；把内容尺度做成透明可选项而非暗箱；并为下架或封号准备 Web 端与用户迁移预案。",
-      "source": "36氪",
-      "url": "https://36kr.com/p/4075075172783238",
-      "tags": [
-        "AI 陪伴",
-        "App Store 新规",
-        "内容合规",
-        "产品定位",
-        "出海"
-      ],
-      "publishedAt": "2026-11-18"
-    },
-    {
       "id": "20261119-woshipm-001",
       "category": "interaction",
       "title": "GPT-6.2 Astra 口碑翻车：过度对齐让 Agent 变成「保姆型同事」",
@@ -664,86 +744,6 @@
         "隐私"
       ],
       "publishedAt": "2026-11-19"
-    },
-    {
-      "id": "20261119-web-illustrator",
-      "category": "tools",
-      "title": "Illustrator 31.0 上线自然语言 AI 助手：图层整理与批量改稿一句话完成",
-      "summary": "①Adobe Illustrator 31.0 推出 AI 助手 Beta，可用自然语言驱动多步骤重复任务：整理图层、批量修改内容、印前文件预处理等，媒体解读称可覆盖约三成日常工时，整体工作流效率提升超 40%。②对设计师的价值：重复操作从「记路径、点菜单」变成「描述目标」，新手不必背快捷键也能完成专业级常规操作，资深设计师则能把时间挪到创意与审美判断上。③建议：先把团队最耗时的三类重复流程（命名分层、批量改文案、印前检查）写成标准指令模板；对 AI 执行结果保留可回退版本与人工复核点，避免批量操作放大错误；把省下的时间投入需求研判与风格决策，而不是接更多机械活。",
-      "source": "站酷AI日报",
-      "url": "https://www.adobe.com/cn/products/illustrator/features/new-features.html",
-      "tags": [
-        "Adobe Illustrator",
-        "AI 助手",
-        "自然语言",
-        "工作流",
-        "印前"
-      ],
-      "publishedAt": "2026-11-18"
-    },
-    {
-      "id": "20261119-web-looker",
-      "category": "styles",
-      "title": "Looker 改版数据可视化：新增 KPI 图、桑基图与 AI 自定义图表",
-      "summary": "①Google Cloud 更新 Looker：重做仪表盘视觉与排版，新增 KPI 可视化、子弹图、桑基图等原生图表与更强的交互控件，并上线 Custom Visualization Skill——用户用自然语言描述想要的图表，AI 编码代理生成对应代码，无需写 JavaScript。②对数据产品与设计团队的价值：BI 正从「固定图表库＋配置面板」转向「描述意图即得可视化」，设计重心从做图表模板转为定义可视化语法、默认样式与可信度提示；排版与可读性重新成为仪表盘的核心竞争力。③建议：先建立企业级图表选用规范（什么数据用什么图、颜色与刻度约束），再让 AI 在规范内生成；对 AI 生成的图表保留数据校验与来源标注，避免「好看但误导」的可视化。",
-      "source": "Google Cloud",
-      "url": "https://cloud.google.com/blog/products/business-intelligence/modern-data-visualizations-and-custom-charts-in-looker",
-      "tags": [
-        "Looker",
-        "数据可视化",
-        "仪表盘",
-        "AI 图表",
-        "BI 设计"
-      ],
-      "publishedAt": "2026-11-18"
-    },
-    {
-      "id": "20261118-ifanr-daily",
-      "category": "tech",
-      "title": "爱范儿早报：GPT-6.2 双模型发布、英伟达单季营收破千亿、李飞飞加盟 AMD",
-      "summary": "①今日快讯：OpenAI 发布 GPT-6.2 Astra 与 Sol，Astra 专业任务更强且 API 降价 20%；英伟达 2027 财年 Q3 营收首破千亿美元（1158 亿美元），数据中心同比 +110%，但董事会明确不考虑黄仁勋复职；AMD 完成收购 World Labs，李飞飞任首席科学家；macOS 27.3 收紧「完整磁盘访问」权限，安装 AI Agent 时逐项提示数据外泄风险；红果短剧累计处置 43992 部疑似肖像侵权作品，融脸素材成新难点；小红书内测「搭搭」，可创建 AI 搭子并拉进群聊；WorkBuddy 支持跨设备迁移对话、产物与定时任务。②价值：系统权限收紧与 Agent 自主性正面相撞，「授权、可撤销、可解释」正在成为 Agent 产品的第一交互。③建议：为 Agent 设计分级权限与操作前确认，把会话、产物与定时任务当作可迁移的用户资产。",
-      "source": "爱范儿",
-      "url": "https://www.ifanr.com/1689915",
-      "tags": [
-        "GPT-6.2",
-        "英伟达财报",
-        "Agent权限",
-        "红果短剧",
-        "AI搭子"
-      ],
-      "publishedAt": "2026-11-18"
-    },
-    {
-      "id": "20261118-36kr-001",
-      "category": "tech",
-      "title": "GPT-6.2 Astra/Sol 发布：专业任务成本仅为 Claude 的 5%，CAD 与 3D 得分大涨",
-      "summary": "①OpenAI 于 11 月 18 日凌晨发布 GPT-6.2 Astra 与 Sol：Agents' Last Exam 上 Astra 得 78.3%，单任务平均成本 2.89 美元，约为 Claude Fable 5.2 的 4.8%；Sol 维持每百万 Token 输入 2 美元、输出 10 美元，编程评测与 Astra 仅差 0.4 个百分点；Astra 在 BenchCAD 2.1 从 62.6% 提升到 82.5%，AA-3D 以 1318 Elo 居首，可输出 DCF 工作簿、可比交易单页和可装配 3D 零件。②价值：模型开始按「交付物」而非「回答」计价，三维概念、PPT、表格能一次成型，高端模型与日常模型的价差第一次被拉清。③建议：复杂工程概念与客户提案交给 Astra，日常改稿走 Sol；同时为长程任务补过程留痕与验收清单——官方承认新模型更容易省略「执行障碍」说明。",
-      "source": "36氪",
-      "url": "https://36kr.com/p/4074370835977092",
-      "tags": [
-        "GPT-6.2 Astra",
-        "GPT-6.2 Sol",
-        "成本",
-        "CAD",
-        "3D生成"
-      ],
-      "publishedAt": "2026-11-18"
-    },
-    {
-      "id": "20261118-36kr-002",
-      "category": "interaction",
-      "title": "LightVela 实测：人设记忆齐了，但 Agent 交付仍卡在「最后一公里」",
-      "summary": "①雷科技实测腾讯云端 Agent 产品 LightVela 新版：支持多 Bot 独立人设、长期记忆、技能、定时任务和云电脑，可挂微信、飞书、钉钉，人设用「抽取卡牌」降低填写门槛，另有工作台模板快速生成数据看板与个人主页。②价值：Personal Agent 的骨架（人设—记忆—技能—桌面）已拼齐，也暴露真实缺口——交付给的是服务器路径而非文件、引用国际站文档解释国内站规则、截图任务因显示服务冲突失败、个人网站卡在上传。③建议：Agent 验收标准应是「用户拿到可用结果」，用交付卡片替代路径；「安排工作」与「调整助手」应在同一上下文而非两组页面；能力不可用时必须显式降级，不能静默换成另一种工具。",
-      "source": "36氪",
-      "url": "https://36kr.com/p/4073960952141449",
-      "tags": [
-        "Personal Agent",
-        "LightVela",
-        "人设与记忆",
-        "交付设计",
-        "云电脑"
-      ],
-      "publishedAt": "2026-11-18"
     }
   ]
 }
